@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useState} from "react"
+import {useRef, useState} from "react"
 import {ScrollArea} from "./ui/scroll-area"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "./ui/tabs"
 import Image from "next/image"
@@ -9,12 +9,17 @@ import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar"
 import {Button} from "./ui/button"
 import {Textarea} from "./ui/textarea"
 import {features} from "@/mocks/location.json"
+import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 
-const LocationDetails = () => {
+interface LocationDetailsProps {
+    locationFeatureInfo: SearchBoxFeatureSuggestion
+}
+
+const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
     const [selectedTab, setSelectedTab] = useState("overview")
     const [newPost, setNewPost] = useState("")
     const [selectedImages, setSelectedImages] = useState<string[]>([])
-    const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files

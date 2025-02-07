@@ -1,9 +1,13 @@
-import React from "react"
 import Image from "next/image"
 import {Clock, ExternalLink, Navigation} from "lucide-react"
 import {Button} from "./ui/button"
+import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 
-const MapPopup = () => {
+interface MapPopupProps {
+    locationInfo: SearchBoxFeatureSuggestion
+}
+
+const MapPopup = ({locationInfo}: MapPopupProps) => {
     return (
         <div className="p-3 shadow-lg rounded-xl w-full">
             <div className="relative w-full h-40 overflow-hidden rounded-lg">
@@ -18,6 +22,12 @@ const MapPopup = () => {
             <div className="my-4 flex flex-col gap-3">
                 <div className="flex items-start gap-2">
                     <Navigation className="h-5 w-5 text-muted-foreground mt-0.5" />
+                    <p className="text-sm text-muted-foreground font-medium">
+                        {locationInfo.properties.name}
+                    </p>
+                </div>
+                <div className="flex items-start gap-2">
+                    <Navigation className="h-5 w-5 text-muted-foreground mt-0.5" />
                     <p className="text-sm text-muted-foreground font-medium">Location</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -28,7 +38,10 @@ const MapPopup = () => {
                 </div>
             </div>
 
-            <Button className="w-full gap-2 rounded-lg transition-all" variant="secondary">
+            <Button
+                className="view-more w-full gap-2 rounded-lg transition-all"
+                variant="secondary"
+            >
                 View Location
                 <ExternalLink className="h-4 w-4" />
             </Button>

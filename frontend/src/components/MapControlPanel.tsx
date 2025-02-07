@@ -1,20 +1,33 @@
-import React from "react"
+import {Dispatch, SetStateAction} from "react"
 import MapSearchbox from "./MapSearchbox"
 import {Button} from "./ui/button"
 import {Soup} from "lucide-react"
 import {Avatar, AvatarFallback} from "./ui/avatar"
 import {type MapRef} from "react-map-gl"
+import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 
 interface MapControlPanelProps {
     mapRef: React.RefObject<MapRef | null>
-    setIsDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
+    setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
 }
 
-const MapControlPanel = ({mapRef, setIsDrawerOpen}: MapControlPanelProps) => {
+const MapControlPanel = ({
+    mapRef,
+    setIsDrawerOpen,
+    setIsLoadingLocationInfo,
+    setLocationFeatureInfo,
+}: MapControlPanelProps) => {
     return (
         <>
             <div className="flex flex-col gap-2 flex-1">
-                <MapSearchbox mapRef={mapRef} />
+                <MapSearchbox
+                    mapRef={mapRef}
+                    setIsLoadingLocationInfo={setIsLoadingLocationInfo}
+                    setLocationFeatureInfo={setLocationFeatureInfo}
+                    setIsDrawerOpen={setIsDrawerOpen}
+                />
 
                 <div className="flex items-center justify-center gap-2">
                     {Array.from({length: 6}).map((_, i) => (
