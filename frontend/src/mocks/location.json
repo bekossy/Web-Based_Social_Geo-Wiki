@@ -1,0 +1,66 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "coordinates": [14.47642133, 35.92556105],
+                "type": "Point"
+            },
+            "properties": {
+                "name": "STC Higher Education",
+                "mapbox_id": "dXJuOm1ieHBvaTo5NzI0OGVmMi05NzQ0LTRmYjEtYjY3YS0zMWNlMGU4YmY1NmQ",
+                "feature_type": "poi",
+                "address": "Block D",
+                "full_address": "Block D, Pembroke, PBK, Malta",
+                "place_formatted": "Pembroke, PBK, Malta",
+                "context": {
+                    "country": {
+                        "id": "",
+                        "name": "Malta",
+                        "country_code": "MT",
+                        "country_code_alpha_3": "MLT"
+                    },
+                    "postcode": {
+                        "id": "dXJuOm1ieHBsYzpCUzZi",
+                        "name": "PBK"
+                    },
+                    "place": {
+                        "id": "dXJuOm1ieHBsYzpCMFNi",
+                        "name": "Pembroke"
+                    },
+                    "address": {
+                        "id": "",
+                        "name": "Block D, Triq Giorgio Mitrovich",
+                        "street_name": "triq giorgio mitrovich"
+                    },
+                    "street": {
+                        "id": "",
+                        "name": "triq giorgio mitrovich"
+                    }
+                },
+                "coordinates": {
+                    "latitude": 35.92556105,
+                    "longitude": 14.47642133,
+                    "routable_points": [
+                        {
+                            "name": "POI",
+                            "latitude": 35.92605018269519,
+                            "longitude": 14.476431914015045
+                        }
+                    ]
+                },
+                "language": "en",
+                "maki": "marker",
+                "poi_category": ["college", "education"],
+                "poi_category_ids": ["college", "education"],
+                "external_ids": {},
+                "metadata": {
+                    "wheelchair_accessible": true
+                },
+                "operational_status": "active"
+            }
+        }
+    ],
+    "attribution": "© 2024 Mapbox and its suppliers. All rights reserved. Use of this data is subject to the Mapbox Terms of Service. (https://www.mapbox.com/about/maps/)"
+}
