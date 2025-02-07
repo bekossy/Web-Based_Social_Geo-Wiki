@@ -31,12 +31,12 @@ const MapSearchbox = ({
     const [selected, setSelected] = useState<SearchBoxSuggestion>(
         searchBoxValue as SearchBoxSuggestion
     )
-    const [inputValue, setInputValue] = useState<string>(searchBoxValue?.name || "")
+    const [searchBoxInput, setSearchBoxInput] = useState<string>(searchBoxValue?.name || "")
 
     const searchBoxCore = useMapboxSearch()
 
     const handleInputChange = async (value: string) => {
-        setInputValue(value)
+        setSearchBoxInput(value)
 
         if (value) {
             try {
@@ -59,7 +59,7 @@ const MapSearchbox = ({
             }
 
             // Keep the options displayed when the user is typing
-            if (!isOpen && inputValue) {
+            if (!isOpen && searchBoxInput) {
                 setOpen(true)
             }
 
@@ -76,17 +76,17 @@ const MapSearchbox = ({
                 input.blur()
             }
         },
-        [isOpen, inputValue, suggestions]
+        [isOpen, searchBoxInput, suggestions]
     )
 
     const handleBlur = useCallback(() => {
         setOpen(false)
-        setInputValue(selected?.name)
+        setSearchBoxInput(selected?.name)
     }, [selected])
 
     const handleSelectOption = useCallback(
         async (selectedOption: SearchBoxSuggestion) => {
-            setInputValue(selectedOption.name)
+            setSearchBoxInput(selectedOption.name)
 
             setSelected(selectedOption)
             setSearchBoxValue(selectedOption)
@@ -103,6 +103,7 @@ const MapSearchbox = ({
                         zoom: 14,
                         essential: true,
                     })
+                    console.log("response: ", response)
                 } catch (error) {
                     console.error("Error fetching suggestions:", error)
                 }
@@ -120,10 +121,10 @@ const MapSearchbox = ({
             <div className="bg-white rounded-lg">
                 <CommandInput
                     ref={inputRef}
-                    value={inputValue}
+                    value={searchBoxInput}
                     onValueChange={isLoading ? undefined : handleInputChange}
                     onBlur={handleBlur}
-                    onFocus={() => inputValue && setOpen(true)}
+                    onFocus={() => searchBoxInput && setOpen(true)}
                     placeholder={placeholder}
                     disabled={disabled}
                     className="text-base bg-white"
