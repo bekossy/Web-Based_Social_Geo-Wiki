@@ -1,6 +1,5 @@
 "use client"
 
-import React from "react"
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "./ui/sheet"
 
 type SidebarProps = {
@@ -9,7 +8,7 @@ type SidebarProps = {
     open: boolean
     sidebarContent: React.ReactNode
     handleOnOpenChange: (open: boolean) => void
-    isLoading?: boolean
+    isLoading: boolean
     showCloseButton?: boolean
 } & React.ComponentProps<typeof SheetContent>
 

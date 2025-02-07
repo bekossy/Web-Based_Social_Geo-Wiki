@@ -1,7 +1,6 @@
 "use client"
 
 import {Menu} from "lucide-react"
-import React from "react"
 
 const Navbar = () => {
     return (

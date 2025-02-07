@@ -1,6 +1,6 @@
 "use client"
 
-import React, {RefObject, useState} from "react"
+import {RefObject, useState} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
