@@ -1,6 +1,7 @@
 "use client"
 
-import {RefObject, useState} from "react"
+import {fetchIpDetails} from "@/services"
+import {RefObject, useEffect, useState} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
@@ -17,6 +18,22 @@ type MapViewProps = {
 const MapView = ({mapRef}: MapViewProps) => {
     const [coordinates, setCoordinates] = useState({long: 0, lat: 0})
 
+    useEffect(() => {
+        if (!coordinates.lat && !coordinates.long) {
+            const fetchUserCoordinates = async () => {
+                try {
+                    const data = await fetchIpDetails()
+                    mapRef.current?.flyTo({center: [data.longitude, data.latitude]})
+                    setCoordinates({long: data.longitude, lat: data.latitude})
+                } catch (error) {
+                    console.error(error)
+                }
+            }
+
+            fetchUserCoordinates()
+        }
+    }, [])
+
     return (
         <Map
             ref={mapRef}
@@ -29,14 +46,14 @@ const MapView = ({mapRef}: MapViewProps) => {
             <NavigationControl position="bottom-right" />
             <FullscreenControl position="bottom-right" />
             <GeolocateControl position="bottom-right" trackUserLocation />
-            <Marker
+            {/* <Marker
                 latitude={coordinates.lat}
                 longitude={coordinates.long}
                 draggable
                 onDragEnd={(e) => {
                     setCoordinates({long: e.lngLat.lng, lat: e.lngLat.lat})
                 }}
-            />
+            /> */}
 
             <ScaleControl />
         </Map>
