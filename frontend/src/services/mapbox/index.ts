@@ -1,0 +1,50 @@
+import {
+    type SearchBoxRetrieveResponse,
+    type SearchBoxCategoryResponse,
+} from "@mapbox/search-js-core"
+import axios from "axios"
+
+// Retrieve suggested feature
+export const fetchRetrieveSearchResult = async ({
+    mapboxId,
+    session_token,
+}: {
+    mapboxId: string
+    session_token: string
+}): Promise<SearchBoxRetrieveResponse> => {
+    const {data} = await axios(`https://api.mapbox.com/search/searchbox/v1/retrieve/${mapboxId}`, {
+        params: {
+            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+            session_token,
+        },
+    })
+
+    return data
+}
+
+// List categories
+export const fetchAllCategoryList = async (): Promise<void> => {
+    const {data} = await axios("https://api.mapbox.com/search/searchbox/v1/list/category", {
+        params: {
+            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+        },
+    })
+    return data
+}
+
+// Category Search
+export const fetchSearchCategory = async ({
+    canonicalId,
+}: {
+    canonicalId: string
+}): Promise<SearchBoxCategoryResponse> => {
+    const {data} = await axios(
+        `https://api.mapbox.com/search/searchbox/v1/category/${canonicalId}`,
+        {
+            params: {
+                access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+            },
+        }
+    )
+    return data
+}

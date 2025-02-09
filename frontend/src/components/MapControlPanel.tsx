@@ -3,11 +3,9 @@ import MapSearchbox from "./MapSearchbox"
 import {Button} from "./ui/button"
 import {Avatar, AvatarFallback} from "./ui/avatar"
 import {type MapRef} from "react-map-gl"
-import {
-    type SearchBoxCategoryResponse,
-    type SearchBoxFeatureSuggestion,
-} from "@mapbox/search-js-core"
+import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MakiIcon from "./MakiIcon"
+import {fetchSearchCategory} from "@/services/mapbox"
 
 interface MapControlPanelProps {
     mapRef: React.RefObject<MapRef | null>
@@ -57,11 +55,7 @@ const MapControlPanel = ({
 
     const handleSelectedCategory = async (canonicalId: string) => {
         try {
-            const response = await fetch(
-                `https://api.mapbox.com/search/searchbox/v1/category/${canonicalId}?access_token=${process
-                    .env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}`
-            )
-            const data: SearchBoxCategoryResponse = await response.json()
+            const data = await fetchSearchCategory({canonicalId})
             setLocationFeatureInfo(data.features)
             setIsDrawerOpen(true)
         } catch (error) {

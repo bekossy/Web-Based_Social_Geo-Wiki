@@ -12,11 +12,9 @@ import Map, {
     ScaleControl,
 } from "react-map-gl"
 import {pins} from "@/mocks/pins.json"
-import {
-    type SearchBoxRetrieveResponse,
-    type SearchBoxFeatureSuggestion,
-} from "@mapbox/search-js-core"
+import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MapPopup from "./MapPopup"
+import {fetchRetrieveSearchResult} from "@/services/mapbox"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
@@ -47,11 +45,7 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps
 
     const handleMarkClick = async (mapboxId: string, pinId: string) => {
         try {
-            const response = await fetch(
-                `https://api.mapbox.com/search/searchbox/v1/retrieve/${mapboxId}?access_token=${process
-                    .env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}&session_token=123`
-            )
-            const data: SearchBoxRetrieveResponse = await response.json()
+            const data = await fetchRetrieveSearchResult({mapboxId, session_token: "123"})
             setLocationData(data.features[0])
             setCurrentLocation(pinId)
             setLocationFeatureInfo(data.features)
