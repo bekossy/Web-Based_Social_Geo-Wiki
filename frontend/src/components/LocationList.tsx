@@ -4,11 +4,11 @@ import Image from "next/image"
 import {Button} from "./ui/button"
 import {Clock, ExternalLink, MapPin, Phone, Star} from "lucide-react"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
-import {useMapboxSearch} from "@/hooks/useMapboxSearch"
 import {type MapRef} from "react-map-gl"
 import mapboxgl from "mapbox-gl"
 import ReactDOMServer from "react-dom/server"
 import MapPopup from "./MapPopup"
+import {fetchRetrieveSearchResult} from "@/services/mapbox"
 
 interface LocationListProps {
     locationFeatureInfo: SearchBoxFeatureSuggestion[]
@@ -25,14 +25,10 @@ const LocationList = ({
     mapRef,
     setIsDrawerOpen,
 }: LocationListProps) => {
-    const searchBoxCore = useMapboxSearch()
-
-    const handleFetchLocationFeature = async (props: SearchBoxFeatureSuggestion["properties"]) => {
+    const handleFetchLocationFeature = async (mapboxId: string) => {
         try {
             setIsLoadingLocationInfo(true)
-            const response = await searchBoxCore.retrieve(props, {
-                sessionToken: "test-123",
-            })
+            const response = await fetchRetrieveSearchResult({mapboxId, session_token: "123"})
 
             const [longitude, latitude] = response.features[0].geometry.coordinates
             mapRef.current?.flyTo({
@@ -51,7 +47,12 @@ const LocationList = ({
                     className: "z-10 min-w-[270px] !rounded-lg",
                     anchor: "right",
                 }).setHTML(
-                    ReactDOMServer.renderToString(<MapPopup locationInfo={response.features[0]} />)
+                    ReactDOMServer.renderToString(
+                        <MapPopup
+                            locationInfo={response.features[0]}
+                            setIsDrawerOpen={setIsDrawerOpen}
+                        />
+                    )
                 )
 
                 popup.on("open", () => {
@@ -84,7 +85,7 @@ const LocationList = ({
                     <div
                         key={index}
                         className="rounded-lg border bg-card overflow-hidden hover:border-primary transition-colors"
-                        onClick={() => handleFetchLocationFeature(location.properties)}
+                        onClick={() => handleFetchLocationFeature(location.properties.mapbox_id)}
                     >
                         <div className="relative aspect-video">
                             <Image
