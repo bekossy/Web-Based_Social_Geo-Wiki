@@ -26,7 +26,7 @@ const MapSearchbox = ({
     disabled = false,
     isLoading = false,
     placeholder = "Find something",
-    emptyMessage = "No results.",
+    emptyMessage = "No results",
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
     setIsDrawerOpen,
@@ -128,7 +128,10 @@ const MapSearchbox = ({
                                 anchor: "right",
                             }).setHTML(
                                 ReactDOMServer.renderToString(
-                                    <MapPopup locationInfo={response.features[0]} />
+                                    <MapPopup
+                                        locationInfo={response.features[0]}
+                                        setIsDrawerOpen={setIsDrawerOpen}
+                                    />
                                 )
                             )
 
@@ -165,7 +168,7 @@ const MapSearchbox = ({
 
     return (
         <CommandPrimitive onKeyDown={handleKeyDown}>
-            <div className="bg-white rounded-lg">
+            <div className="bg-white rounded-lg border border-input">
                 <CommandInput
                     ref={inputRef}
                     value={searchBoxInput}

@@ -2,12 +2,14 @@ import Image from "next/image"
 import {Clock, ExternalLink, Navigation} from "lucide-react"
 import {Button} from "./ui/button"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
+import {Dispatch, SetStateAction} from "react"
 
 interface MapPopupProps {
     locationInfo: SearchBoxFeatureSuggestion
+    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const MapPopup = ({locationInfo}: MapPopupProps) => {
+const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
     return (
         <div className="p-3 shadow-lg rounded-xl w-full">
             <div className="relative w-full h-40 overflow-hidden rounded-lg">
@@ -41,6 +43,7 @@ const MapPopup = ({locationInfo}: MapPopupProps) => {
             <Button
                 className="view-more w-full gap-2 rounded-lg transition-all"
                 variant="secondary"
+                onClick={() => setIsDrawerOpen(true)}
             >
                 View Location
                 <ExternalLink className="h-4 w-4" />

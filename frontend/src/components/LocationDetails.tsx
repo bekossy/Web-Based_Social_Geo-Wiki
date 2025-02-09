@@ -1,6 +1,6 @@
 "use client"
 
-import {useRef, useState} from "react"
+import {useMemo, useRef, useState} from "react"
 import {ScrollArea} from "./ui/scroll-area"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "./ui/tabs"
 import Image from "next/image"
@@ -8,7 +8,6 @@ import {Building2, Camera, Globe, ImageIcon, Navigation, Send, X} from "lucide-r
 import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar"
 import {Button} from "./ui/button"
 import {Textarea} from "./ui/textarea"
-import {features} from "@/mocks/location.json"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 
 interface LocationDetailsProps {
@@ -20,6 +19,8 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
     const [newPost, setNewPost] = useState("")
     const [selectedImages, setSelectedImages] = useState<string[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null)
+
+    const locationData = useMemo(() => locationFeatureInfo.properties || {}, [locationFeatureInfo])
 
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
@@ -76,7 +77,6 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
         },
     ]
 
-    const location = features[0].properties
     return (
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
             <TabsList className="grid w-full grid-cols-2">
@@ -110,7 +110,7 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
                                     <div>
                                         <p className="font-medium">Address</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {location.full_address}
+                                            {locationData.full_address}
                                         </p>
                                     </div>
                                 </div>
@@ -120,7 +120,7 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
                                     <div>
                                         <p className="font-medium">Region</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {location.place_formatted}
+                                            {locationData.place_formatted}
                                         </p>
                                     </div>
                                 </div>
@@ -130,7 +130,7 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
                                     <div>
                                         <p className="font-medium">Country</p>
                                         <p className="text-sm text-muted-foreground">
-                                            {location.context.country.name}
+                                            {locationData.context.country?.name}
                                         </p>
                                     </div>
                                 </div>
@@ -139,9 +139,9 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
                         <div>
                             <h3 className="text-lg font-semibold mb-2">Coordinates</h3>
                             <p className="text-sm text-muted-foreground">
-                                Latitude: {location.coordinates.latitude.toFixed(6)}
+                                Latitude: {locationData.coordinates.latitude.toFixed(6)}
                                 <br />
-                                Longitude: {location.coordinates.longitude.toFixed(6)}
+                                Longitude: {locationData.coordinates.longitude.toFixed(6)}
                             </p>
                         </div>
                         <div className="pt-4">
@@ -149,7 +149,7 @@ const LocationDetails = ({locationFeatureInfo}: LocationDetailsProps) => {
                                 className="w-full"
                                 onClick={() => {
                                     window.open(
-                                        `https://www.google.com/maps/search/?api=1&query=${location.coordinates.latitude},${location.coordinates.longitude}`,
+                                        `https://www.google.com/maps/search/?api=1&query=${locationData.coordinates.latitude},${locationData.coordinates.longitude}`,
                                         "_blank"
                                     )
                                 }}

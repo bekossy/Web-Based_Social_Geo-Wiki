@@ -21,7 +21,7 @@ export default function Home() {
 
     return (
         <main className="h-screen w-full relative">
-            <div className="max-w-[800px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-4">
+            <div className="max-w-[800px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-2">
                 <MapControlPanel
                     mapRef={mapRef}
                     setIsDrawerOpen={setIsDrawerOpen}
@@ -30,7 +30,11 @@ export default function Home() {
                 />
             </div>
 
-            <MapView mapRef={mapRef} />
+            <MapView
+                mapRef={mapRef}
+                setLocationFeatureInfo={setLocationFeatureInfo}
+                setIsDrawerOpen={setIsDrawerOpen}
+            />
 
             <Sidebar
                 open={isDrawerOpen}

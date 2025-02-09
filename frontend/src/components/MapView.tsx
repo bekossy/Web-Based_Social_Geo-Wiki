@@ -1,7 +1,7 @@
 "use client"
 
 import {fetchIpDetails} from "@/services"
-import {Fragment, RefObject, useEffect, useState} from "react"
+import {Dispatch, Fragment, RefObject, SetStateAction, useEffect, useState} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
@@ -20,9 +20,11 @@ import MapPopup from "./MapPopup"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
+    setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
+    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
 }
 
-const MapView = ({mapRef}: MapViewProps) => {
+const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps) => {
     const [coordinates, setCoordinates] = useState({long: 0, lat: 0})
     const [currentLocation, setCurrentLocation] = useState("")
     const [locationData, setLocationData] = useState<SearchBoxFeatureSuggestion | null>(null)
@@ -52,6 +54,7 @@ const MapView = ({mapRef}: MapViewProps) => {
             const data: SearchBoxRetrieveResponse = await response.json()
             setLocationData(data.features[0])
             setCurrentLocation(pinId)
+            setLocationFeatureInfo(data.features)
         } catch (error) {
             console.error(error)
         }
@@ -89,7 +92,10 @@ const MapView = ({mapRef}: MapViewProps) => {
                                 anchor="right"
                                 onClose={() => setCurrentLocation("")}
                             >
-                                <MapPopup locationInfo={locationData} />
+                                <MapPopup
+                                    locationInfo={locationData}
+                                    setIsDrawerOpen={setIsDrawerOpen}
+                                />
                             </Popup>
                         )}
                     </Fragment>

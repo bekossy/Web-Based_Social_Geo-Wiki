@@ -1,10 +1,13 @@
 import {Dispatch, SetStateAction} from "react"
 import MapSearchbox from "./MapSearchbox"
 import {Button} from "./ui/button"
-import {Soup} from "lucide-react"
 import {Avatar, AvatarFallback} from "./ui/avatar"
 import {type MapRef} from "react-map-gl"
-import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
+import {
+    type SearchBoxCategoryResponse,
+    type SearchBoxFeatureSuggestion,
+} from "@mapbox/search-js-core"
+import MakiIcon from "./MakiIcon"
 
 interface MapControlPanelProps {
     mapRef: React.RefObject<MapRef | null>
@@ -19,9 +22,55 @@ const MapControlPanel = ({
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
 }: MapControlPanelProps) => {
+    const categories = [
+        {
+            canonical_id: "restaurant",
+            icon: "restaurant",
+            name: "Restaurant",
+        },
+        {
+            canonical_id: "shopping_mall",
+            icon: "marker",
+            name: "Shopping Mall",
+        },
+        {
+            canonical_id: "education",
+            icon: "school",
+            name: "Education",
+        },
+        {
+            canonical_id: "park",
+            icon: "park",
+            name: "Park",
+        },
+        {
+            canonical_id: "hotel",
+            icon: "lodging",
+            name: "Hotel",
+        },
+        {
+            canonical_id: "tourist_attraction",
+            icon: "attraction",
+            name: "Tourist Attraction",
+        },
+    ]
+
+    const handleSelectedCategory = async (canonicalId: string) => {
+        try {
+            const response = await fetch(
+                `https://api.mapbox.com/search/searchbox/v1/category/${canonicalId}?access_token=${process
+                    .env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}`
+            )
+            const data: SearchBoxCategoryResponse = await response.json()
+            setLocationFeatureInfo(data.features)
+            setIsDrawerOpen(true)
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
         <>
-            <div className="flex flex-col gap-2 flex-1">
+            <div className="flex flex-col gap-1 flex-1">
                 <MapSearchbox
                     mapRef={mapRef}
                     setIsLoadingLocationInfo={setIsLoadingLocationInfo}
@@ -29,25 +78,19 @@ const MapControlPanel = ({
                     setIsDrawerOpen={setIsDrawerOpen}
                 />
 
-                <div className="flex items-center justify-center gap-2">
-                    {Array.from({length: 6}).map((_, i) => (
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                    {categories.map((category) => (
                         <Button
+                            key={category.canonical_id}
                             size={"sm"}
-                            key={i}
-                            variant={"secondary"}
+                            variant={"outline"}
                             className="flex items-center gap-2"
+                            onClick={() => handleSelectedCategory(category.canonical_id)}
                         >
-                            <Soup />
-                            Food
+                            <MakiIcon iconName={category.icon} />
+                            {category.name}
                         </Button>
                     ))}
-                    <Button
-                        size={"sm"}
-                        className="flex items-center gap-2"
-                        onClick={() => setIsDrawerOpen((prev) => !prev)}
-                    >
-                        Toggle Drawer
-                    </Button>
                 </div>
             </div>
             <Avatar className="h-10 w-10 rounded-full">
