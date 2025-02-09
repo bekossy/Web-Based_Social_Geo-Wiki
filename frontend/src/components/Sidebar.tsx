@@ -1,5 +1,6 @@
 "use client"
 
+import {cn} from "@/lib/utils"
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "./ui/sheet"
 
 type SidebarProps = {
@@ -26,7 +27,7 @@ const Sidebar = ({
         <Sheet open={open} onOpenChange={handleOnOpenChange}>
             <SheetContent
                 closeButton={showCloseButton}
-                className="flex flex-col p-4 min-w-[400px]"
+                className={cn("flex flex-col p-4 min-w-[400px]", props.className)}
                 {...props}
             >
                 <SheetHeader>
@@ -37,7 +38,9 @@ const Sidebar = ({
                 {isLoading ? (
                     <div>Loading...</div>
                 ) : (
-                    <div className="[&::-webkit-scrollbar]:w-0 overflow-auto">{children}</div>
+                    <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
+                        {children}
+                    </div>
                 )}
             </SheetContent>
         </Sheet>

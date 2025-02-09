@@ -88,7 +88,7 @@ const MapControlPanel = ({
                 </div>
             </div>
             <Avatar className="h-10 w-10 rounded-full">
-                <AvatarFallback className="rounded-full bg-orange-600 text-white font-bold">
+                <AvatarFallback className="rounded-full bg-purple-400 text-white font-bold">
                     JD
                 </AvatarFallback>
             </Avatar>
