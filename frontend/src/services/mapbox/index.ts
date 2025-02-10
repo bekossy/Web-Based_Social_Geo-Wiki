@@ -3,6 +3,7 @@ import {
     type SearchBoxCategoryResponse,
 } from "@mapbox/search-js-core"
 import axios from "axios"
+import {type AllCategoryListResponse} from "./types"
 
 // Retrieve suggested feature
 export const fetchRetrieveSearchResult = async ({
@@ -23,7 +24,7 @@ export const fetchRetrieveSearchResult = async ({
 }
 
 // List categories
-export const fetchAllCategoryList = async (): Promise<void> => {
+export const fetchAllCategoryList = async (): Promise<AllCategoryListResponse> => {
     const {data} = await axios("https://api.mapbox.com/search/searchbox/v1/list/category", {
         params: {
             access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
