@@ -11,7 +11,7 @@ import {
     CommandGroup,
     CommandItem,
 } from "@/components/ui/command"
-import {Search, Settings, LogOut, Heart, Clock, ChevronRight} from "lucide-react"
+import {Search, Settings, LogOut, Heart, Clock, ChevronRight, ArrowLeft} from "lucide-react"
 import {Avatar, AvatarFallback} from "./ui/avatar"
 import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
@@ -106,11 +106,22 @@ export function NavigationSidebar({
             <div className="flex-1 overflow-hidden">
                 {showSearch ? (
                     <Command className="rounded-lg border-none p-2">
-                        <CommandInput
-                            placeholder="Search categories..."
-                            value={searchQuery}
-                            onValueChange={setSearchQuery}
-                        />
+                        <div className="flex items-center">
+                            <Button
+                                size={"sm"}
+                                variant={"ghost"}
+                                onClick={() => setShowSearch(false)}
+                                className="px-2"
+                            >
+                                <ArrowLeft />
+                            </Button>
+
+                            <CommandInput
+                                placeholder="Search categories..."
+                                value={searchQuery}
+                                onValueChange={setSearchQuery}
+                            />
+                        </div>
                         <CommandList className="max-h-none">
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup heading="Categories">
@@ -142,7 +153,7 @@ export function NavigationSidebar({
                                             }}
                                             className="cursor-pointer"
                                         >
-                                            <Clock className="mr-2 h-4 w-4" />
+                                            <Clock className="mr-2 size-4" />
                                             {search}
                                         </CommandItem>
                                     ))}
@@ -158,14 +169,14 @@ export function NavigationSidebar({
                                 className="w-full justify-start"
                                 onClick={() => setShowSearch(true)}
                             >
-                                <Search className="mr-2 h-4 w-4" />
+                                <Search className="mr-2 size-4" />
                                 Search categories...
                             </Button>
 
                             <div className="space-y-1">
                                 <h4 className="text-sm font-medium px-2">Favorites</h4>
                                 <Button variant="ghost" className="w-full justify-start">
-                                    <Heart className="mr-2 h-4 w-4" />
+                                    <Heart className="mr-2 size-4" />
                                     Saved Places
                                 </Button>
                             </div>
@@ -186,7 +197,7 @@ export function NavigationSidebar({
                                                 <MakiIcon iconName={category.icon} />
                                                 {category.name}
                                             </span>
-                                            <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <ChevronRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                                         </Button>
                                     )
                                 })}
@@ -198,11 +209,11 @@ export function NavigationSidebar({
 
             <div className="border-t p-4 space-y-2">
                 <Button variant="ghost" className="w-full justify-start">
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Settings className="mr-2 size-4" />
                     Settings
                 </Button>
                 <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 size-4" />
                     Sign Out
                 </Button>
             </div>
