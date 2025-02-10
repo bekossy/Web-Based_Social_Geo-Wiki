@@ -55,49 +55,51 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps
     }
 
     return (
-        <Map
-            ref={mapRef}
-            initialViewState={{zoom: 13, ...coordinates}}
-            style={{width: "100%", height: "100%"}}
-            mapStyle="mapbox://styles/mapbox/standard"
-            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-            attributionControl={false}
-        >
-            <NavigationControl position="bottom-right" />
-            <FullscreenControl position="bottom-right" />
-            <GeolocateControl position="bottom-right" trackUserLocation />
+        // <Map
+        //     ref={mapRef}
+        //     initialViewState={{zoom: 13, ...coordinates}}
+        //     style={{width: "100%", height: "100%"}}
+        //     mapStyle="mapbox://styles/mapbox/standard"
+        //     mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+        //     attributionControl={false}
+        // >
+        //     <NavigationControl position="bottom-right" />
+        //     <FullscreenControl position="bottom-right" />
+        //     <GeolocateControl position="bottom-right" trackUserLocation />
 
-            {pins.map((pin) => {
-                return (
-                    <Fragment key={pin._id}>
-                        <Marker
-                            latitude={pin.latitude}
-                            longitude={pin.longitude}
-                            onClick={() => handleMarkClick(pin.mapbox_id, pin._id)}
-                            color="red"
-                        />
-                        {!!locationData && pin._id === currentLocation && (
-                            <Popup
-                                latitude={pin.latitude}
-                                longitude={pin.longitude}
-                                offset={25}
-                                closeButton={false}
-                                className="z-10 min-w-[270px] !rounded-lg"
-                                anchor="right"
-                                onClose={() => setCurrentLocation("")}
-                            >
-                                <MapPopup
-                                    locationInfo={locationData}
-                                    setIsDrawerOpen={setIsDrawerOpen}
-                                />
-                            </Popup>
-                        )}
-                    </Fragment>
-                )
-            })}
+        //     {pins.map((pin) => {
+        //         return (
+        //             <Fragment key={pin._id}>
+        //                 <Marker
+        //                     latitude={pin.latitude}
+        //                     longitude={pin.longitude}
+        //                     onClick={() => handleMarkClick(pin.mapbox_id, pin._id)}
+        //                     color="red"
+        //                 />
+        //                 {!!locationData && pin._id === currentLocation && (
+        //                     <Popup
+        //                         latitude={pin.latitude}
+        //                         longitude={pin.longitude}
+        //                         offset={25}
+        //                         closeButton={false}
+        //                         className="z-10 min-w-[270px] !rounded-lg"
+        //                         anchor="right"
+        //                         onClose={() => setCurrentLocation("")}
+        //                     >
+        //                         <MapPopup
+        //                             locationInfo={locationData}
+        //                             setIsDrawerOpen={setIsDrawerOpen}
+        //                         />
+        //                     </Popup>
+        //                 )}
+        //             </Fragment>
+        //         )
+        //     })}
 
-            <ScaleControl />
-        </Map>
+        //     <ScaleControl />
+        // </Map>
+
+        <div className="bg-blue-400 h-[100vh] w-full"></div>
     )
 }
 
