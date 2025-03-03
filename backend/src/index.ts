@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(helmet())
 app.use(
     cors({
-        origin: "http://localhost:3322",
+        origin: env.WEB_APP_URL,
         credentials: true,
     })
 )
