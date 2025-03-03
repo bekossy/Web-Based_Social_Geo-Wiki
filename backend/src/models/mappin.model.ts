@@ -1,6 +1,13 @@
 import mongoose from "mongoose"
 
-const CommentSchema = new mongoose.Schema(
+interface ICommentSchema extends Document {
+    userId: mongoose.Schema.Types.ObjectId
+    title: string
+    description: string
+    rating: number
+}
+
+const CommentSchema = new mongoose.Schema<ICommentSchema>(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +31,14 @@ const CommentSchema = new mongoose.Schema(
     },
     {timestamps: true}
 )
+
+interface IMapPinSchema extends Document {
+    mapboxId: string
+    userId: string
+    latitude: number
+    longitude: number
+    comments: ICommentSchema[]
+}
 
 const MapPinSchema = new mongoose.Schema(
     {
@@ -49,4 +64,4 @@ const MapPinSchema = new mongoose.Schema(
     {timestamps: true}
 )
 
-export default mongoose.model("MapPin", MapPinSchema)
+export default mongoose.model<IMapPinSchema>("MapPin", MapPinSchema)
