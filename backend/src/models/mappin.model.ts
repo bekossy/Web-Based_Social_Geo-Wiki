@@ -1,36 +1,5 @@
 import mongoose from "mongoose"
-
-interface ICommentSchema extends Document {
-    userId: mongoose.Schema.Types.ObjectId
-    title: string
-    description: string
-    rating: number
-}
-
-const CommentSchema = new mongoose.Schema<ICommentSchema>(
-    {
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true,
-        },
-        title: {
-            type: String,
-            required: true,
-        },
-        description: {
-            type: String,
-            required: true,
-        },
-        rating: {
-            type: Number,
-            required: true,
-            min: 1,
-            max: 5,
-        },
-    },
-    {timestamps: true}
-)
+import Comment from "./comment.model"
 
 interface IMapPinSchema extends Document {
     mapboxId: string
@@ -61,5 +30,13 @@ const MapPinSchema = new mongoose.Schema(
     },
     {timestamps: true}
 )
+
+MapPinSchema.pre("deleteOne", async function (next) {
+    const mappin = await this.model.findOne(this.getQuery())
+    if (mappin) {
+        await Comment.deleteMany({mappinId: mappin._id})
+    }
+    next()
+})
 
 export default mongoose.model<IMapPinSchema>("MapPin", MapPinSchema)
