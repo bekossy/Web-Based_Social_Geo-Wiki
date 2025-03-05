@@ -13,7 +13,7 @@ const register = async (req: Request, res: Response) => {
     const doesUserExist = await User.findOne({username})
 
     if (doesUserExist) {
-        throw new BadRequestError("Email already exists")
+        throw new BadRequestError("Username already exists")
     }
 
     const user = await User.create({username, password})
@@ -22,10 +22,7 @@ const register = async (req: Request, res: Response) => {
 
     let refreshToken = crypto.randomBytes(40).toString("hex")
 
-    const userAgent = req.headers["user-agent"]
-    const ip = req.ip
-
-    const userToken = {userAgent, ip, userId: user._id, refreshToken}
+    const userToken = {userId: user._id, refreshToken}
 
     await Token.create(userToken)
 
@@ -73,10 +70,8 @@ const login = async (req: Request, res: Response): Promise<any> => {
     }
 
     refreshToken = crypto.randomBytes(40).toString("hex")
-    const userAgent = req.headers["user-agent"]
-    const ip = req.ip
 
-    const userToken = {userAgent, ip, userId: user._id, refreshToken}
+    const userToken = {userId: user._id, refreshToken}
 
     await Token.create(userToken)
 
