@@ -13,6 +13,7 @@ import helmet from "helmet"
 
 import authRouter from "./routes/auth.route"
 import userRouter from "./routes/user.route"
+import mappinRouter from "./routes/mappin.route"
 
 const app = express()
 
@@ -35,6 +36,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/user", userRouter)
+app.use("/api/v1/mappin", mappinRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)

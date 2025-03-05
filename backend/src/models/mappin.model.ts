@@ -37,7 +37,6 @@ interface IMapPinSchema extends Document {
     userId: string
     latitude: number
     longitude: number
-    comments: ICommentSchema[]
 }
 
 const MapPinSchema = new mongoose.Schema(
@@ -59,7 +58,6 @@ const MapPinSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
-        comments: [CommentSchema],
     },
     {timestamps: true}
 )
