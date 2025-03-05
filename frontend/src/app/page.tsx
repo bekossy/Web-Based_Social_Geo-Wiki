@@ -6,6 +6,7 @@ import MapControlPanel from "@/components/MapControlPanel"
 import MapView from "@/components/MapView"
 import Navbar from "@/components/Navbar"
 import {NavigationSidebar} from "@/components/NavigationSidebar"
+import ProtectedRoute from "@/components/ProtectedRoute"
 import Sidebar from "@/components/Sidebar"
 import {fetchAllCategoryList} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
@@ -37,7 +38,7 @@ export default function Home() {
     }, [fetchCategoryList])
 
     return (
-        <>
+        <ProtectedRoute>
             <Navbar setIsNavSidebarOpen={setIsNavSidebarOpen} />
             <main className="h-screen w-full relative">
                 <div className="max-w-[800px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-2">
@@ -92,6 +93,6 @@ export default function Home() {
                     className="p-0 block"
                 />
             </main>
-        </>
+        </ProtectedRoute>
     )
 }
