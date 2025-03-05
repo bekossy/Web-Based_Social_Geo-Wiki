@@ -14,10 +14,13 @@ const UserSchema = new mongoose.Schema(
             required: [true, "Please provide a username"],
             unique: true,
             trim: true,
+            lowercase: true,
+            minLength: 3,
         },
         password: {
             type: String,
             required: [true, "Please provide a password"],
+            minlength: 6,
         },
     },
     {timestamps: true}
