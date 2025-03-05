@@ -12,6 +12,7 @@ interface AuthContextType {
     user: User | null
     loading: boolean
     login: (username: string, password: string) => Promise<void>
+    register: (username: string, password: string) => Promise<void>
     logout: () => Promise<void>
 }
 
@@ -25,8 +26,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         const fetchUser = async () => {
             try {
                 const {data} = await axios.get("/user/showCurrentUser")
-                console.log(data)
-
                 setUser(data.user)
             } catch {
                 setUser(null)
@@ -44,13 +43,19 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         setUser(data.user)
     }
 
+    const register = async (username: string, password: string) => {
+        await axios.post("/auth/signup", {username, password})
+        const {data} = await axios.get("/user/showCurrentUser")
+        setUser(data.user)
+    }
+
     const logout = async () => {
-        await axios.post("/api/auth/logout")
+        await axios.get("/auth/signout")
         setUser(null)
     }
 
     return (
-        <AuthContext.Provider value={{user, loading, login, logout}}>
+        <AuthContext.Provider value={{user, loading, login, logout, register}}>
             {children}
         </AuthContext.Provider>
     )
