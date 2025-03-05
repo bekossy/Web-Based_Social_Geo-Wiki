@@ -9,15 +9,19 @@ import * as z from "zod"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
-import {LogIn} from "lucide-react"
+import {AlertCircle, LogIn} from "lucide-react"
+import {useAuth} from "@/contexts/AuthContext"
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 
 const formSchema = z.object({
-    username: z.string().min(2, "Username must be at least 2 characters"),
+    username: z.string().min(3, "Username must be at least 3 characters"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 })
 
 export default function LoginPage() {
+    const [errorMessage, setErrorMessage] = useState("")
     const router = useRouter()
+    const {login} = useAuth()
     const [isLoading, setIsLoading] = useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -30,13 +34,16 @@ export default function LoginPage() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsLoading(true)
+        setErrorMessage("")
         try {
-            console.log(values)
-            // Mock successful login
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-            router.push("/")
-        } catch (error) {
-            console.error(error)
+            await login(values.username.toLowerCase(), values.password)
+            router.replace("/")
+        } catch (error: any) {
+            if (error.response.data.msg) {
+                setErrorMessage(error.response.data.msg)
+            } else {
+                setErrorMessage(error.message || "Invalid username or password")
+            }
         } finally {
             setIsLoading(false)
         }
@@ -81,6 +88,14 @@ export default function LoginPage() {
                                 </FormItem>
                             )}
                         />
+
+                        {errorMessage && (
+                            <Alert variant="destructive">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertTitle className="font-[600]">Error</AlertTitle>
+                                <AlertDescription>{errorMessage}</AlertDescription>
+                            </Alert>
+                        )}
 
                         <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? (
