@@ -10,7 +10,6 @@ interface User {
 
 interface AuthContextType {
     user: User | null
-    loading: boolean
     login: (username: string, password: string) => Promise<void>
     register: (username: string, password: string) => Promise<void>
     logout: () => Promise<void>
@@ -20,7 +19,6 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -29,8 +27,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 setUser(data.user)
             } catch {
                 setUser(null)
-            } finally {
-                setLoading(false)
             }
         }
 
@@ -55,7 +51,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
 
     return (
-        <AuthContext.Provider value={{user, loading, login, logout, register}}>
+        <AuthContext.Provider value={{user, login, logout, register}}>
             {children}
         </AuthContext.Provider>
     )
