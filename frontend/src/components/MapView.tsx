@@ -1,7 +1,15 @@
 "use client"
 
 import {fetchIpDetails} from "@/services"
-import {Dispatch, Fragment, RefObject, SetStateAction, useEffect, useState} from "react"
+import {
+    Dispatch,
+    Fragment,
+    RefObject,
+    SetStateAction,
+    useCallback,
+    useEffect,
+    useState,
+} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
@@ -11,10 +19,11 @@ import Map, {
     Popup,
     ScaleControl,
 } from "react-map-gl"
-import {pins} from "@/mocks/pins.json"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MapPopup from "./MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
+import {getAllMappins} from "@/services/mappins"
+import {Mappins} from "@/services/mappins/types"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
@@ -23,6 +32,7 @@ type MapViewProps = {
 }
 
 const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps) => {
+    const [mappins, setMappins] = useState<Mappins[]>([])
     const [coordinates, setCoordinates] = useState({long: 0, lat: 0})
     const [currentLocation, setCurrentLocation] = useState("")
     const [locationData, setLocationData] = useState<SearchBoxFeatureSuggestion | null>(null)
@@ -43,6 +53,19 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps
         }
     }, [])
 
+    const fetchAllMappins = useCallback(async () => {
+        try {
+            const data = await getAllMappins()
+            setMappins(data)
+        } catch (error) {
+            console.error(error)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchAllMappins()
+    }, [fetchAllMappins])
+
     const handleMarkClick = async (mapboxId: string, pinId: string) => {
         try {
             const data = await fetchRetrieveSearchResult({mapboxId, session_token: "123"})
@@ -55,51 +78,49 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps
     }
 
     return (
-        // <Map
-        //     ref={mapRef}
-        //     initialViewState={{zoom: 13, ...coordinates}}
-        //     style={{width: "100%", height: "100%"}}
-        //     mapStyle="mapbox://styles/mapbox/standard"
-        //     mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-        //     attributionControl={false}
-        // >
-        //     <NavigationControl position="bottom-right" />
-        //     <FullscreenControl position="bottom-right" />
-        //     <GeolocateControl position="bottom-right" trackUserLocation />
+        <Map
+            ref={mapRef}
+            initialViewState={{zoom: 13, ...coordinates}}
+            style={{width: "100%", height: "100%"}}
+            mapStyle="mapbox://styles/mapbox/standard"
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            attributionControl={false}
+        >
+            <NavigationControl position="bottom-right" />
+            <FullscreenControl position="bottom-right" />
+            <GeolocateControl position="bottom-right" trackUserLocation />
 
-        //     {pins.map((pin) => {
-        //         return (
-        //             <Fragment key={pin._id}>
-        //                 <Marker
-        //                     latitude={pin.latitude}
-        //                     longitude={pin.longitude}
-        //                     onClick={() => handleMarkClick(pin.mapbox_id, pin._id)}
-        //                     color="red"
-        //                 />
-        //                 {!!locationData && pin._id === currentLocation && (
-        //                     <Popup
-        //                         latitude={pin.latitude}
-        //                         longitude={pin.longitude}
-        //                         offset={25}
-        //                         closeButton={false}
-        //                         className="z-10 min-w-[270px] !rounded-lg"
-        //                         anchor="right"
-        //                         onClose={() => setCurrentLocation("")}
-        //                     >
-        //                         <MapPopup
-        //                             locationInfo={locationData}
-        //                             setIsDrawerOpen={setIsDrawerOpen}
-        //                         />
-        //                     </Popup>
-        //                 )}
-        //             </Fragment>
-        //         )
-        //     })}
+            {mappins.map((pin) => {
+                return (
+                    <Fragment key={pin._id}>
+                        <Marker
+                            latitude={pin.latitude}
+                            longitude={pin.longitude}
+                            onClick={() => handleMarkClick(pin.mapboxId, pin._id)}
+                            color="red"
+                        />
+                        {!!locationData && pin._id === currentLocation && (
+                            <Popup
+                                latitude={pin.latitude}
+                                longitude={pin.longitude}
+                                offset={25}
+                                closeButton={false}
+                                className="z-10 min-w-[270px] !rounded-lg"
+                                anchor="right"
+                                onClose={() => setCurrentLocation("")}
+                            >
+                                <MapPopup
+                                    locationInfo={locationData}
+                                    setIsDrawerOpen={setIsDrawerOpen}
+                                />
+                            </Popup>
+                        )}
+                    </Fragment>
+                )
+            })}
 
-        //     <ScaleControl />
-        // </Map>
-
-        <div className="bg-blue-400 h-[100vh] w-full"></div>
+            <ScaleControl />
+        </Map>
     )
 }
 
