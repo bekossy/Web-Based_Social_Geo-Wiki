@@ -6,7 +6,10 @@ import {NotFoundError} from "../errors"
 
 const getComments = async (req: Request, res: Response) => {
     const {id: mappinId} = req.params
-    const comments = await Comment.find({mappinId})
+    const comments = await Comment.find({mappinId}).populate({
+        path: "userId",
+        select: ["username", "createdAt"],
+    })
     res.status(StatusCodes.OK).json({comments})
 }
 
