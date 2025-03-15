@@ -1,5 +1,5 @@
-export interface MappinComments {
-    comment: string
+export interface MappinPosts {
+    content: string
     mappinId: string
     createdAt: string
     updatedAt: string

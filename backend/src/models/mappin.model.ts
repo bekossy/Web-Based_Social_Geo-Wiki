@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import Comment from "./comment.model"
+import Posts from "./post.model"
 
 interface IMapPinSchema extends Document {
     mapboxId: string
@@ -34,7 +34,7 @@ const MapPinSchema = new mongoose.Schema(
 MapPinSchema.pre("deleteOne", async function (next) {
     const mappin = await this.model.findOne(this.getQuery())
     if (mappin) {
-        await Comment.deleteMany({mappinId: mappin._id})
+        await Posts.deleteMany({mappinId: mappin._id})
     }
     next()
 })

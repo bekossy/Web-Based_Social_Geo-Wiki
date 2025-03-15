@@ -8,8 +8,8 @@ import Navbar from "@/components/Navbar"
 import {NavigationSidebar} from "@/components/NavigationSidebar"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import Sidebar from "@/components/Sidebar"
-import {getAllMappinComments} from "@/services/comments"
-import {MappinComments} from "@/services/comments/types"
+import {getAllMappinPosts} from "@/services/posts"
+import {MappinPosts} from "@/services/posts/types"
 import {fetchAllCategoryList} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {getAllMappins} from "@/services/mappins"
@@ -31,7 +31,7 @@ export default function Home() {
     const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>(
         undefined
     )
-    const [selectedMappinComments, setSelectedMappinComments] = useState<MappinComments[]>([])
+    const [selectedMappinPosts, setSelectedMappinPosts] = useState<MappinPosts[]>([])
 
     const fetchAllMappins = useCallback(async () => {
         try {
@@ -68,14 +68,14 @@ export default function Home() {
         }
     }, [locationFeatureInfo, mappins])
 
-    const fetchSelectedMappinComments = useCallback(async () => {
+    const fetchSelectedMappinPosts = useCallback(async () => {
         if (!selectedMappinLocation?._id) return
 
         try {
-            const data = await getAllMappinComments({
+            const data = await getAllMappinPosts({
                 mappinId: selectedMappinLocation?._id,
             })
-            setSelectedMappinComments(data)
+            setSelectedMappinPosts(data)
         } catch (error) {
             console.error(error)
         }
@@ -83,9 +83,9 @@ export default function Home() {
 
     useEffect(() => {
         if (!!selectedMappinLocation) {
-            fetchSelectedMappinComments()
+            fetchSelectedMappinPosts()
         }
-    }, [fetchSelectedMappinComments, selectedMappinLocation])
+    }, [fetchSelectedMappinPosts, selectedMappinLocation])
 
     return (
         <ProtectedRoute>
@@ -125,8 +125,8 @@ export default function Home() {
                                 locationFeatureInfo={locationFeatureInfo[0]}
                                 selectedMappinLocation={selectedMappinLocation}
                                 fetchAllMappins={fetchAllMappins}
-                                selectedMappinComments={selectedMappinComments}
-                                fetchSelectedMappinComments={fetchSelectedMappinComments}
+                                selectedMappinPosts={selectedMappinPosts}
+                                fetchSelectedMappinPosts={fetchSelectedMappinPosts}
                             />
                         )
                     }

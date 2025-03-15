@@ -23,24 +23,24 @@ import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {createMappin, deleteMappin} from "@/services/mappins"
 import {useAuth} from "@/contexts/AuthContext"
 import {Mappins} from "@/services/mappins/types"
-import {MappinComments} from "@/services/comments/types"
+import {MappinPosts} from "@/services/posts/types"
 import UserAvatar from "./UserAvatar"
-import {createMappinComment} from "@/services/comments"
+import {createMappinPosts} from "@/services/posts"
 
 interface LocationDetailsProps {
     locationFeatureInfo: SearchBoxFeatureSuggestion
     selectedMappinLocation: Mappins | undefined
     fetchAllMappins: () => Promise<void>
-    selectedMappinComments: MappinComments[]
-    fetchSelectedMappinComments: () => Promise<void>
+    selectedMappinPosts: MappinPosts[]
+    fetchSelectedMappinPosts: () => Promise<void>
 }
 
 const LocationDetails = ({
     locationFeatureInfo,
     selectedMappinLocation,
     fetchAllMappins,
-    selectedMappinComments,
-    fetchSelectedMappinComments,
+    selectedMappinPosts,
+    fetchSelectedMappinPosts,
 }: LocationDetailsProps) => {
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
@@ -109,11 +109,11 @@ const LocationDetails = ({
         try {
             setIsAddingPostLoading(true)
 
-            await createMappinComment({
-                comment: newPost,
+            await createMappinPosts({
+                content: newPost,
                 mappinId: selectedMappinLocation._id,
             })
-            await fetchSelectedMappinComments()
+            await fetchSelectedMappinPosts()
         } catch (error) {
             console.error(error)
         } finally {
@@ -321,32 +321,32 @@ const LocationDetails = ({
                                     onChange={handleImageSelect}
                                 />
                             </div>
-                            {selectedMappinComments.length > 0
-                                ? selectedMappinComments.map((comment) => (
+                            {selectedMappinPosts.length > 0
+                                ? selectedMappinPosts.map((post) => (
                                       <div
-                                          key={comment._id}
+                                          key={post._id}
                                           className="rounded-lg border bg-card p-4 space-y-3"
                                       >
                                           <div className="flex items-start gap-3">
                                               <UserAvatar
-                                                  color={comment.userId.color}
-                                                  username={comment.userId.username}
+                                                  color={post.userId.color}
+                                                  username={post.userId.username}
                                               />
                                               <div className="flex-1">
                                                   <div className="flex items-center justify-between">
                                                       <div>
                                                           <p className="font-medium">
-                                                              {comment.userId.username}
+                                                              {post.userId.username}
                                                           </p>
                                                           <p className="text-sm text-muted-foreground">
-                                                              @{comment.userId.username}
+                                                              @{post.userId.username}
                                                           </p>
                                                       </div>
                                                       <p className="text-sm text-muted-foreground">
                                                           2 hours ago
                                                       </p>
                                                   </div>
-                                                  <p className="mt-2 text-sm">{comment.comment}</p>
+                                                  <p className="mt-2 text-sm">{post.content}</p>
                                                   {/* {comment.images && comment.images.length > 0 && (
                                                 <div
                                                     className={`mt-3 grid gap-2 ${

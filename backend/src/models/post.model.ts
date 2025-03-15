@@ -1,12 +1,12 @@
 import mongoose from "mongoose"
 
-interface ICommentSchema extends Document {
+interface IPostSchema extends Document {
     userId: mongoose.Schema.Types.ObjectId
     mappinId: mongoose.Schema.Types.ObjectId
-    comment: string
+    content: string
 }
 
-const CommentSchema = new mongoose.Schema(
+const PostSchema = new mongoose.Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -18,7 +18,7 @@ const CommentSchema = new mongoose.Schema(
             ref: "Mappin",
             required: true,
         },
-        comment: {
+        content: {
             type: String,
             required: true,
         },
@@ -26,4 +26,4 @@ const CommentSchema = new mongoose.Schema(
     {timestamps: true}
 )
 
-export default mongoose.model<ICommentSchema>("Comment", CommentSchema)
+export default mongoose.model<IPostSchema>("Post", PostSchema)
