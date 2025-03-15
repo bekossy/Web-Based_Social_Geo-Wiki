@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs"
 interface IUser extends Document {
     username: string
     password: string
+    color: string
     comparePassword(customerPassword: string): Promise<boolean>
 }
 
@@ -21,6 +22,11 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: [true, "Please provide a password"],
             minlength: 6,
+        },
+        color: {
+            type: String,
+            required: true,
+            unique: true,
         },
     },
     {timestamps: true}

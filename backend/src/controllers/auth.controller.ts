@@ -6,6 +6,7 @@ import {Request, Response} from "express"
 import {StatusCodes} from "http-status-codes"
 import {createTokenUser} from "../utils/createTokenUser"
 import {attachCookiesToResponse} from "../utils/jwt"
+import {generateUniqueColor} from "../utils/generateUserColor"
 
 const register = async (req: Request, res: Response) => {
     const {username, password} = req.body
@@ -16,7 +17,9 @@ const register = async (req: Request, res: Response) => {
         throw new BadRequestError("Username already exists")
     }
 
-    const user = await User.create({username, password})
+    const userColor = await generateUniqueColor()
+
+    const user = await User.create({username, password, color: userColor})
 
     const tokenUser = createTokenUser(user)
 

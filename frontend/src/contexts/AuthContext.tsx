@@ -6,6 +6,7 @@ import axios from "@/lib/axiosConfig"
 interface User {
     userId: string
     username: string
+    color: string
 }
 
 interface AuthContextType {
