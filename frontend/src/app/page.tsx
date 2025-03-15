@@ -26,7 +26,9 @@ export default function Home() {
     >([])
     const [categoryList, setCategoryList] = useState<CategoryListResponse[]>([])
     const [mappins, setMappins] = useState<Mappins[]>([])
-    const [isSelectedLocationPinned, setIsSelectedLocationPinned] = useState(false)
+    const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>(
+        undefined
+    )
 
     const fetchAllMappins = useCallback(async () => {
         try {
@@ -59,7 +61,7 @@ export default function Home() {
             const isPinned = mappins.find(
                 (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id
             )
-            setIsSelectedLocationPinned(!!isPinned)
+            setSelectedMappinLocation(isPinned)
         }
     }, [locationFeatureInfo, mappins])
 
@@ -99,7 +101,7 @@ export default function Home() {
                         ) : (
                             <LocationDetails
                                 locationFeatureInfo={locationFeatureInfo[0]}
-                                isSelectedLocationPinned={isSelectedLocationPinned}
+                                selectedMappinLocation={selectedMappinLocation}
                                 fetchAllMappins={fetchAllMappins}
                             />
                         )

@@ -21,19 +21,22 @@ import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar"
 import {Button} from "./ui/button"
 import {Textarea} from "./ui/textarea"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
-import {createMappin} from "@/services/mappins"
+import {createMappin, deleteMappin} from "@/services/mappins"
+import {useAuth} from "@/contexts/AuthContext"
+import {Mappins} from "@/services/mappins/types"
 
 interface LocationDetailsProps {
     locationFeatureInfo: SearchBoxFeatureSuggestion
-    isSelectedLocationPinned: boolean
+    selectedMappinLocation: Mappins | undefined
     fetchAllMappins: () => Promise<void>
 }
 
 const LocationDetails = ({
     locationFeatureInfo,
-    isSelectedLocationPinned,
+    selectedMappinLocation,
     fetchAllMappins,
 }: LocationDetailsProps) => {
+    const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
     const [newPost, setNewPost] = useState("")
     const [selectedImages, setSelectedImages] = useState<string[]>([])
@@ -42,6 +45,7 @@ const LocationDetails = ({
     const locationData = useMemo(() => locationFeatureInfo.properties || {}, [locationFeatureInfo])
 
     const [isAddingPinLoading, setIsAddingPinLoading] = useState(false)
+    const [isRemovingPinLoading, setIsRemovingPinLoading] = useState(false)
 
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
@@ -50,6 +54,12 @@ const LocationDetails = ({
             setSelectedImages((prev) => [...prev, ...newImages])
         }
     }
+
+    const isPinned = useMemo(() => !!selectedMappinLocation, [selectedMappinLocation])
+
+    const canRemovePin = useMemo(() => {
+        return isPinned && selectedMappinLocation?.userId._id === user?.userId
+    }, [selectedMappinLocation, user, isPinned])
 
     const MOCK_POSTS = [
         {
@@ -99,7 +109,7 @@ const LocationDetails = ({
     ]
 
     const handleAddLocationPin = async () => {
-        if (isAddingPinLoading) return
+        if (isAddingPinLoading || isPinned) return
 
         setIsAddingPinLoading(true)
         try {
@@ -116,47 +126,66 @@ const LocationDetails = ({
         }
     }
 
+    const handleRemoveLocationPin = async () => {
+        if (isRemovingPinLoading || !selectedMappinLocation?._id) return
+
+        setIsRemovingPinLoading(true)
+        try {
+            await deleteMappin({
+                mappinId: selectedMappinLocation?._id,
+            })
+            await fetchAllMappins()
+        } catch (error) {
+            console.error("Failed to add location pin:", error)
+        } finally {
+            setIsRemovingPinLoading(false)
+        }
+    }
+
     return (
         <>
             <div className="mt-2 mb-4">
-                <Button
-                    variant={isSelectedLocationPinned ? "destructive" : "default"}
-                    className="w-full gap-2"
-                    onClick={() => handleAddLocationPin()}
-                    disabled={isAddingPinLoading}
-                >
-                    {isSelectedLocationPinned ? (
-                        <>
-                            {isAddingPinLoading ? (
-                                <Loader2 className="animate-spin" />
-                            ) : (
-                                <Minus className="h-4 w-4" />
-                            )}
-                            Remove Pin
-                        </>
-                    ) : (
-                        <>
-                            {isAddingPinLoading ? (
-                                <Loader2 className="animate-spin" />
-                            ) : (
-                                <Plus className="h-4 w-4" />
-                            )}
-                            Pin Location
-                        </>
-                    )}
-                </Button>
+                {!isPinned && (
+                    <Button
+                        className="w-full gap-2"
+                        onClick={handleAddLocationPin}
+                        disabled={isAddingPinLoading}
+                    >
+                        {isAddingPinLoading ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <Plus className="h-4 w-4" />
+                        )}
+                        Pin Location
+                    </Button>
+                )}
+                {canRemovePin && (
+                    <Button
+                        variant={"destructive"}
+                        className="w-full gap-2"
+                        onClick={handleRemoveLocationPin}
+                        disabled={isRemovingPinLoading}
+                    >
+                        {isRemovingPinLoading ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <Minus className="h-4 w-4" />
+                        )}
+                        Remove Pin
+                    </Button>
+                )}
             </div>
             <Tabs value={selectedTab} onValueChange={setSelectedTab}>
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger disabled={!isSelectedLocationPinned} value="posts">
+                    <TabsTrigger disabled={!isPinned} value="posts">
                         Posts
                     </TabsTrigger>
                 </TabsList>
                 <ScrollArea>
                     <TabsContent value="overview">
                         <div className="space-y-6">
-                            {!isSelectedLocationPinned && (
+                            {!isPinned && (
                                 <>
                                     <div className="rounded-lg flex border bg-muted/50 p-4 text-center">
                                         <Info className="text-muted-foreground" />
