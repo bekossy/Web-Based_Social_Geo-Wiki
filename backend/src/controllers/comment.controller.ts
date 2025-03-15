@@ -8,7 +8,7 @@ const getComments = async (req: Request, res: Response) => {
     const {id: mappinId} = req.params
     const comments = await Comment.find({mappinId}).populate({
         path: "userId",
-        select: ["username", "createdAt"],
+        select: ["username", "createdAt", "color"],
     })
     res.status(StatusCodes.OK).json({comments})
 }
