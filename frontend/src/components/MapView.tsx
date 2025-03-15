@@ -15,6 +15,7 @@ import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MapPopup from "./MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
 import {Mappins} from "@/services/mappins/types"
+import {Avatar, AvatarFallback} from "./ui/avatar"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
@@ -76,7 +77,13 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen, mappins}: Map
                             longitude={pin.longitude}
                             onClick={() => handleMarkClick(pin.mapboxId, pin._id)}
                             color="red"
-                        />
+                        >
+                            <Avatar className="h-10 w-10 rounded-full">
+                                <AvatarFallback className="rounded-full bg-purple-400 text-white font-bold">
+                                    JD
+                                </AvatarFallback>
+                            </Avatar>
+                        </Marker>
                         {!!locationData && pin._id === currentLocation && (
                             <Popup
                                 latitude={pin.latitude}
