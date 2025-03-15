@@ -58,10 +58,10 @@ export default function Home() {
 
     useEffect(() => {
         if (locationFeatureInfo.length === 1) {
-            const isPinned = mappins.find(
+            const activeMappin = mappins.find(
                 (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id
             )
-            setSelectedMappinLocation(isPinned)
+            setSelectedMappinLocation(activeMappin)
         }
     }, [locationFeatureInfo, mappins])
 
