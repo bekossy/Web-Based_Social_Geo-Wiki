@@ -12,11 +12,12 @@ import {
     CommandItem,
 } from "@/components/ui/command"
 import {Search, Settings, LogOut, Heart, Clock, ChevronRight, ArrowLeft} from "lucide-react"
-import {Avatar, AvatarFallback} from "./ui/avatar"
 import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {type CategoryListResponse} from "@/services/mapbox/types"
+import {useAuth} from "@/contexts/AuthContext"
+import UserAvatar from "./UserAvatar"
 
 interface NavigationSidebarProps {
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
@@ -71,6 +72,7 @@ export function NavigationSidebar({
     setIsNavSidebarOpen,
     setIsDrawerOpen,
 }: NavigationSidebarProps) {
+    const {user, logout} = useAuth()
     const [searchQuery, setSearchQuery] = useState("")
     const [showSearch, setShowSearch] = useState(false)
 
@@ -91,13 +93,9 @@ export function NavigationSidebar({
         <div className="h-full flex flex-col">
             <div className="p-4 border-b">
                 <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 rounded-full">
-                        <AvatarFallback className="rounded-full bg-purple-400 text-white font-bold">
-                            JD
-                        </AvatarFallback>
-                    </Avatar>
+                    <UserAvatar color={user?.color || ""} username={user?.username || ""} />
                     <div>
-                        <p className="font-medium">John Doe</p>
+                        <p className="font-medium">{user?.username}</p>
                         <p className="text-sm text-muted-foreground">Sign in to save places</p>
                     </div>
                 </div>
@@ -212,7 +210,11 @@ export function NavigationSidebar({
                     <Settings className="mr-2 size-4" />
                     Settings
                 </Button>
-                <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+                <Button
+                    onClick={logout}
+                    variant="ghost"
+                    className="w-full justify-start text-muted-foreground"
+                >
                     <LogOut className="mr-2 size-4" />
                     Sign Out
                 </Button>

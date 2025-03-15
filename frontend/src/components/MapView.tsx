@@ -15,7 +15,7 @@ import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MapPopup from "./MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
 import {Mappins} from "@/services/mappins/types"
-import {Avatar, AvatarFallback} from "./ui/avatar"
+import UserAvatar from "./UserAvatar"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
@@ -78,11 +78,7 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen, mappins}: Map
                             onClick={() => handleMarkClick(pin.mapboxId, pin._id)}
                             color="red"
                         >
-                            <Avatar className="h-10 w-10 rounded-full">
-                                <AvatarFallback className="rounded-full bg-purple-400 text-white font-bold">
-                                    JD
-                                </AvatarFallback>
-                            </Avatar>
+                            <UserAvatar color={pin.userId.color} username={pin.userId.username} />
                         </Marker>
                         {!!locationData && pin._id === currentLocation && (
                             <Popup

@@ -1,11 +1,12 @@
 import {Dispatch, SetStateAction} from "react"
 import MapSearchbox from "./MapSearchbox"
 import {Button} from "./ui/button"
-import {Avatar, AvatarFallback} from "./ui/avatar"
 import {type MapRef} from "react-map-gl"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
+import UserAvatar from "./UserAvatar"
+import {useAuth} from "@/contexts/AuthContext"
 
 interface MapControlPanelProps {
     mapRef: React.RefObject<MapRef | null>
@@ -20,6 +21,7 @@ const MapControlPanel = ({
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
 }: MapControlPanelProps) => {
+    const {user} = useAuth()
     const categories = [
         {
             canonical_id: "restaurant",
@@ -87,11 +89,8 @@ const MapControlPanel = ({
                     ))}
                 </div>
             </div>
-            <Avatar className="h-10 w-10 rounded-full">
-                <AvatarFallback className="rounded-full bg-purple-400 text-white font-bold">
-                    JD
-                </AvatarFallback>
-            </Avatar>
+
+            <UserAvatar color={user?.color || ""} username={user?.username || ""} />
         </>
     )
 }

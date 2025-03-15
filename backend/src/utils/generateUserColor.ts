@@ -7,7 +7,7 @@ export const generateUniqueColor = async (): Promise<string> => {
     let color: string
     do {
         const hue = Math.floor(Math.random() * 360)
-        color = `hsl(${hue}, 70%, 50%)`
+        color = `hsl(${hue},70%,50%)`
     } while (usedColors.has(color))
 
     return color

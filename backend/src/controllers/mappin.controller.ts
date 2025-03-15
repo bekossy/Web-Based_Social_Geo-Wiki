@@ -6,7 +6,7 @@ import {NotFoundError} from "../errors"
 const getAllMappins = async (req: Request, res: Response) => {
     const mappins = await Mappin.find().populate({
         path: "userId",
-        select: ["username", "createdAt"],
+        select: ["username", "createdAt", "color"],
     })
     res.status(StatusCodes.OK).json({mappins})
 }
