@@ -25,13 +25,14 @@ import {useAuth} from "@/contexts/AuthContext"
 import {Mappins} from "@/services/mappins/types"
 import {MappinComments} from "@/services/comments/types"
 import UserAvatar from "./UserAvatar"
-import StarRating from "./StarRating"
+import {createMappinComment} from "@/services/comments"
 
 interface LocationDetailsProps {
     locationFeatureInfo: SearchBoxFeatureSuggestion
     selectedMappinLocation: Mappins | undefined
     fetchAllMappins: () => Promise<void>
     selectedMappinComments: MappinComments[]
+    fetchSelectedMappinComments: () => Promise<void>
 }
 
 const LocationDetails = ({
@@ -39,6 +40,7 @@ const LocationDetails = ({
     selectedMappinLocation,
     fetchAllMappins,
     selectedMappinComments,
+    fetchSelectedMappinComments,
 }: LocationDetailsProps) => {
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
@@ -50,6 +52,8 @@ const LocationDetails = ({
 
     const [isAddingPinLoading, setIsAddingPinLoading] = useState(false)
     const [isRemovingPinLoading, setIsRemovingPinLoading] = useState(false)
+
+    const [isAddingPostLoading, setIsAddingPostLoading] = useState(false)
 
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
@@ -96,6 +100,26 @@ const LocationDetails = ({
             console.error("Failed to add location pin:", error)
         } finally {
             setIsRemovingPinLoading(false)
+        }
+    }
+
+    const handleSubmitPost = async () => {
+        if (isAddingPostLoading || !selectedMappinLocation?._id) return
+
+        try {
+            setIsAddingPostLoading(true)
+
+            await createMappinComment({
+                comment: newPost,
+                mappinId: selectedMappinLocation._id,
+            })
+            await fetchSelectedMappinComments()
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setIsAddingPostLoading(false)
+            setNewPost("")
+            setSelectedImages([])
         }
     }
 
@@ -275,15 +299,16 @@ const LocationDetails = ({
                                         Add Photos
                                     </Button>
                                     <Button
+                                        disabled={!newPost || isAddingPostLoading}
                                         size="sm"
                                         className="gap-2"
-                                        onClick={() => {
-                                            // Mock post submission
-                                            setNewPost("")
-                                            setSelectedImages([])
-                                        }}
+                                        onClick={handleSubmitPost}
                                     >
-                                        <Send className="h-4 w-4" />
+                                        {isAddingPostLoading ? (
+                                            <Loader2 className="animate-spin" />
+                                        ) : (
+                                            <Send className="h-4 w-4" />
+                                        )}
                                         Post
                                     </Button>
                                 </div>
@@ -316,15 +341,12 @@ const LocationDetails = ({
                                                           <p className="text-sm text-muted-foreground">
                                                               @{comment.userId.username}
                                                           </p>
-                                                          <StarRating value={comment.rating} />
                                                       </div>
                                                       <p className="text-sm text-muted-foreground">
                                                           2 hours ago
                                                       </p>
                                                   </div>
-                                                  <p className="mt-2 text-sm">
-                                                      {comment.description}
-                                                  </p>
+                                                  <p className="mt-2 text-sm">{comment.comment}</p>
                                                   {/* {comment.images && comment.images.length > 0 && (
                                                 <div
                                                     className={`mt-3 grid gap-2 ${

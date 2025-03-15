@@ -126,6 +126,7 @@ export default function Home() {
                                 selectedMappinLocation={selectedMappinLocation}
                                 fetchAllMappins={fetchAllMappins}
                                 selectedMappinComments={selectedMappinComments}
+                                fetchSelectedMappinComments={fetchSelectedMappinComments}
                             />
                         )
                     }

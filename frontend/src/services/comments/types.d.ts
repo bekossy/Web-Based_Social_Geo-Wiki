@@ -1,7 +1,5 @@
 export interface MappinComments {
-    title: string
-    description: string
-    rating: number
+    comment: string
     mappinId: string
     createdAt: string
     updatedAt: string

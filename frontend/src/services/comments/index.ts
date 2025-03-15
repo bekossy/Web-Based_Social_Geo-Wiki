@@ -11,9 +11,7 @@ export const getAllMappinComments = async ({
 }
 
 export const createMappinComment = async (commentData: {
-    title: string
-    description: string
-    rating: number
+    comment: string
     mappinId: string
 }): Promise<MappinComments> => {
     const {data} = await axiosConfig.post(`/comments/pin`, commentData)

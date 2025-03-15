@@ -3,9 +3,7 @@ import mongoose from "mongoose"
 interface ICommentSchema extends Document {
     userId: mongoose.Schema.Types.ObjectId
     mappinId: mongoose.Schema.Types.ObjectId
-    title: string
-    description: string
-    rating: number
+    comment: string
 }
 
 const CommentSchema = new mongoose.Schema(
@@ -20,19 +18,9 @@ const CommentSchema = new mongoose.Schema(
             ref: "Mappin",
             required: true,
         },
-        title: {
+        comment: {
             type: String,
             required: true,
-        },
-        description: {
-            type: String,
-            required: true,
-        },
-        rating: {
-            type: Number,
-            required: true,
-            min: 1,
-            max: 5,
         },
     },
     {timestamps: true}
