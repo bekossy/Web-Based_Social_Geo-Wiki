@@ -17,24 +17,28 @@ import {
     Send,
     X,
 } from "lucide-react"
-import {Avatar, AvatarFallback, AvatarImage} from "./ui/avatar"
 import {Button} from "./ui/button"
 import {Textarea} from "./ui/textarea"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {createMappin, deleteMappin} from "@/services/mappins"
 import {useAuth} from "@/contexts/AuthContext"
 import {Mappins} from "@/services/mappins/types"
+import {MappinComments} from "@/services/comments/types"
+import UserAvatar from "./UserAvatar"
+import StarRating from "./StarRating"
 
 interface LocationDetailsProps {
     locationFeatureInfo: SearchBoxFeatureSuggestion
     selectedMappinLocation: Mappins | undefined
     fetchAllMappins: () => Promise<void>
+    selectedMappinComments: MappinComments[]
 }
 
 const LocationDetails = ({
     locationFeatureInfo,
     selectedMappinLocation,
     fetchAllMappins,
+    selectedMappinComments,
 }: LocationDetailsProps) => {
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
@@ -60,53 +64,6 @@ const LocationDetails = ({
     const canRemovePin = useMemo(() => {
         return isPinned && selectedMappinLocation?.userId._id === user?.userId
     }, [selectedMappinLocation, user, isPinned])
-
-    const MOCK_POSTS = [
-        {
-            id: 1,
-            author: {
-                name: "Sarah Chen",
-                avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
-                username: "@sarahc",
-            },
-            content:
-                "Just visited this amazing place! The architecture is breathtaking and the local food scene is incredible. Would definitely recommend spending at least a full day here.",
-            images: [
-                "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800",
-                "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800",
-            ],
-            date: "2 hours ago",
-            likes: 24,
-            replies: 3,
-        },
-        {
-            id: 2,
-            author: {
-                name: "Marcus Rodriguez",
-                avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100",
-                username: "@mrodriguez",
-            },
-            content:
-                "Pro tip: Visit early in the morning to avoid the crowds. The sunrise view from here is absolutely stunning! Don't forget to check out the local cafes nearby.",
-            images: ["https://images.unsplash.com/photo-1498307833015-e7b400441eb8?w=800"],
-            date: "1 day ago",
-            likes: 156,
-            replies: 12,
-        },
-        {
-            id: 3,
-            author: {
-                name: "Emma Wilson",
-                avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
-                username: "@emmaw",
-            },
-            content:
-                "Found this hidden gem! The local market here is a must-visit. So many unique items and the people are incredibly friendly.",
-            date: "2 days ago",
-            likes: 89,
-            replies: 7,
-        },
-    ]
 
     const handleAddLocationPin = async () => {
         if (isAddingPinLoading || isPinned) return
@@ -339,48 +296,44 @@ const LocationDetails = ({
                                     onChange={handleImageSelect}
                                 />
                             </div>
-                            {MOCK_POSTS.map((post) => (
-                                <div
-                                    key={post.id}
-                                    className="rounded-lg border bg-card p-4 space-y-3"
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <Avatar className="h-10 w-10">
-                                            <AvatarImage
-                                                src={post.author.avatar}
-                                                alt={post.author.name}
-                                            />
-                                            <AvatarFallback>
-                                                {post.author.name
-                                                    .split(" ")
-                                                    .map((n) => n[0])
-                                                    .join("")}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="font-medium">
-                                                        {post.author.name}
-                                                    </p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {post.author.username}
-                                                    </p>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {post.date}
-                                                </p>
-                                            </div>
-                                            <p className="mt-2 text-sm">{post.content}</p>
-                                            {post.images && post.images.length > 0 && (
+                            {selectedMappinComments.length > 0
+                                ? selectedMappinComments.map((comment) => (
+                                      <div
+                                          key={comment._id}
+                                          className="rounded-lg border bg-card p-4 space-y-3"
+                                      >
+                                          <div className="flex items-start gap-3">
+                                              <UserAvatar
+                                                  color={comment.userId.color}
+                                                  username={comment.userId.username}
+                                              />
+                                              <div className="flex-1">
+                                                  <div className="flex items-center justify-between">
+                                                      <div>
+                                                          <p className="font-medium">
+                                                              {comment.userId.username}
+                                                          </p>
+                                                          <p className="text-sm text-muted-foreground">
+                                                              @{comment.userId.username}
+                                                          </p>
+                                                          <StarRating value={comment.rating} />
+                                                      </div>
+                                                      <p className="text-sm text-muted-foreground">
+                                                          2 hours ago
+                                                      </p>
+                                                  </div>
+                                                  <p className="mt-2 text-sm">
+                                                      {comment.description}
+                                                  </p>
+                                                  {/* {comment.images && comment.images.length > 0 && (
                                                 <div
                                                     className={`mt-3 grid gap-2 ${
-                                                        post.images.length > 1
+                                                        comment.images.length > 1
                                                             ? "grid-cols-2"
                                                             : "grid-cols-1"
                                                     }`}
                                                 >
-                                                    {post.images.map((image, index) => (
+                                                    {comment.images.map((image, index) => (
                                                         <div
                                                             key={index}
                                                             className="relative aspect-square rounded-md overflow-hidden"
@@ -397,11 +350,12 @@ const LocationDetails = ({
                                                         </div>
                                                     ))}
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                            )} */}
+                                              </div>
+                                          </div>
+                                      </div>
+                                  ))
+                                : "No comments"}
                         </div>
                     </TabsContent>
                 </ScrollArea>

@@ -8,6 +8,7 @@ export interface MappinComments {
     userId: {
         createdAt: string
         username: string
+        color: string
         _id: string
     }
     _id: string

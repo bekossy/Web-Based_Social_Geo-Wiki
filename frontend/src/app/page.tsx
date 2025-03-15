@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar"
 import {NavigationSidebar} from "@/components/NavigationSidebar"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import Sidebar from "@/components/Sidebar"
+import {getAllMappinComments} from "@/services/comments"
+import {MappinComments} from "@/services/comments/types"
 import {fetchAllCategoryList} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {getAllMappins} from "@/services/mappins"
@@ -29,6 +31,7 @@ export default function Home() {
     const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>(
         undefined
     )
+    const [selectedMappinComments, setSelectedMappinComments] = useState<MappinComments[]>([])
 
     const fetchAllMappins = useCallback(async () => {
         try {
@@ -64,6 +67,25 @@ export default function Home() {
             setSelectedMappinLocation(activeMappin)
         }
     }, [locationFeatureInfo, mappins])
+
+    const fetchSelectedMappinComments = useCallback(async () => {
+        if (!selectedMappinLocation?._id) return
+
+        try {
+            const data = await getAllMappinComments({
+                mappinId: selectedMappinLocation?._id,
+            })
+            setSelectedMappinComments(data)
+        } catch (error) {
+            console.error(error)
+        }
+    }, [selectedMappinLocation?._id])
+
+    useEffect(() => {
+        if (!!selectedMappinLocation) {
+            fetchSelectedMappinComments()
+        }
+    }, [fetchSelectedMappinComments, selectedMappinLocation])
 
     return (
         <ProtectedRoute>
@@ -103,6 +125,7 @@ export default function Home() {
                                 locationFeatureInfo={locationFeatureInfo[0]}
                                 selectedMappinLocation={selectedMappinLocation}
                                 fetchAllMappins={fetchAllMappins}
+                                selectedMappinComments={selectedMappinComments}
                             />
                         )
                     }
