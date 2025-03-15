@@ -5,9 +5,6 @@ import {Button} from "./ui/button"
 import {Clock, ExternalLink, MapPin, Phone, Star} from "lucide-react"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {type MapRef} from "react-map-gl"
-import mapboxgl from "mapbox-gl"
-import ReactDOMServer from "react-dom/server"
-import MapPopup from "./MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
 
 interface LocationListProps {
@@ -23,7 +20,6 @@ const LocationList = ({
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
     mapRef,
-    setIsDrawerOpen,
 }: LocationListProps) => {
     const handleFetchLocationFeature = async (mapboxId: string) => {
         try {
@@ -36,39 +32,6 @@ const LocationList = ({
                 zoom: 14,
                 essential: true,
             })
-            if (mapRef.current) {
-                const marker = new mapboxgl.Marker({color: "red"})
-                    .setLngLat([longitude, latitude])
-                    .addTo(mapRef.current.getMap())
-
-                const popup = new mapboxgl.Popup({
-                    offset: 25,
-                    closeButton: false,
-                    className: "z-10 min-w-[270px] !rounded-lg",
-                    anchor: "right",
-                }).setHTML(
-                    ReactDOMServer.renderToString(
-                        <MapPopup
-                            locationInfo={response.features[0]}
-                            setIsDrawerOpen={setIsDrawerOpen}
-                        />
-                    )
-                )
-
-                popup.on("open", () => {
-                    const popupElement = popup.getElement()
-                    if (popupElement) {
-                        const button = popupElement.querySelector(".view-more")
-                        if (button) {
-                            button.addEventListener("click", () => {
-                                setIsDrawerOpen(true)
-                            })
-                        }
-                    }
-                })
-
-                marker.setPopup(popup).getPopup()?.addTo(mapRef.current.getMap())
-            }
 
             setLocationFeatureInfo(response.features)
         } catch (error) {

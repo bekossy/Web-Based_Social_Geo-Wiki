@@ -10,6 +10,8 @@ import ProtectedRoute from "@/components/ProtectedRoute"
 import Sidebar from "@/components/Sidebar"
 import {fetchAllCategoryList} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
+import {getAllMappins} from "@/services/mappins"
+import {Mappins} from "@/services/mappins/types"
 import {type SearchBoxRetrieveResponse} from "@mapbox/search-js-core"
 import {useCallback, useEffect, useRef, useState} from "react"
 import {type MapRef} from "react-map-gl"
@@ -23,6 +25,21 @@ export default function Home() {
         SearchBoxRetrieveResponse["features"]
     >([])
     const [categoryList, setCategoryList] = useState<CategoryListResponse[]>([])
+    const [mappins, setMappins] = useState<Mappins[]>([])
+    const [isSelectedLocationPinned, setIsSelectedLocationPinned] = useState(false)
+
+    const fetchAllMappins = useCallback(async () => {
+        try {
+            const data = await getAllMappins()
+            setMappins(data)
+        } catch (error) {
+            console.error(error)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchAllMappins()
+    }, [fetchAllMappins])
 
     const fetchCategoryList = useCallback(async () => {
         try {
@@ -36,6 +53,15 @@ export default function Home() {
     useEffect(() => {
         fetchCategoryList()
     }, [fetchCategoryList])
+
+    useEffect(() => {
+        if (locationFeatureInfo.length === 1) {
+            const isPinned = mappins.find(
+                (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id
+            )
+            setIsSelectedLocationPinned(!!isPinned)
+        }
+    }, [locationFeatureInfo, mappins])
 
     return (
         <ProtectedRoute>
@@ -54,6 +80,7 @@ export default function Home() {
                     mapRef={mapRef}
                     setLocationFeatureInfo={setLocationFeatureInfo}
                     setIsDrawerOpen={setIsDrawerOpen}
+                    mappins={mappins}
                 />
 
                 <Sidebar
@@ -70,7 +97,11 @@ export default function Home() {
                                 setLocationFeatureInfo={setLocationFeatureInfo}
                             />
                         ) : (
-                            <LocationDetails locationFeatureInfo={locationFeatureInfo[0]} />
+                            <LocationDetails
+                                locationFeatureInfo={locationFeatureInfo[0]}
+                                isSelectedLocationPinned={isSelectedLocationPinned}
+                                fetchAllMappins={fetchAllMappins}
+                            />
                         )
                     }
                     isLoading={isLoadingLocationInfo}

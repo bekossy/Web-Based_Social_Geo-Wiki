@@ -1,5 +1,4 @@
 import {Dispatch, RefObject, SetStateAction, useCallback, useRef, useState} from "react"
-import ReactDOMServer from "react-dom/server"
 import {CommandGroup, CommandItem, CommandList, CommandInput} from "@/components/ui/command"
 import {Command as CommandPrimitive} from "cmdk"
 import {cn} from "@/lib/utils"
@@ -7,8 +6,6 @@ import {type SearchBoxFeatureSuggestion, type SearchBoxSuggestion} from "@mapbox
 import {useMapboxSearch} from "@/hooks/useMapboxSearch"
 import {Skeleton} from "./ui/skeleton"
 import {type MapRef} from "react-map-gl"
-import mapboxgl from "mapbox-gl"
-import MapPopup from "./MapPopup"
 
 interface MapSearchboxProps {
     mapRef: RefObject<MapRef | null>
@@ -107,51 +104,16 @@ const MapSearchbox = ({
                     const response = await searchBoxCore.retrieve(selectedOption, {
                         sessionToken: "test-123",
                     })
-                    if (response.features.length > 1) {
-                        setIsDrawerOpen(true)
-                    } else {
-                        const [longitude, latitude] = response.features[0].geometry.coordinates
-                        mapRef.current?.flyTo({
-                            center: [longitude, latitude],
-                            zoom: 14,
-                            essential: true,
-                        })
-                        if (mapRef.current) {
-                            const marker = new mapboxgl.Marker({color: "red"})
-                                .setLngLat([longitude, latitude])
-                                .addTo(mapRef.current.getMap())
 
-                            const popup = new mapboxgl.Popup({
-                                offset: 25,
-                                closeButton: false,
-                                className: "z-10 min-w-[270px] !rounded-lg",
-                                anchor: "right",
-                            }).setHTML(
-                                ReactDOMServer.renderToString(
-                                    <MapPopup
-                                        locationInfo={response.features[0]}
-                                        setIsDrawerOpen={setIsDrawerOpen}
-                                    />
-                                )
-                            )
-
-                            popup.on("open", () => {
-                                const popupElement = popup.getElement()
-                                if (popupElement) {
-                                    const button = popupElement.querySelector(".view-more")
-                                    if (button) {
-                                        button.addEventListener("click", () => {
-                                            setIsDrawerOpen(true)
-                                        })
-                                    }
-                                }
-                            })
-
-                            marker.setPopup(popup).getPopup()?.addTo(mapRef.current.getMap())
-                        }
-                    }
+                    const [longitude, latitude] = response.features[0].geometry.coordinates
+                    mapRef.current?.flyTo({
+                        center: [longitude, latitude],
+                        zoom: 14,
+                        essential: true,
+                    })
 
                     setLocationFeatureInfo(response.features)
+                    setIsDrawerOpen(true)
                 } catch (error) {
                     console.error("Error fetching suggestions:", error)
                 } finally {

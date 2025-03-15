@@ -1,15 +1,7 @@
 "use client"
 
 import {fetchIpDetails} from "@/services"
-import {
-    Dispatch,
-    Fragment,
-    RefObject,
-    SetStateAction,
-    useCallback,
-    useEffect,
-    useState,
-} from "react"
+import {Dispatch, Fragment, RefObject, SetStateAction, useEffect, useState} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
@@ -22,17 +14,16 @@ import Map, {
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MapPopup from "./MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
-import {getAllMappins} from "@/services/mappins"
 import {Mappins} from "@/services/mappins/types"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
     setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    mappins: Mappins[]
 }
 
-const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps) => {
-    const [mappins, setMappins] = useState<Mappins[]>([])
+const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen, mappins}: MapViewProps) => {
     const [coordinates, setCoordinates] = useState({long: 0, lat: 0})
     const [currentLocation, setCurrentLocation] = useState("")
     const [locationData, setLocationData] = useState<SearchBoxFeatureSuggestion | null>(null)
@@ -52,19 +43,6 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen}: MapViewProps
             fetchUserCoordinates()
         }
     }, [])
-
-    const fetchAllMappins = useCallback(async () => {
-        try {
-            const data = await getAllMappins()
-            setMappins(data)
-        } catch (error) {
-            console.error(error)
-        }
-    }, [])
-
-    useEffect(() => {
-        fetchAllMappins()
-    }, [fetchAllMappins])
 
     const handleMarkClick = async (mapboxId: string, pinId: string) => {
         try {
