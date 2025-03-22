@@ -1,20 +1,21 @@
-import mongoose from "mongoose"
+import {Document, Schema, model} from "mongoose"
 
 interface IPostSchema extends Document {
-    userId: mongoose.Schema.Types.ObjectId
-    mappinId: mongoose.Schema.Types.ObjectId
+    userId: Schema.Types.ObjectId
+    mappinId: Schema.Types.ObjectId
     content: string
+    images: string[]
 }
 
-const PostSchema = new mongoose.Schema(
+const PostSchema = new Schema(
     {
         userId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
         mappinId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "Mappin",
             required: true,
         },
@@ -22,8 +23,12 @@ const PostSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        images: {
+            type: [String],
+            validate: [(val: string[]) => val.length <= 4, "Cannot upload more than 4 images"],
+        },
     },
     {timestamps: true}
 )
 
-export default mongoose.model<IPostSchema>("Post", PostSchema)
+export default model<IPostSchema>("Post", PostSchema)

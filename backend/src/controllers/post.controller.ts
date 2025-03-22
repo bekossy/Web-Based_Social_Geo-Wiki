@@ -2,7 +2,25 @@ import {StatusCodes} from "http-status-codes"
 import Post from "../models/post.model"
 import Mappin from "../models/mappin.model"
 import {Request, Response} from "express"
-import {NotFoundError} from "../errors"
+import {BadRequestError, NotFoundError} from "../errors"
+
+import cloudinary from "cloudinary"
+import fs from "fs"
+import {env} from "../lib/env"
+
+cloudinary.v2.config({
+    cloud_name: env.CLOUDINARY_CLOUD_NAME,
+    api_key: env.CLOUDINARY_API_KEY,
+    api_secret: env.CLOUDINARY_API_SECRET,
+})
+
+const uploadToCloudinary = async (filePath: string) => {
+    const result = await cloudinary.v2.uploader.upload(filePath, {
+        folder: "web-based_social_geo-wiki",
+    })
+    fs.unlinkSync(filePath) // Delete local file after upload
+    return result.secure_url
+}
 
 const getPosts = async (req: Request, res: Response) => {
     const {id: mappinId} = req.params
@@ -18,12 +36,22 @@ const createPost = async (req: Request, res: Response) => {
     const {mappinId} = req.body
 
     const mappin = await Mappin.findById(mappinId)
+    if (!mappin) throw new NotFoundError(`Mappin with id ${mappinId} not found`)
 
-    if (!mappin) {
-        throw new NotFoundError(`Mappin with id ${mappinId} not found`)
+    let imagePaths: string[] = []
+    if (Array.isArray(req.files) && req.files.length > 0) {
+        if (req.files.length > 4) {
+            throw new BadRequestError("Cannot upload more than 4 images")
+        }
+
+        // If using Cloudinary
+        for (const file of req.files as Express.Multer.File[]) {
+            const imageUrl = await uploadToCloudinary(file.path)
+            imagePaths.push(imageUrl)
+        }
     }
 
-    const post = await Post.create(req.body)
+    const post = await Post.create({...req.body, images: imagePaths})
     res.status(StatusCodes.CREATED).json({post})
 }
 

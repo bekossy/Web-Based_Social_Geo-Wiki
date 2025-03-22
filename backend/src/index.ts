@@ -25,6 +25,8 @@ app.use(
     cors({
         origin: env.WEB_APP_URL,
         credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     })
 )
 
@@ -49,6 +51,7 @@ const startServer = async () => {
         app.listen(process.env.PORT, () => console.log(`Server running on port: ${env.PORT}`))
     } catch (error) {
         console.error(error)
+        process.exit(1)
     }
 }
 
