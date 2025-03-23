@@ -6,11 +6,12 @@ export const getAllMappinPosts = async ({mappinId}: {mappinId: string}): Promise
     return data.posts
 }
 
-export const createMappinPosts = async (postData: {
-    content: string
-    mappinId: string
-}): Promise<MappinPosts> => {
-    const {data} = await axiosConfig.post(`/posts/pin`, postData)
+export const createMappinPosts = async (postData: FormData): Promise<MappinPosts> => {
+    const {data} = await axiosConfig.post(`/posts/pin`, postData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
     return data.post
 }
 

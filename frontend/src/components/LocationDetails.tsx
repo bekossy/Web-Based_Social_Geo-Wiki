@@ -45,7 +45,9 @@ const LocationDetails = ({
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
     const [newPost, setNewPost] = useState("")
-    const [selectedImages, setSelectedImages] = useState<string[]>([])
+    const [selectedImages, setSelectedImages] = useState<File[]>([]) // Store images as files
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]) // Store preview URLs
+
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const locationData = useMemo(() => locationFeatureInfo.properties || {}, [locationFeatureInfo])
@@ -58,8 +60,11 @@ const LocationDetails = ({
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
         if (files) {
-            const newImages = Array.from(files).map((file) => URL.createObjectURL(file))
-            setSelectedImages((prev) => [...prev, ...newImages])
+            const fileArray = Array.from(files).slice(0, 4)
+            setSelectedImages(fileArray)
+
+            const previews = fileArray.map((file) => URL.createObjectURL(file))
+            setImagePreviews(previews)
         }
     }
 
@@ -109,10 +114,16 @@ const LocationDetails = ({
         try {
             setIsAddingPostLoading(true)
 
-            await createMappinPosts({
-                content: newPost,
-                mappinId: selectedMappinLocation._id,
+            const formData = new FormData()
+            formData.append("content", newPost)
+            formData.append("mappinId", selectedMappinLocation._id)
+
+            selectedImages.forEach((image) => {
+                formData.append("images", image)
             })
+
+            await createMappinPosts(formData)
+
             await fetchSelectedMappinPosts()
         } catch (error) {
             console.error(error)
@@ -120,6 +131,7 @@ const LocationDetails = ({
             setIsAddingPostLoading(false)
             setNewPost("")
             setSelectedImages([])
+            setImagePreviews([])
         }
     }
 
@@ -259,9 +271,9 @@ const LocationDetails = ({
                                     onChange={(e) => setNewPost(e.target.value)}
                                     className="mb-3"
                                 />
-                                {selectedImages.length > 0 && (
+                                {imagePreviews.length > 0 && (
                                     <div className="grid grid-cols-2 gap-2 mb-3">
-                                        {selectedImages.map((image, index) => (
+                                        {imagePreviews.map((image, index) => (
                                             <div
                                                 key={index}
                                                 className="relative aspect-square rounded-md overflow-hidden group"
@@ -347,32 +359,32 @@ const LocationDetails = ({
                                                       </p>
                                                   </div>
                                                   <p className="mt-2 text-sm">{post.content}</p>
-                                                  {/* {comment.images && comment.images.length > 0 && (
-                                                <div
-                                                    className={`mt-3 grid gap-2 ${
-                                                        comment.images.length > 1
-                                                            ? "grid-cols-2"
-                                                            : "grid-cols-1"
-                                                    }`}
-                                                >
-                                                    {comment.images.map((image, index) => (
-                                                        <div
-                                                            key={index}
-                                                            className="relative aspect-square rounded-md overflow-hidden"
-                                                        >
-                                                            <div className="relative w-full h-full">
-                                                                <Image
-                                                                    src={image}
-                                                                    alt="Post"
-                                                                    fill
-                                                                    className="object-cover"
-                                                                    sizes="(max-width: 768px) 50vw, 33vw"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )} */}
+                                                  {post.images && post.images.length > 0 && (
+                                                      <div
+                                                          className={`mt-3 grid gap-2 ${
+                                                              post.images.length > 1
+                                                                  ? "grid-cols-2"
+                                                                  : "grid-cols-1"
+                                                          }`}
+                                                      >
+                                                          {post.images.map((image, index) => (
+                                                              <div
+                                                                  key={index}
+                                                                  className="relative aspect-square rounded-md overflow-hidden"
+                                                              >
+                                                                  <div className="relative w-full h-full">
+                                                                      <Image
+                                                                          src={image}
+                                                                          alt="Post"
+                                                                          fill
+                                                                          className="object-cover"
+                                                                          sizes="(max-width: 768px) 50vw, 33vw"
+                                                                      />
+                                                                  </div>
+                                                              </div>
+                                                          ))}
+                                                      </div>
+                                                  )}
                                               </div>
                                           </div>
                                       </div>

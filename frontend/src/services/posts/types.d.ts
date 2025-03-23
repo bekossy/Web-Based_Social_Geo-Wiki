@@ -3,6 +3,7 @@ export interface MappinPosts {
     mappinId: string
     createdAt: string
     updatedAt: string
+    images: string[]
     userId: {
         createdAt: string
         username: string
