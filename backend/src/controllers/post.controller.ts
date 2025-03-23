@@ -18,7 +18,7 @@ const uploadToCloudinary = async (filePath: string) => {
     const result = await cloudinary.v2.uploader.upload(filePath, {
         folder: "web-based_social_geo-wiki",
     })
-    fs.unlinkSync(filePath) // Delete local file after upload
+    fs.unlinkSync(filePath)
     return result.secure_url
 }
 
@@ -44,7 +44,6 @@ const createPost = async (req: Request, res: Response) => {
             throw new BadRequestError("Cannot upload more than 4 images")
         }
 
-        // If using Cloudinary
         for (const file of req.files as Express.Multer.File[]) {
             const imageUrl = await uploadToCloudinary(file.path)
             imagePaths.push(imageUrl)
