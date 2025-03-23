@@ -19,7 +19,7 @@ const uploadToCloudinary = async (filePath: string) => {
         folder: "web-based_social_geo-wiki",
     })
     fs.unlinkSync(filePath)
-    return result.secure_url
+    return result
 }
 
 const getPosts = async (req: Request, res: Response) => {
@@ -38,16 +38,19 @@ const createPost = async (req: Request, res: Response) => {
     const mappin = await Mappin.findById(mappinId)
     if (!mappin) throw new NotFoundError(`Mappin with id ${mappinId} not found`)
 
-    let imagePaths: string[] = []
+    let imagePaths: {url: string; public_id: string}[] = []
+
     if (Array.isArray(req.files) && req.files.length > 0) {
         if (req.files.length > 4) {
             throw new BadRequestError("Cannot upload more than 4 images")
         }
 
-        for (const file of req.files as Express.Multer.File[]) {
-            const imageUrl = await uploadToCloudinary(file.path)
-            imagePaths.push(imageUrl)
-        }
+        await Promise.all(
+            req.files.map(async (file) => {
+                const imageUrl = await uploadToCloudinary(file.path)
+                imagePaths.push({url: imageUrl.secure_url, public_id: imageUrl.public_id})
+            })
+        )
     }
 
     const post = await Post.create({...req.body, images: imagePaths})
@@ -63,7 +66,12 @@ const deletePost = async (req: Request, res: Response) => {
         throw new NotFoundError(`Post with id ${postId} not found`)
     }
 
+    const publicIds = post.images.map((img) => String(img.public_id))
+
+    await Promise.all(publicIds.map((id) => cloudinary.v2.uploader.destroy(id)))
+
     await post.deleteOne()
+
     res.status(StatusCodes.OK).json({message: "Post deleted successfully"})
 }
 

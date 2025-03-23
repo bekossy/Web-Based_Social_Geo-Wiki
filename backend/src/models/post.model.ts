@@ -1,10 +1,14 @@
+import {url} from "inspector"
 import {Document, Schema, model} from "mongoose"
 
 interface IPostSchema extends Document {
     userId: Schema.Types.ObjectId
     mappinId: Schema.Types.ObjectId
     content: string
-    images: string[]
+    images: {
+        url: String
+        public_id: String
+    }[]
 }
 
 const PostSchema = new Schema(
@@ -24,8 +28,14 @@ const PostSchema = new Schema(
             required: true,
         },
         images: {
-            type: [String],
+            type: [
+                {
+                    url: String,
+                    public_id: String,
+                },
+            ],
             validate: [(val: string[]) => val.length <= 4, "Cannot upload more than 4 images"],
+            default: [],
         },
     },
     {timestamps: true}

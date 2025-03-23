@@ -374,8 +374,10 @@ const LocationDetails = ({
                                                               >
                                                                   <div className="relative w-full h-full">
                                                                       <Image
-                                                                          src={image}
-                                                                          alt="Post"
+                                                                          src={image.url}
+                                                                          alt={`${[
+                                                                              post.userId.username,
+                                                                          ]} post`}
                                                                           fill
                                                                           className="object-cover"
                                                                           sizes="(max-width: 768px) 50vw, 33vw"
