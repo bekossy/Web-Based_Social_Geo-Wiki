@@ -15,7 +15,7 @@ const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
         return getMapStaticImages({
             lat: locationInfo.properties.coordinates.latitude,
             lon: locationInfo.properties.coordinates.longitude,
-            zoom: 16,
+            zoom: 15,
         })
     }, [locationInfo])
 

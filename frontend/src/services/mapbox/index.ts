@@ -73,12 +73,15 @@ export const fetchSearchCategory = async ({
 export const getMapStaticImages = ({
     lon,
     lat,
-    zoom = 15,
+    zoom = 16,
+    marker = true,
 }: {
     lon: number
     lat: number
     zoom?: number
+    marker?: boolean
 }): string => {
     const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-    return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${lon},${lat},${zoom},0/400x300?access_token=${accessToken}`
+    const markerLayer = marker ? `pin-s+ff0000(${lon},${lat})/` : ""
+    return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${markerLayer}${lon},${lat},${zoom},0/400x300?access_token=${accessToken}`
 }
