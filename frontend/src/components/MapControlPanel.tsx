@@ -7,6 +7,7 @@ import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
 import UserAvatar from "./UserAvatar"
 import {useAuth} from "@/contexts/AuthContext"
+import {CATEGORIES} from "@/lib/constants"
 
 interface MapControlPanelProps {
     mapRef: React.RefObject<MapRef | null>
@@ -22,38 +23,6 @@ const MapControlPanel = ({
     setLocationFeatureInfo,
 }: MapControlPanelProps) => {
     const {user} = useAuth()
-    const categories = [
-        {
-            canonical_id: "restaurant",
-            icon: "restaurant",
-            name: "Restaurant",
-        },
-        {
-            canonical_id: "shopping_mall",
-            icon: "marker",
-            name: "Shopping Mall",
-        },
-        {
-            canonical_id: "education",
-            icon: "school",
-            name: "Education",
-        },
-        {
-            canonical_id: "park",
-            icon: "park",
-            name: "Park",
-        },
-        {
-            canonical_id: "hotel",
-            icon: "lodging",
-            name: "Hotel",
-        },
-        {
-            canonical_id: "tourist_attraction",
-            icon: "attraction",
-            name: "Tourist Attraction",
-        },
-    ]
 
     const handleSelectedCategory = async (canonicalId: string) => {
         try {
@@ -75,7 +44,7 @@ const MapControlPanel = ({
                 />
 
                 <div className="flex flex-wrap items-center justify-center gap-2">
-                    {categories.map((category) => (
+                    {CATEGORIES.map((category) => (
                         <Button
                             key={category.canonical_id}
                             size={"sm"}
