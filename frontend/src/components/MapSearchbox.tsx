@@ -125,7 +125,7 @@ const MapSearchbox = ({
                 inputRef?.current?.blur()
             }, 0)
         },
-        [mapRef, searchBoxCore]
+        [mapRef, searchBoxCore, setIsDrawerOpen, setIsLoadingLocationInfo, setLocationFeatureInfo]
     )
 
     return (
