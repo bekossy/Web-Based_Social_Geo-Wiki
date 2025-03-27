@@ -18,6 +18,7 @@ import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {useAuth} from "@/contexts/AuthContext"
 import UserAvatar from "./UserAvatar"
+import {CATEGORIES} from "@/lib/constants"
 
 interface NavigationSidebarProps {
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
@@ -25,39 +26,6 @@ interface NavigationSidebarProps {
     setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
     categoryList: CategoryListResponse[]
 }
-
-const CATEGORIES = [
-    {
-        canonical_id: "restaurant",
-        icon: "restaurant",
-        name: "Restaurant",
-    },
-    {
-        canonical_id: "shopping_mall",
-        icon: "marker",
-        name: "Shopping Mall",
-    },
-    {
-        canonical_id: "education",
-        icon: "school",
-        name: "Education",
-    },
-    {
-        canonical_id: "park",
-        icon: "park",
-        name: "Park",
-    },
-    {
-        canonical_id: "hotel",
-        icon: "lodging",
-        name: "Hotel",
-    },
-    {
-        canonical_id: "tourist_attraction",
-        icon: "attraction",
-        name: "Tourist Attraction",
-    },
-]
 
 const RECENT_SEARCHES = [
     "Italian Restaurants",
@@ -68,10 +36,13 @@ const RECENT_SEARCHES = [
 ]
 
 export function NavigationSidebar({
+    categoryList,
     setLocationFeatureInfo,
     setIsNavSidebarOpen,
     setIsDrawerOpen,
 }: NavigationSidebarProps) {
+    console.log("categoryList: ", categoryList)
+
     const {user, logout} = useAuth()
     const [searchQuery, setSearchQuery] = useState("")
     const [showSearch, setShowSearch] = useState(false)
@@ -120,25 +91,27 @@ export function NavigationSidebar({
                                 onValueChange={setSearchQuery}
                             />
                         </div>
-                        <CommandList className="max-h-none">
+                        <CommandList className="max-h-none h-full [&>div]:flex [&>div]:flex-col [&>div]:h-full">
                             <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup heading="Categories">
-                                {CATEGORIES.filter((cat) =>
-                                    cat.name.toLowerCase().includes(searchQuery.toLowerCase())
-                                ).map((category) => {
-                                    return (
-                                        <CommandItem
-                                            key={category.canonical_id}
-                                            onSelect={() => {
-                                                handleSelectedCategory(category.canonical_id)
-                                            }}
-                                            className="gap-4 cursor-pointer"
-                                        >
-                                            <MakiIcon iconName={category.icon} />
-                                            {category.name}
-                                        </CommandItem>
+                            <CommandGroup heading="Categories" className="flex-1 overflow-auto">
+                                {categoryList
+                                    .filter((cat) =>
+                                        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
                                     )
-                                })}
+                                    .map((category) => {
+                                        return (
+                                            <CommandItem
+                                                key={category.canonical_id}
+                                                onSelect={() => {
+                                                    handleSelectedCategory(category.canonical_id)
+                                                }}
+                                                className="gap-4 cursor-pointer"
+                                            >
+                                                <MakiIcon iconName={category.icon} />
+                                                {category.name}
+                                            </CommandItem>
+                                        )
+                                    })}
                             </CommandGroup>
                             {!searchQuery && (
                                 <CommandGroup heading="Recent Searches">

@@ -1,7 +1,7 @@
 export interface AllCategoryListResponse {
     version: string
     attribution: string
-    list_items: CategoryListResponse[]
+    listItems: CategoryListResponse[]
 }
 
 export interface CategoryListResponse {
