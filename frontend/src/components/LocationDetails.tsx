@@ -59,15 +59,11 @@ const LocationDetails = ({
     const [isAddingPostLoading, setIsAddingPostLoading] = useState(false)
 
     const mapStaticImage = useMemo(() => {
-        if (!selectedMappinLocation) {
-            return ""
-        }
-
         return getMapStaticImages({
-            lat: selectedMappinLocation.latitude,
-            lon: selectedMappinLocation.longitude,
+            lat: locationData.coordinates.latitude,
+            lon: locationData.coordinates.longitude,
         })
-    }, [selectedMappinLocation])
+    }, [locationData.coordinates.latitude, locationData.coordinates.longitude])
 
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files

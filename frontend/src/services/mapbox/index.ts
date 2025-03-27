@@ -83,5 +83,5 @@ export const getMapStaticImages = ({
 }): string => {
     const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
     const markerLayer = marker ? `pin-s+ff0000(${lon},${lat})/` : ""
-    return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${markerLayer}${lon},${lat},${zoom},0/400x300?access_token=${accessToken}`
+    return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${markerLayer}${lon},${lat},${zoom},0/400x300@2x?access_token=${accessToken}`
 }
