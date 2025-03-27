@@ -17,6 +17,14 @@ import {Mappins} from "@/services/mappins/types"
 import {type SearchBoxRetrieveResponse} from "@mapbox/search-js-core"
 import {useCallback, useEffect, useRef, useState} from "react"
 import {type MapRef} from "react-map-gl"
+import {useMediaQuery} from "@/hooks/use-media-query"
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+} from "@/components/ui/drawer"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
@@ -32,6 +40,8 @@ export default function Home() {
         undefined
     )
     const [selectedMappinPosts, setSelectedMappinPosts] = useState<MappinPosts[]>([])
+
+    const isDesktop = useMediaQuery("(min-width: 550px)")
 
     const fetchAllMappins = useCallback(async () => {
         try {
@@ -107,31 +117,63 @@ export default function Home() {
                     mappins={mappins}
                 />
 
-                <Sidebar
-                    open={isDrawerOpen}
-                    handleOnOpenChange={setIsDrawerOpen}
-                    title="Title"
-                    sidebarContent={
-                        locationFeatureInfo.length > 1 ? (
-                            <LocationList
-                                locationFeatureInfo={locationFeatureInfo}
-                                setIsLoadingLocationInfo={setIsLoadingLocationInfo}
-                                mapRef={mapRef}
-                                setIsDrawerOpen={setIsDrawerOpen}
-                                setLocationFeatureInfo={setLocationFeatureInfo}
-                            />
-                        ) : (
-                            <LocationDetails
-                                locationFeatureInfo={locationFeatureInfo[0]}
-                                selectedMappinLocation={selectedMappinLocation}
-                                fetchAllMappins={fetchAllMappins}
-                                selectedMappinPosts={selectedMappinPosts}
-                                fetchSelectedMappinPosts={fetchSelectedMappinPosts}
-                            />
-                        )
-                    }
-                    isLoading={isLoadingLocationInfo}
-                />
+                {isDesktop ? (
+                    <Sidebar
+                        open={isDrawerOpen}
+                        handleOnOpenChange={setIsDrawerOpen}
+                        title="Title"
+                        sidebarContent={
+                            locationFeatureInfo.length > 1 ? (
+                                <LocationList
+                                    locationFeatureInfo={locationFeatureInfo}
+                                    setIsLoadingLocationInfo={setIsLoadingLocationInfo}
+                                    mapRef={mapRef}
+                                    setIsDrawerOpen={setIsDrawerOpen}
+                                    setLocationFeatureInfo={setLocationFeatureInfo}
+                                />
+                            ) : (
+                                <LocationDetails
+                                    locationFeatureInfo={locationFeatureInfo[0]}
+                                    selectedMappinLocation={selectedMappinLocation}
+                                    fetchAllMappins={fetchAllMappins}
+                                    selectedMappinPosts={selectedMappinPosts}
+                                    fetchSelectedMappinPosts={fetchSelectedMappinPosts}
+                                />
+                            )
+                        }
+                        isLoading={isLoadingLocationInfo}
+                    />
+                ) : (
+                    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                        <DrawerContent className="p-4 max-h-[90vh] h-[90vh]">
+                            <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
+                                <DrawerHeader className="hidden">
+                                    <DrawerTitle>Move Goal</DrawerTitle>
+                                    <DrawerDescription>
+                                        Set your daily activity goal.
+                                    </DrawerDescription>
+                                </DrawerHeader>
+                                {locationFeatureInfo.length > 1 ? (
+                                    <LocationList
+                                        locationFeatureInfo={locationFeatureInfo}
+                                        setIsLoadingLocationInfo={setIsLoadingLocationInfo}
+                                        mapRef={mapRef}
+                                        setIsDrawerOpen={setIsDrawerOpen}
+                                        setLocationFeatureInfo={setLocationFeatureInfo}
+                                    />
+                                ) : (
+                                    <LocationDetails
+                                        locationFeatureInfo={locationFeatureInfo[0]}
+                                        selectedMappinLocation={selectedMappinLocation}
+                                        fetchAllMappins={fetchAllMappins}
+                                        selectedMappinPosts={selectedMappinPosts}
+                                        fetchSelectedMappinPosts={fetchSelectedMappinPosts}
+                                    />
+                                )}
+                            </div>
+                        </DrawerContent>
+                    </Drawer>
+                )}
 
                 <Sidebar
                     open={isNavSidebarOpen}

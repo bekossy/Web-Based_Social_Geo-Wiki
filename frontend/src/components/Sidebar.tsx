@@ -30,7 +30,7 @@ const Sidebar = ({
                 className={cn("flex flex-col p-4 min-w-[400px]", props.className)}
                 {...props}
             >
-                <SheetHeader>
+                <SheetHeader className="invisible">
                     <SheetTitle>{title}</SheetTitle>
                     <SheetDescription>{description}</SheetDescription>
                 </SheetHeader>
