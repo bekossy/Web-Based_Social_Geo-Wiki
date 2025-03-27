@@ -1,5 +1,9 @@
 "use client"
 
+import {useCallback, useEffect, useRef, useState} from "react"
+import {type MapRef} from "react-map-gl"
+import {type SearchBoxRetrieveResponse} from "@mapbox/search-js-core"
+
 import LocationDetails from "@/components/LocationDetails"
 import LocationList from "@/components/LocationList"
 import MapControlPanel from "@/components/MapControlPanel"
@@ -8,16 +12,13 @@ import Navbar from "@/components/Navbar"
 import {NavigationSidebar} from "@/components/NavigationSidebar"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import Sidebar from "@/components/Sidebar"
+import {useMediaQuery} from "@/hooks/use-media-query"
 import {getAllMappinPosts} from "@/services/posts"
 import {MappinPosts} from "@/services/posts/types"
 import {fetchAllCategoryList} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {getAllMappins} from "@/services/mappins"
 import {Mappins} from "@/services/mappins/types"
-import {type SearchBoxRetrieveResponse} from "@mapbox/search-js-core"
-import {useCallback, useEffect, useRef, useState} from "react"
-import {type MapRef} from "react-map-gl"
-import {useMediaQuery} from "@/hooks/use-media-query"
 import {
     Drawer,
     DrawerContent,
@@ -28,46 +29,45 @@ import {
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
+    const isDesktop = useMediaQuery("(min-width: 550px)")
+
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isNavSidebarOpen, setIsNavSidebarOpen] = useState(false)
     const [isLoadingLocationInfo, setIsLoadingLocationInfo] = useState(false)
+
     const [locationFeatureInfo, setLocationFeatureInfo] = useState<
         SearchBoxRetrieveResponse["features"]
     >([])
     const [categoryList, setCategoryList] = useState<CategoryListResponse[]>([])
     const [mappins, setMappins] = useState<Mappins[]>([])
-    const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>(
-        undefined
-    )
+    const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>()
     const [selectedMappinPosts, setSelectedMappinPosts] = useState<MappinPosts[]>([])
 
-    const isDesktop = useMediaQuery("(min-width: 550px)")
-
-    const fetchAllMappins = useCallback(async () => {
+    const fetchMappins = useCallback(async () => {
         try {
             const data = await getAllMappins()
             setMappins(data)
         } catch (error) {
-            console.error(error)
+            console.error("Failed to fetch mappins:", error)
         }
     }, [])
 
     useEffect(() => {
-        fetchAllMappins()
-    }, [fetchAllMappins])
+        fetchMappins()
+    }, [fetchMappins])
 
-    const fetchCategoryList = useCallback(async () => {
+    const fetchListOfCategories = useCallback(async () => {
         try {
             const data = await fetchAllCategoryList()
-            setCategoryList(data.list_items)
+            setCategoryList(data.listItems)
         } catch (error) {
-            console.error(error)
+            console.error("Failed to fetch list of categories:", error)
         }
     }, [])
 
     useEffect(() => {
-        fetchCategoryList()
-    }, [fetchCategoryList])
+        fetchListOfCategories()
+    }, [fetchListOfCategories])
 
     useEffect(() => {
         if (locationFeatureInfo.length === 1) {
@@ -78,24 +78,20 @@ export default function Home() {
         }
     }, [locationFeatureInfo, mappins])
 
-    const fetchSelectedMappinPosts = useCallback(async () => {
-        if (!selectedMappinLocation?._id) return
+    const fetchMappinPosts = useCallback(async () => {
+        if (!selectedMappinLocation) return
 
         try {
-            const data = await getAllMappinPosts({
-                mappinId: selectedMappinLocation?._id,
-            })
+            const data = await getAllMappinPosts({mappinId: selectedMappinLocation._id})
             setSelectedMappinPosts(data)
         } catch (error) {
-            console.error(error)
+            console.error("Failed to fetch mappin posts:", error)
         }
-    }, [selectedMappinLocation?._id])
+    }, [selectedMappinLocation])
 
     useEffect(() => {
-        if (!!selectedMappinLocation) {
-            fetchSelectedMappinPosts()
-        }
-    }, [fetchSelectedMappinPosts, selectedMappinLocation])
+        fetchMappinPosts()
+    }, [fetchMappinPosts])
 
     return (
         <ProtectedRoute>
@@ -135,9 +131,9 @@ export default function Home() {
                                 <LocationDetails
                                     locationFeatureInfo={locationFeatureInfo[0]}
                                     selectedMappinLocation={selectedMappinLocation}
-                                    fetchAllMappins={fetchAllMappins}
+                                    fetchAllMappins={fetchMappins}
                                     selectedMappinPosts={selectedMappinPosts}
-                                    fetchSelectedMappinPosts={fetchSelectedMappinPosts}
+                                    fetchSelectedMappinPosts={fetchMappinPosts}
                                 />
                             )
                         }
@@ -165,9 +161,9 @@ export default function Home() {
                                     <LocationDetails
                                         locationFeatureInfo={locationFeatureInfo[0]}
                                         selectedMappinLocation={selectedMappinLocation}
-                                        fetchAllMappins={fetchAllMappins}
+                                        fetchAllMappins={fetchMappins}
                                         selectedMappinPosts={selectedMappinPosts}
-                                        fetchSelectedMappinPosts={fetchSelectedMappinPosts}
+                                        fetchSelectedMappinPosts={fetchMappinPosts}
                                     />
                                 )}
                             </div>
@@ -177,7 +173,7 @@ export default function Home() {
 
                 <Sidebar
                     open={isNavSidebarOpen}
-                    side={"left"}
+                    side="left"
                     handleOnOpenChange={setIsNavSidebarOpen}
                     title=""
                     sidebarContent={
