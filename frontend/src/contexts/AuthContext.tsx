@@ -1,6 +1,6 @@
 "use client"
 
-import {createContext, useContext, useEffect, useState} from "react"
+import {createContext, useCallback, useContext, useEffect, useState} from "react"
 import axios from "@/lib/axiosConfig"
 
 interface User {
@@ -11,6 +11,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null
+    loading: boolean
     login: (username: string, password: string) => Promise<void>
     register: (username: string, password: string) => Promise<void>
     logout: () => Promise<void>
@@ -20,30 +21,32 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    const fetchUser = useCallback(async () => {
+        try {
+            setLoading(true)
+            const {data} = await axios.get("/user/showCurrentUser")
+            setUser(data.user)
+        } catch {
+            setUser(null)
+        } finally {
+            setLoading(false)
+        }
+    }, [])
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const {data} = await axios.get("/user/showCurrentUser")
-                setUser(data.user)
-            } catch {
-                setUser(null)
-            }
-        }
-
         fetchUser()
-    }, [])
+    }, [fetchUser])
 
     const login = async (username: string, password: string) => {
         await axios.post("/auth/signin", {username, password})
-        const {data} = await axios.get("/user/showCurrentUser")
-        setUser(data.user)
+        await fetchUser()
     }
 
     const register = async (username: string, password: string) => {
         await axios.post("/auth/signup", {username, password})
-        const {data} = await axios.get("/user/showCurrentUser")
-        setUser(data.user)
+        await fetchUser()
     }
 
     const logout = async () => {
@@ -52,7 +55,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
 
     return (
-        <AuthContext.Provider value={{user, login, logout, register}}>
+        <AuthContext.Provider value={{user, login, logout, register, loading}}>
             {children}
         </AuthContext.Provider>
     )
