@@ -2,7 +2,8 @@ import Image from "next/image"
 import {Clock, ExternalLink, Navigation} from "lucide-react"
 import {Button} from "./ui/button"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
-import {Dispatch, SetStateAction} from "react"
+import {Dispatch, SetStateAction, useMemo} from "react"
+import {getMapStaticImages} from "@/services/mapbox"
 
 interface MapPopupProps {
     locationInfo: SearchBoxFeatureSuggestion
@@ -10,12 +11,20 @@ interface MapPopupProps {
 }
 
 const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
+    const mapStaticImage = useMemo(() => {
+        return getMapStaticImages({
+            lat: locationInfo.properties.coordinates.latitude,
+            lon: locationInfo.properties.coordinates.longitude,
+            zoom: 16,
+        })
+    }, [locationInfo])
+
     return (
         <div className="p-3 shadow-lg rounded-xl w-full">
             <div className="relative w-full h-40 overflow-hidden rounded-lg">
                 <Image
-                    src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Photo by Drew Beamer"
+                    src={mapStaticImage}
+                    alt={`Image of ${locationInfo.properties.name}`}
                     fill
                     className="object-cover"
                 />

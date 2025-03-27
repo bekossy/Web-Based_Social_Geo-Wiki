@@ -26,6 +26,7 @@ import {Mappins} from "@/services/mappins/types"
 import {MappinPosts} from "@/services/posts/types"
 import UserAvatar from "./UserAvatar"
 import {createMappinPosts} from "@/services/posts"
+import {getMapStaticImages} from "@/services/mapbox"
 
 interface LocationDetailsProps {
     locationFeatureInfo: SearchBoxFeatureSuggestion
@@ -45,8 +46,8 @@ const LocationDetails = ({
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
     const [newPost, setNewPost] = useState("")
-    const [selectedImages, setSelectedImages] = useState<File[]>([]) // Store images as files
-    const [imagePreviews, setImagePreviews] = useState<string[]>([]) // Store preview URLs
+    const [selectedImages, setSelectedImages] = useState<File[]>([])
+    const [imagePreviews, setImagePreviews] = useState<string[]>([])
 
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -56,6 +57,17 @@ const LocationDetails = ({
     const [isRemovingPinLoading, setIsRemovingPinLoading] = useState(false)
 
     const [isAddingPostLoading, setIsAddingPostLoading] = useState(false)
+
+    const mapStaticImage = useMemo(() => {
+        if (!selectedMappinLocation) {
+            return ""
+        }
+
+        return getMapStaticImages({
+            lat: selectedMappinLocation.latitude,
+            lon: selectedMappinLocation.longitude,
+        })
+    }, [selectedMappinLocation])
 
     const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
@@ -196,8 +208,8 @@ const LocationDetails = ({
                                     </div>
                                     <div className="relative w-full h-full">
                                         <Image
-                                            src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                                            alt="Photo by Drew Beamer"
+                                            src={mapStaticImage}
+                                            alt={`Image of ${locationData.name}`}
                                             fill
                                             className="object-cover transition-opacity duration-300"
                                             sizes="(max-width: 768px) 100vw, 800px"
@@ -242,9 +254,9 @@ const LocationDetails = ({
                             <div>
                                 <h3 className="text-lg font-semibold mb-2">Coordinates</h3>
                                 <p className="text-sm text-muted-foreground">
-                                    Latitude: {locationData.coordinates.latitude.toFixed(6)}
+                                    Latitude: {locationData.coordinates.latitude.toFixed(3)}
                                     <br />
-                                    Longitude: {locationData.coordinates.longitude.toFixed(6)}
+                                    Longitude: {locationData.coordinates.longitude.toFixed(3)}
                                 </p>
                             </div>
                             <div className="pt-4">

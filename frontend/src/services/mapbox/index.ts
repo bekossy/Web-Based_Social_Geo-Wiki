@@ -69,3 +69,16 @@ export const fetchSearchCategory = async ({
     )
     return data
 }
+
+export const getMapStaticImages = ({
+    lon,
+    lat,
+    zoom = 15,
+}: {
+    lon: number
+    lat: number
+    zoom?: number
+}): string => {
+    const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+    return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${lon},${lat},${zoom},0/400x300?access_token=${accessToken}`
+}
