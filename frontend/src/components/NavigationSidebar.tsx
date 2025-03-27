@@ -1,6 +1,6 @@
 "use client"
 
-import {Dispatch, SetStateAction, useState} from "react"
+import {Dispatch, SetStateAction, useEffect, useState} from "react"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {Button} from "@/components/ui/button"
 import {
@@ -11,14 +11,13 @@ import {
     CommandGroup,
     CommandItem,
 } from "@/components/ui/command"
-import {Search, Settings, LogOut, Heart, Clock, ChevronRight, ArrowLeft} from "lucide-react"
+import {Search, Settings, LogOut, Clock, ChevronRight, ArrowLeft} from "lucide-react"
 import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {useAuth} from "@/contexts/AuthContext"
 import UserAvatar from "./UserAvatar"
-import {CATEGORIES} from "@/lib/constants"
 
 interface NavigationSidebarProps {
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
@@ -27,13 +26,7 @@ interface NavigationSidebarProps {
     categoryList: CategoryListResponse[]
 }
 
-const RECENT_SEARCHES = [
-    "Italian Restaurants",
-    "Coffee Shops",
-    "Parks",
-    "Museums",
-    "Shopping Malls",
-]
+const RECENT_SEARCHES_KEY = "recentSearches"
 
 export function NavigationSidebar({
     categoryList,
@@ -41,13 +34,28 @@ export function NavigationSidebar({
     setIsNavSidebarOpen,
     setIsDrawerOpen,
 }: NavigationSidebarProps) {
-    console.log("categoryList: ", categoryList)
-
     const {user, logout} = useAuth()
     const [searchQuery, setSearchQuery] = useState("")
     const [showSearch, setShowSearch] = useState(false)
+    const [recentSearches, setRecentSearches] = useState<{name: string; id: string}[]>([])
 
-    const handleSelectedCategory = async (canonicalId: string) => {
+    useEffect(() => {
+        const storedSearches = localStorage.getItem(RECENT_SEARCHES_KEY)
+        if (storedSearches) {
+            setRecentSearches(JSON.parse(storedSearches))
+        }
+    }, [])
+
+    const saveRecentSearch = (category: {name: string; id: string}) => {
+        const updatedSearches = [
+            category,
+            ...recentSearches.filter((s) => s.id !== category.id),
+        ].slice(0, 5)
+        setRecentSearches(updatedSearches)
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updatedSearches))
+    }
+
+    const handleSelectedCategory = async (canonicalId: string, categoryName: string) => {
         try {
             const data = await fetchSearchCategory({canonicalId})
             setLocationFeatureInfo(data.features)
@@ -55,6 +63,7 @@ export function NavigationSidebar({
             setSearchQuery("")
             setIsNavSidebarOpen(false)
             setIsDrawerOpen(true)
+            saveRecentSearch({name: categoryName, id: canonicalId})
         } catch (error) {
             console.error(error)
         }
@@ -103,7 +112,10 @@ export function NavigationSidebar({
                                             <CommandItem
                                                 key={category.canonical_id}
                                                 onSelect={() => {
-                                                    handleSelectedCategory(category.canonical_id)
+                                                    handleSelectedCategory(
+                                                        category.canonical_id,
+                                                        category.name
+                                                    )
                                                 }}
                                                 className="gap-4 cursor-pointer"
                                             >
@@ -113,19 +125,18 @@ export function NavigationSidebar({
                                         )
                                     })}
                             </CommandGroup>
-                            {!searchQuery && (
+                            {!searchQuery && recentSearches.length > 0 && (
                                 <CommandGroup heading="Recent Searches">
-                                    {RECENT_SEARCHES.map((search) => (
+                                    {recentSearches.map((search, index) => (
                                         <CommandItem
-                                            key={search}
+                                            key={index}
                                             onSelect={() => {
-                                                // onCategorySelect(search);
-                                                setShowSearch(false)
+                                                handleSelectedCategory(search.id, search.name)
                                             }}
                                             className="cursor-pointer"
                                         >
                                             <Clock className="mr-2 size-4" />
-                                            {search}
+                                            {search.name}
                                         </CommandItem>
                                     ))}
                                 </CommandGroup>
@@ -144,24 +155,27 @@ export function NavigationSidebar({
                                 Search categories...
                             </Button>
 
-                            <div className="space-y-1">
+                            {/* <div className="space-y-1">
                                 <h4 className="text-sm font-medium px-2">Favorites</h4>
                                 <Button variant="ghost" className="w-full justify-start">
                                     <Heart className="mr-2 size-4" />
                                     Saved Places
                                 </Button>
-                            </div>
+                            </div> */}
 
                             <div className="space-y-1">
                                 <h4 className="text-sm font-medium px-2">Categories</h4>
-                                {CATEGORIES.map((category) => {
+                                {categoryList.slice(0, 12).map((category) => {
                                     return (
                                         <Button
                                             key={category.canonical_id}
                                             variant="ghost"
                                             className="w-full justify-between group"
                                             onClick={() =>
-                                                handleSelectedCategory(category.canonical_id)
+                                                handleSelectedCategory(
+                                                    category.canonical_id,
+                                                    category.name
+                                                )
                                             }
                                         >
                                             <span className="flex items-center gap-4">
