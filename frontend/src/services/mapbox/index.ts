@@ -1,9 +1,29 @@
 import {
     type SearchBoxRetrieveResponse,
     type SearchBoxCategoryResponse,
+    type SearchBoxSuggestionResponse,
 } from "@mapbox/search-js-core"
 import axios from "axios"
 import {type AllCategoryListResponse} from "./types"
+
+// Get suggested results
+export const fetchSearchSuggestion = async ({
+    searchValue,
+    session_token,
+}: {
+    searchValue: string
+    session_token: string
+}): Promise<SearchBoxSuggestionResponse> => {
+    const {data} = await axios(`https://api.mapbox.com/search/searchbox/v1/suggest`, {
+        params: {
+            q: searchValue,
+            session_token,
+            access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+        },
+    })
+
+    return data
+}
 
 // Retrieve suggested feature
 export const fetchRetrieveSearchResult = async ({

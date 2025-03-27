@@ -3,9 +3,9 @@ import {CommandGroup, CommandItem, CommandList, CommandInput} from "@/components
 import {Command as CommandPrimitive} from "cmdk"
 import {cn} from "@/lib/utils"
 import {type SearchBoxFeatureSuggestion, type SearchBoxSuggestion} from "@mapbox/search-js-core"
-import {useMapboxSearch} from "@/hooks/useMapboxSearch"
 import {Skeleton} from "./ui/skeleton"
 import {type MapRef} from "react-map-gl"
+import {fetchRetrieveSearchResult, fetchSearchSuggestion} from "@/services/mapbox"
 
 interface MapSearchboxProps {
     mapRef: RefObject<MapRef | null>
@@ -39,16 +39,14 @@ const MapSearchbox = ({
     )
     const [searchBoxInput, setSearchBoxInput] = useState<string>(searchBoxValue?.name || "")
 
-    const searchBoxCore = useMapboxSearch()
-
     const handleInputChange = async (value: string) => {
         setSearchBoxInput(value)
 
         if (value) {
             try {
-                const response = await searchBoxCore.suggest(value, {
-                    sessionToken: "test-123",
-                    limit: 5,
+                const response = await fetchSearchSuggestion({
+                    session_token: "test-123",
+                    searchValue: value,
                 })
                 setSuggestions(response.suggestions || [])
             } catch (error) {
@@ -101,8 +99,9 @@ const MapSearchbox = ({
                 try {
                     setIsLoadingLocationInfo(true)
                     // TODO: Replace session token
-                    const response = await searchBoxCore.retrieve(selectedOption, {
-                        sessionToken: "test-123",
+                    const response = await fetchRetrieveSearchResult({
+                        session_token: "test-123",
+                        mapboxId: selectedOption.mapbox_id,
                     })
 
                     const [longitude, latitude] = response.features[0].geometry.coordinates
@@ -125,7 +124,7 @@ const MapSearchbox = ({
                 inputRef?.current?.blur()
             }, 0)
         },
-        [mapRef, searchBoxCore, setIsDrawerOpen, setIsLoadingLocationInfo, setLocationFeatureInfo]
+        [mapRef, setIsDrawerOpen, setIsLoadingLocationInfo, setLocationFeatureInfo]
     )
 
     return (
