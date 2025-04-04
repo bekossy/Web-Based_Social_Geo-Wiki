@@ -12,7 +12,7 @@ interface LocationListProps {
     setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
     mapRef: RefObject<MapRef | null>
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    sessionToken: string
 }
 
 const LocationList = ({
@@ -20,11 +20,15 @@ const LocationList = ({
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
     mapRef,
+    sessionToken,
 }: LocationListProps) => {
     const handleFetchLocationFeature = async (mapboxId: string) => {
         try {
             setIsLoadingLocationInfo(true)
-            const response = await fetchRetrieveSearchResult({mapboxId, session_token: "123"})
+            const response = await fetchRetrieveSearchResult({
+                mapboxId,
+                session_token: sessionToken,
+            })
 
             const [longitude, latitude] = response.features[0].geometry.coordinates
             mapRef.current?.flyTo({

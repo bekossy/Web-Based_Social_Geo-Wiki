@@ -26,6 +26,7 @@ import {
     DrawerHeader,
     DrawerTitle,
 } from "@/components/ui/drawer"
+import {v4 as uuidv4} from "uuid"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
@@ -34,6 +35,7 @@ export default function Home() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isNavSidebarOpen, setIsNavSidebarOpen] = useState(false)
     const [isLoadingLocationInfo, setIsLoadingLocationInfo] = useState(false)
+    const [sessionToken, setSessionToken] = useState(() => uuidv4())
 
     const [locationFeatureInfo, setLocationFeatureInfo] = useState<
         SearchBoxRetrieveResponse["features"]
@@ -100,9 +102,11 @@ export default function Home() {
                 <div className="max-w-[800px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-2">
                     <MapControlPanel
                         mapRef={mapRef}
-                        setIsDrawerOpen={setIsDrawerOpen}
                         setIsLoadingLocationInfo={setIsLoadingLocationInfo}
                         setLocationFeatureInfo={setLocationFeatureInfo}
+                        setIsDrawerOpen={setIsDrawerOpen}
+                        sessionToken={sessionToken}
+                        setSessionToken={setSessionToken}
                     />
                 </div>
 
@@ -110,6 +114,8 @@ export default function Home() {
                     mapRef={mapRef}
                     setLocationFeatureInfo={setLocationFeatureInfo}
                     setIsDrawerOpen={setIsDrawerOpen}
+                    setIsLoadingLocationInfo={setIsLoadingLocationInfo}
+                    sessionToken={sessionToken}
                     mappins={mappins}
                 />
 
@@ -123,9 +129,9 @@ export default function Home() {
                                 <LocationList
                                     locationFeatureInfo={locationFeatureInfo}
                                     setIsLoadingLocationInfo={setIsLoadingLocationInfo}
-                                    mapRef={mapRef}
-                                    setIsDrawerOpen={setIsDrawerOpen}
                                     setLocationFeatureInfo={setLocationFeatureInfo}
+                                    mapRef={mapRef}
+                                    sessionToken={sessionToken}
                                 />
                             ) : (
                                 <LocationDetails
@@ -153,9 +159,9 @@ export default function Home() {
                                     <LocationList
                                         locationFeatureInfo={locationFeatureInfo}
                                         setIsLoadingLocationInfo={setIsLoadingLocationInfo}
-                                        mapRef={mapRef}
-                                        setIsDrawerOpen={setIsDrawerOpen}
                                         setLocationFeatureInfo={setLocationFeatureInfo}
+                                        mapRef={mapRef}
+                                        sessionToken={sessionToken}
                                     />
                                 ) : (
                                     <LocationDetails

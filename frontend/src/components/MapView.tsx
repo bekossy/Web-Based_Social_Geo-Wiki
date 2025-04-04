@@ -19,12 +19,21 @@ import UserAvatar from "./UserAvatar"
 
 type MapViewProps = {
     mapRef: RefObject<MapRef | null>
+    setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
     setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    sessionToken: string
     mappins: Mappins[]
 }
 
-const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen, mappins}: MapViewProps) => {
+const MapView = ({
+    mapRef,
+    setIsLoadingLocationInfo,
+    setLocationFeatureInfo,
+    setIsDrawerOpen,
+    sessionToken,
+    mappins,
+}: MapViewProps) => {
     const [coordinates, setCoordinates] = useState({long: 0, lat: 0})
     const [currentLocation, setCurrentLocation] = useState("")
     const [locationData, setLocationData] = useState<SearchBoxFeatureSuggestion | null>(null)
@@ -47,12 +56,15 @@ const MapView = ({mapRef, setLocationFeatureInfo, setIsDrawerOpen, mappins}: Map
 
     const handleMarkClick = async (mapboxId: string, pinId: string) => {
         try {
-            const data = await fetchRetrieveSearchResult({mapboxId, session_token: "123"})
+            setIsLoadingLocationInfo(true)
+            const data = await fetchRetrieveSearchResult({mapboxId, session_token: sessionToken})
             setLocationData(data.features[0])
             setCurrentLocation(pinId)
             setLocationFeatureInfo(data.features)
+            setIsLoadingLocationInfo(false)
         } catch (error) {
             console.error(error)
+            setIsLoadingLocationInfo(false)
         }
     }
 

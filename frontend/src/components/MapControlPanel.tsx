@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction} from "react"
+import {Dispatch, SetStateAction, RefObject} from "react"
 import MapSearchbox from "./MapSearchbox"
 import {Button} from "./ui/button"
 import {type MapRef} from "react-map-gl"
@@ -10,17 +10,21 @@ import {useAuth} from "@/contexts/AuthContext"
 import {CATEGORIES} from "@/lib/constants"
 
 interface MapControlPanelProps {
-    mapRef: React.RefObject<MapRef | null>
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    mapRef: RefObject<MapRef | null>
     setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
+    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    sessionToken: string
+    setSessionToken: Dispatch<SetStateAction<string>>
 }
 
 const MapControlPanel = ({
     mapRef,
-    setIsDrawerOpen,
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
+    setIsDrawerOpen,
+    sessionToken,
+    setSessionToken,
 }: MapControlPanelProps) => {
     const {user} = useAuth()
 
@@ -41,6 +45,8 @@ const MapControlPanel = ({
                     setIsLoadingLocationInfo={setIsLoadingLocationInfo}
                     setLocationFeatureInfo={setLocationFeatureInfo}
                     setIsDrawerOpen={setIsDrawerOpen}
+                    sessionToken={sessionToken}
+                    setSessionToken={setSessionToken}
                 />
 
                 <div className="flex flex-wrap items-center justify-center gap-2">

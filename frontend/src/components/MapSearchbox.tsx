@@ -6,6 +6,7 @@ import {type SearchBoxFeatureSuggestion, type SearchBoxSuggestion} from "@mapbox
 import {Skeleton} from "./ui/skeleton"
 import {type MapRef} from "react-map-gl"
 import {fetchRetrieveSearchResult, fetchSearchSuggestion} from "@/services/mapbox"
+import {v4 as uuidv4} from "uuid"
 
 interface MapSearchboxProps {
     mapRef: RefObject<MapRef | null>
@@ -16,6 +17,8 @@ interface MapSearchboxProps {
     setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
     setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    sessionToken: string
+    setSessionToken: Dispatch<SetStateAction<string>>
 }
 
 const MapSearchbox = ({
@@ -27,10 +30,11 @@ const MapSearchbox = ({
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
     setIsDrawerOpen,
+    sessionToken,
+    setSessionToken,
 }: MapSearchboxProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [searchBoxValue, setSearchBoxValue] = useState<SearchBoxSuggestion | null>(null)
-
     const [suggestions, setSuggestions] = useState<SearchBoxSuggestion[]>([])
 
     const [isOpen, setOpen] = useState(false)
@@ -44,8 +48,12 @@ const MapSearchbox = ({
 
         if (value) {
             try {
+                if (!searchBoxInput) {
+                    setSessionToken(uuidv4())
+                }
+
                 const response = await fetchSearchSuggestion({
-                    session_token: "test-123",
+                    session_token: sessionToken,
                     searchValue: value,
                 })
                 setSuggestions(response.suggestions || [])
@@ -98,9 +106,8 @@ const MapSearchbox = ({
             if (selectedOption.mapbox_id) {
                 try {
                     setIsLoadingLocationInfo(true)
-                    // TODO: Replace session token
                     const response = await fetchRetrieveSearchResult({
-                        session_token: "test-123",
+                        session_token: sessionToken,
                         mapboxId: selectedOption.mapbox_id,
                     })
 
@@ -124,7 +131,7 @@ const MapSearchbox = ({
                 inputRef?.current?.blur()
             }, 0)
         },
-        [mapRef, setIsDrawerOpen, setIsLoadingLocationInfo, setLocationFeatureInfo]
+        [mapRef, setIsDrawerOpen, setIsLoadingLocationInfo, setLocationFeatureInfo, sessionToken]
     )
 
     return (
