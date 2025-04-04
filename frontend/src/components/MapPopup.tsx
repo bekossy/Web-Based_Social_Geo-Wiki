@@ -1,9 +1,10 @@
 import Image from "next/image"
-import {Clock, ExternalLink, Navigation} from "lucide-react"
+import {Building2, Map, ChevronRight} from "lucide-react"
 import {Button} from "./ui/button"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {Dispatch, SetStateAction, useMemo} from "react"
 import {getMapStaticImages} from "@/services/mapbox"
+import {Badge} from "./ui/badge"
 
 interface MapPopupProps {
     locationInfo: SearchBoxFeatureSuggestion
@@ -19,44 +20,84 @@ const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
         })
     }, [locationInfo])
 
+    const neighborhood = locationInfo.properties.context?.neighborhood?.name
+    const locality = locationInfo.properties.context?.locality?.name
+    const place = locationInfo.properties.context?.place?.name
+    const region = locationInfo.properties.context?.region?.name
+
     return (
-        <div className="p-3 shadow-lg rounded-xl w-full">
-            <div className="relative w-full h-40 overflow-hidden rounded-lg">
+        <div className="border-muted-foreground overflow-hidden rounded-lg border bg-card shadow-lg">
+            <div className="relative aspect-[16/9]">
                 <Image
                     src={mapStaticImage}
-                    alt={`Image of ${locationInfo.properties.name}`}
+                    alt={`Map view of ${locationInfo.properties.name}`}
                     fill
                     className="object-cover"
+                    sizes="300px"
                 />
-            </div>
-
-            <div className="my-4 flex flex-col gap-3">
-                <div className="flex items-start gap-2">
-                    <Navigation className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <p className="text-sm text-muted-foreground font-medium">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <h3 className="font-semibold text-lg truncate">
                         {locationInfo.properties.name}
-                    </p>
-                </div>
-                <div className="flex items-start gap-2">
-                    <Navigation className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <p className="text-sm text-muted-foreground font-medium">Location</p>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Clock className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <p className="text-sm text-muted-foreground">
-                        Best time to visit: <span className="font-semibold">Morning</span>
-                    </p>
+                    </h3>
+                    {locationInfo.properties?.full_address && (
+                        <p className="text-sm text-white/80 truncate">
+                            {locationInfo.properties?.full_address}
+                        </p>
+                    )}
                 </div>
             </div>
 
-            <Button
-                className="view-more w-full gap-2 rounded-lg transition-all"
-                variant="secondary"
-                onClick={() => setIsDrawerOpen(true)}
-            >
-                View Location
-                <ExternalLink className="h-4 w-4" />
-            </Button>
+            <div className="p-3 space-y-4">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                    {locationInfo.properties?.poi_category?.map(
+                        (feature: string, index: number) => (
+                            <Badge variant="outline" key={index} className="bg-primary/5 text-xs">
+                                {feature}
+                            </Badge>
+                        )
+                    )}
+                </div>
+
+                <div className="flex flex-col gap-3 text-sm">
+                    {(neighborhood || locality || place) && (
+                        <div className="flex items-start gap-2 text-muted-foreground">
+                            <Building2 className="h-4 w-4 shrink-0 mt-0.5" />
+                            <div className="space-y-1 truncate">
+                                <div className="flex items-center gap-1">
+                                    {[neighborhood, locality, place, region]
+                                        .filter(Boolean)
+                                        .map((item, index, arr) => (
+                                            <span key={item} className="flex items-center">
+                                                {item}
+                                                {index < arr.length - 1 && (
+                                                    <ChevronRight className="h-3 w-3 mx-0.5 text-muted-foreground/50" />
+                                                )}
+                                            </span>
+                                        ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex items-start gap-2 text-muted-foreground">
+                        <Map className="h-4 w-4 shrink-0 mt-0.5" />
+                        <span className="text-xs font-mono">
+                            {locationInfo.properties.coordinates.latitude.toFixed(4)},{" "}
+                            {locationInfo.properties.coordinates.longitude.toFixed(4)}
+                        </span>
+                    </div>
+                </div>
+
+                <Button
+                    className="w-full group gap-2"
+                    onClick={() => setIsDrawerOpen(true)}
+                    variant="outline"
+                >
+                    View Details
+                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                </Button>
+            </div>
         </div>
     )
 }
