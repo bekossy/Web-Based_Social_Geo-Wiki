@@ -27,6 +27,7 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer"
 import {v4 as uuidv4} from "uuid"
+import {MapPin} from "lucide-react"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
@@ -125,7 +126,18 @@ export default function Home() {
                         handleOnOpenChange={setIsDrawerOpen}
                         title="Title"
                         sidebarContent={
-                            locationFeatureInfo.length > 1 ? (
+                            locationFeatureInfo.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                                    <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                    <h3 className="font-semibold text-lg mb-2">
+                                        No locations found
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        Try searching for a different location or adjusting your
+                                        search terms.
+                                    </p>
+                                </div>
+                            ) : locationFeatureInfo.length > 1 ? (
                                 <LocationList
                                     locationFeatureInfo={locationFeatureInfo}
                                     setIsLoadingLocationInfo={setIsLoadingLocationInfo}
@@ -155,7 +167,18 @@ export default function Home() {
                                         Set your daily activity goal.
                                     </DrawerDescription>
                                 </DrawerHeader>
-                                {locationFeatureInfo.length > 1 ? (
+                                {locationFeatureInfo.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                                        <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                        <h3 className="font-semibold text-lg mb-2">
+                                            No locations found
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground">
+                                            Try searching for a different location or adjusting your
+                                            search terms.
+                                        </p>
+                                    </div>
+                                ) : locationFeatureInfo.length > 1 ? (
                                     <LocationList
                                         locationFeatureInfo={locationFeatureInfo}
                                         setIsLoadingLocationInfo={setIsLoadingLocationInfo}
