@@ -1,25 +1,12 @@
-import {Dispatch, RefObject, SetStateAction, useCallback, useRef, useState} from "react"
+import {useCallback, useRef, useState} from "react"
 import {CommandGroup, CommandItem, CommandList, CommandInput} from "@/components/ui/command"
 import {Command as CommandPrimitive} from "cmdk"
 import {cn} from "@/lib/utils"
-import {type SearchBoxFeatureSuggestion, type SearchBoxSuggestion} from "@mapbox/search-js-core"
-import {Skeleton} from "./ui/skeleton"
-import {type MapRef} from "react-map-gl"
+import {type SearchBoxSuggestion} from "@mapbox/search-js-core"
+import {Skeleton} from "@/components//ui/skeleton"
 import {fetchRetrieveSearchResult, fetchSearchSuggestion} from "@/services/mapbox"
 import {v4 as uuidv4} from "uuid"
-
-interface MapSearchboxProps {
-    mapRef: RefObject<MapRef | null>
-    isLoading?: boolean
-    disabled?: boolean
-    placeholder?: string
-    emptyMessage?: string
-    setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
-    setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
-    sessionToken: string
-    setSessionToken: Dispatch<SetStateAction<string>>
-}
+import {MapSearchboxProps} from "./types"
 
 const MapSearchbox = ({
     mapRef,

@@ -18,5 +18,9 @@ export default function RootLayout({
         }
     }, [user, loading, router])
 
-    return <div>{children}</div>
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+            {children}
+        </div>
+    )
 }

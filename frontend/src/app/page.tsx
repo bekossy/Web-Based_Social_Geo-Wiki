@@ -4,14 +4,12 @@ import {useCallback, useEffect, useRef, useState} from "react"
 import {type MapRef} from "react-map-gl"
 import {type SearchBoxRetrieveResponse} from "@mapbox/search-js-core"
 
-import LocationDetails from "@/components/LocationDetails"
-import LocationList from "@/components/LocationList"
-import MapControlPanel from "@/components/MapControlPanel"
-import MapView from "@/components/MapView"
-import Navbar from "@/components/Navbar"
+import MapControlPanel from "@/features/map/components/MapControlPanel"
+
+import Navbar from "@/components/layout/Navbar"
 import {NavigationSidebar} from "@/components/NavigationSidebar"
 import ProtectedRoute from "@/components/ProtectedRoute"
-import Sidebar from "@/components/Sidebar"
+import Sidebar from "@/components/layout/Sidebar"
 import {useMediaQuery} from "@/hooks/use-media-query"
 import {getAllMappinPosts} from "@/services/posts"
 import {MappinPosts} from "@/services/posts/types"
@@ -27,12 +25,17 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer"
 import {v4 as uuidv4} from "uuid"
-import {MapPin} from "lucide-react"
+import LocationNotFound from "@/features/locations/components/LocationNotFound"
+import MapView from "@/features/map/components/MapView"
+import LocationList from "@/features/locations/components/LocationList"
+import UserAvatar from "@/components/UserAvatar"
+import {useAuth} from "@/contexts/AuthContext"
+import LocationDetails from "@/features/locations/components/LocationDetails"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
     const isDesktop = useMediaQuery("(min-width: 550px)")
-
+    const {user} = useAuth()
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isNavSidebarOpen, setIsNavSidebarOpen] = useState(false)
     const [isLoadingLocationInfo, setIsLoadingLocationInfo] = useState(false)
@@ -109,6 +112,8 @@ export default function Home() {
                         sessionToken={sessionToken}
                         setSessionToken={setSessionToken}
                     />
+
+                    <UserAvatar color={user?.color || ""} username={user?.username || ""} />
                 </div>
 
                 <MapView
@@ -127,16 +132,7 @@ export default function Home() {
                         title="Title"
                         sidebarContent={
                             locationFeatureInfo.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                                    <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                                    <h3 className="font-semibold text-lg mb-2">
-                                        No locations found
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Try searching for a different location or adjusting your
-                                        search terms.
-                                    </p>
-                                </div>
+                                <LocationNotFound />
                             ) : locationFeatureInfo.length > 1 ? (
                                 <LocationList
                                     locationFeatureInfo={locationFeatureInfo}
@@ -168,16 +164,7 @@ export default function Home() {
                                     </DrawerDescription>
                                 </DrawerHeader>
                                 {locationFeatureInfo.length === 0 ? (
-                                    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                                        <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                                        <h3 className="font-semibold text-lg mb-2">
-                                            No locations found
-                                        </h3>
-                                        <p className="text-sm text-muted-foreground">
-                                            Try searching for a different location or adjusting your
-                                            search terms.
-                                        </p>
-                                    </div>
+                                    <LocationNotFound />
                                 ) : locationFeatureInfo.length > 1 ? (
                                     <LocationList
                                         locationFeatureInfo={locationFeatureInfo}

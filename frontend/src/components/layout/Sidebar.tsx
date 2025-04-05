@@ -1,7 +1,7 @@
 "use client"
 
 import {cn} from "@/lib/utils"
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "./ui/sheet"
+import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@/components/ui/sheet"
 
 type SidebarProps = {
     title: string

@@ -1,30 +1,21 @@
 "use client"
 
 import {fetchIpDetails} from "@/services"
-import {Dispatch, Fragment, RefObject, SetStateAction, useEffect, useState} from "react"
+import {Fragment, useEffect, useState} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
-    MapRef,
     Marker,
     NavigationControl,
     Popup,
     ScaleControl,
 } from "react-map-gl"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
-import MapPopup from "./MapPopup"
+import MapPopup from "../MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
-import {Mappins} from "@/services/mappins/types"
-import UserAvatar from "./UserAvatar"
 
-type MapViewProps = {
-    mapRef: RefObject<MapRef | null>
-    setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
-    setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
-    sessionToken: string
-    mappins: Mappins[]
-}
+import UserAvatar from "@/components/UserAvatar"
+import {MapViewProps} from "./types"
 
 const MapView = ({
     mapRef,
