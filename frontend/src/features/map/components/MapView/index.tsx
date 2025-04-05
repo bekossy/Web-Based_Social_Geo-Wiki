@@ -21,7 +21,7 @@ const MapView = ({
     mapRef,
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
-    setIsDrawerOpen,
+    setIsLocationDrawerOpen,
     sessionToken,
     mappins,
 }: MapViewProps) => {
@@ -95,7 +95,7 @@ const MapView = ({
                             >
                                 <MapPopup
                                     locationInfo={locationData}
-                                    setIsDrawerOpen={setIsDrawerOpen}
+                                    setIsLocationDrawerOpen={setIsLocationDrawerOpen}
                                 />
                             </Popup>
                         )}

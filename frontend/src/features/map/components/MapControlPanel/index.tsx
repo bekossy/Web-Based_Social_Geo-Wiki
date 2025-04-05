@@ -9,7 +9,7 @@ const MapControlPanel = ({
     mapRef,
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
-    setIsDrawerOpen,
+    setIsLocationDrawerOpen,
     sessionToken,
     setSessionToken,
 }: MapControlPanelProps) => {
@@ -17,7 +17,7 @@ const MapControlPanel = ({
         try {
             const data = await fetchSearchCategory({canonicalId})
             setLocationFeatureInfo(data.features)
-            setIsDrawerOpen(true)
+            setIsLocationDrawerOpen(true)
         } catch (error) {
             console.error(error)
         }
@@ -28,7 +28,7 @@ const MapControlPanel = ({
                 mapRef={mapRef}
                 setIsLoadingLocationInfo={setIsLoadingLocationInfo}
                 setLocationFeatureInfo={setLocationFeatureInfo}
-                setIsDrawerOpen={setIsDrawerOpen}
+                setIsLocationDrawerOpen={setIsLocationDrawerOpen}
                 sessionToken={sessionToken}
                 setSessionToken={setSessionToken}
             />

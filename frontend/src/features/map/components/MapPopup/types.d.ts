@@ -3,5 +3,5 @@ import {Dispatch, SetStateAction} from "react"
 
 export interface MapPopupProps {
     locationInfo: SearchBoxFeatureSuggestion
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    setIsLocationDrawerOpen: Dispatch<SetStateAction<boolean>>
 }

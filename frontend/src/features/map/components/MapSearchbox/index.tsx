@@ -16,7 +16,7 @@ const MapSearchbox = ({
     emptyMessage = "No results",
     setIsLoadingLocationInfo,
     setLocationFeatureInfo,
-    setIsDrawerOpen,
+    setIsLocationDrawerOpen,
     sessionToken,
     setSessionToken,
 }: MapSearchboxProps) => {
@@ -106,7 +106,7 @@ const MapSearchbox = ({
                     })
 
                     setLocationFeatureInfo(response.features)
-                    setIsDrawerOpen(true)
+                    setIsLocationDrawerOpen(true)
                 } catch (error) {
                     console.error("Error fetching suggestions:", error)
                 } finally {
@@ -118,7 +118,13 @@ const MapSearchbox = ({
                 inputRef?.current?.blur()
             }, 0)
         },
-        [mapRef, setIsDrawerOpen, setIsLoadingLocationInfo, setLocationFeatureInfo, sessionToken]
+        [
+            mapRef,
+            setIsLocationDrawerOpen,
+            setIsLoadingLocationInfo,
+            setLocationFeatureInfo,
+            sessionToken,
+        ]
     )
 
     return (

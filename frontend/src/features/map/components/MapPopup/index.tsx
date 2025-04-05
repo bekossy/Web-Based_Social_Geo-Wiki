@@ -6,7 +6,7 @@ import LocationPropsContextInfo from "@/components/LocationPropsContextInfo"
 import LocationCoordinates from "@/components/LocationCoordinates"
 import {MapPopupProps} from "./types"
 
-const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
+const MapPopup = ({locationInfo, setIsLocationDrawerOpen}: MapPopupProps) => {
     return (
         <div className="border-muted-foreground overflow-hidden rounded-lg border bg-card shadow-lg">
             <LocationStaticImageCard featureProps={locationInfo.properties} />
@@ -21,7 +21,7 @@ const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
 
                 <Button
                     className="w-full group gap-2"
-                    onClick={() => setIsDrawerOpen(true)}
+                    onClick={() => setIsLocationDrawerOpen(true)}
                     variant="outline"
                 >
                     View Details

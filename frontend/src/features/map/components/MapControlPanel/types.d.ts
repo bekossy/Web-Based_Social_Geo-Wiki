@@ -6,7 +6,7 @@ export interface MapControlPanelProps {
     mapRef: RefObject<MapRef | null>
     setIsLoadingLocationInfo: Dispatch<SetStateAction<boolean>>
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    setIsLocationDrawerOpen: Dispatch<SetStateAction<boolean>>
     sessionToken: string
     setSessionToken: Dispatch<SetStateAction<string>>
 }
