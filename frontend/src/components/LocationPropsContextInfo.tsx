@@ -2,11 +2,11 @@ import {type SearchBoxFeatureProperties} from "@mapbox/search-js-core/dist/searc
 import {Building2, ChevronRight} from "lucide-react"
 import React from "react"
 
-const LocationPropsContextInfo = ({props}: {props: SearchBoxFeatureProperties}) => {
-    const neighborhood = props.context?.neighborhood?.name
-    const locality = props.context?.locality?.name
-    const place = props.context?.place?.name
-    const region = props.context?.region?.name
+const LocationPropsContextInfo = ({featureProps}: {featureProps: SearchBoxFeatureProperties}) => {
+    const neighborhood = featureProps.context?.neighborhood?.name
+    const locality = featureProps.context?.locality?.name
+    const place = featureProps.context?.place?.name
+    const region = featureProps.context?.region?.name
 
     return (
         (neighborhood || locality || place) && (

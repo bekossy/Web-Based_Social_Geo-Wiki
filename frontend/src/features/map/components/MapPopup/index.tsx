@@ -9,14 +9,14 @@ import {MapPopupProps} from "./types"
 const MapPopup = ({locationInfo, setIsDrawerOpen}: MapPopupProps) => {
     return (
         <div className="border-muted-foreground overflow-hidden rounded-lg border bg-card shadow-lg">
-            <LocationStaticImageCard props={locationInfo.properties} />
+            <LocationStaticImageCard featureProps={locationInfo.properties} />
 
             <div className="p-3 space-y-4">
-                <MapPoiCategoryBadges props={locationInfo.properties} />
+                <MapPoiCategoryBadges featureProps={locationInfo.properties} />
 
                 <div className="flex flex-col gap-3 text-sm">
-                    <LocationPropsContextInfo props={locationInfo.properties} />
-                    <LocationCoordinates props={locationInfo.properties} />
+                    <LocationPropsContextInfo featureProps={locationInfo.properties} />
+                    <LocationCoordinates featureProps={locationInfo.properties} />
                 </div>
 
                 <Button

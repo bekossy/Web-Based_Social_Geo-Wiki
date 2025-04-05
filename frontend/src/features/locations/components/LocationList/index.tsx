@@ -57,10 +57,10 @@ const LocationList = ({
                             className="group rounded-lg border bg-card overflow-hidden transition-all hover:shadow-lg hover:border-primary cursor-pointer relative"
                             role="button"
                         >
-                            <LocationStaticImageCard props={location.properties} />
+                            <LocationStaticImageCard featureProps={location.properties} />
 
                             <div className="p-4 space-y-4">
-                                <MapPoiCategoryBadges props={location.properties} />
+                                <MapPoiCategoryBadges featureProps={location.properties} />
 
                                 <div className="grid gap-3 text-sm">
                                     {location.properties?.full_address && (
@@ -72,8 +72,8 @@ const LocationList = ({
                                         </div>
                                     )}
 
-                                    <LocationPropsContextInfo props={location.properties} />
-                                    <LocationCoordinates props={location.properties} />
+                                    <LocationPropsContextInfo featureProps={location.properties} />
+                                    <LocationCoordinates featureProps={location.properties} />
                                 </div>
 
                                 <div className="flex items-center justify-end text-sm text-muted-foreground">
