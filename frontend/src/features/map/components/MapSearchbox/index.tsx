@@ -80,7 +80,7 @@ const MapSearchbox = ({
 
     const handleBlur = useCallback(() => {
         setOpen(false)
-        setSearchBoxInput(selected?.name)
+        setSearchBoxInput(selected?.name || "")
     }, [selected])
 
     const handleSelectOption = useCallback(
