@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import {type Document, model, Schema} from "mongoose"
 import Posts from "./post.model"
 
 interface IMapPinSchema extends Document {
@@ -8,14 +8,14 @@ interface IMapPinSchema extends Document {
     longitude: number
 }
 
-const MapPinSchema = new mongoose.Schema(
+const MapPinSchema = new Schema(
     {
         mapboxId: {
             type: String,
             required: true,
         },
         userId: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
@@ -39,4 +39,4 @@ MapPinSchema.pre("deleteOne", async function (next) {
     next()
 })
 
-export default mongoose.model<IMapPinSchema>("MapPin", MapPinSchema)
+export default model<IMapPinSchema>("MapPin", MapPinSchema)
