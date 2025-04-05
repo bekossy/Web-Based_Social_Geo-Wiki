@@ -15,6 +15,7 @@ import authRouter from "./routes/auth.route"
 import userRouter from "./routes/user.route"
 import mappinRouter from "./routes/mappin.route"
 import postRouter from "./routes/post.route"
+import bookmarkRouter from "./routes/bookmark.route"
 
 const app = express()
 
@@ -41,6 +42,7 @@ app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/mappin", mappinRouter)
 app.use("/api/v1/posts", postRouter)
+app.use("/api/v1/bookmark", bookmarkRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
