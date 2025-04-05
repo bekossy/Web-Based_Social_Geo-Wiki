@@ -10,9 +10,9 @@ const getUserBookmarks = async (req: Request, res: Response) => {
 
 const createBookmark = async (req: Request, res: Response) => {
     req.body.userId = req.user?.userId
-    const {userId, mappinId} = req.body
+    const {userId, mapboxId} = req.body
 
-    const existingBookmark = await Bookmark.findOne({userId, mappinId})
+    const existingBookmark = await Bookmark.findOne({userId, mapboxId})
     if (existingBookmark) {
         throw new BadRequestError("Bookmark for this place already exists")
     }

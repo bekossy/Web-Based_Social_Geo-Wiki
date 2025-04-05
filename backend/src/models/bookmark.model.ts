@@ -3,8 +3,6 @@ import {type Document, model, Schema} from "mongoose"
 interface IBookmarkSchema extends Document {
     mapboxId: string
     userId: string
-    latitude: number
-    longitude: number
 }
 
 const BookmarkSchema = new Schema(
