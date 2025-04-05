@@ -6,13 +6,13 @@ import {Input} from "@/components/ui/input"
 import {AlertCircle, UserPlus} from "lucide-react"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import {UseFormReturn} from "react-hook-form"
-import {formSchema} from "@/app/(auth)/signup/page"
 
 const SignupForm = ({
     form,
     onSubmit,
     isLoading,
     errorMessage,
+    formSchema,
 }: {
     form: UseFormReturn<
         {
@@ -20,12 +20,32 @@ const SignupForm = ({
             password: string
             confirmPassword: string
         },
-        unknown,
         undefined
     >
     onSubmit(values: z.infer<typeof formSchema>): Promise<void>
     isLoading: boolean
     errorMessage: string
+    formSchema: z.ZodEffects<
+        z.ZodObject<
+            {
+                username: z.ZodString
+                password: z.ZodString
+                confirmPassword: z.ZodString
+            },
+            "strip",
+            z.ZodTypeAny,
+            {
+                username: string
+                password: string
+                confirmPassword: string
+            }
+        >,
+        {
+            username: string
+            password: string
+            confirmPassword: string
+        }
+    >
 }) => {
     return (
         <Form {...form}>

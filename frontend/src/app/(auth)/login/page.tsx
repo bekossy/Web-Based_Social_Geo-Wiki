@@ -10,12 +10,11 @@ import LoginForm from "@/features/auth/components/LoginForm"
 import AuthHeader from "@/features/auth/common/AuthHeader"
 import AuthFooter from "@/features/auth/common/AuthFooter"
 
-export const formSchema = z.object({
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-})
-
 export default function LoginPage() {
+    const formSchema = z.object({
+        username: z.string().min(3, "Username must be at least 3 characters"),
+        password: z.string().min(6, "Password must be at least 6 characters"),
+    })
     const [errorMessage, setErrorMessage] = useState("")
     const router = useRouter()
     const {login} = useAuth()
@@ -56,6 +55,7 @@ export default function LoginPage() {
                 onSubmit={onSubmit}
                 isLoading={isLoading}
                 errorMessage={errorMessage}
+                formSchema={formSchema}
             />
 
             <AuthFooter text={`Don't have an account?`} link="/signup" btnText="Sign up" />

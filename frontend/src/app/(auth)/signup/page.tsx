@@ -10,18 +10,17 @@ import SignupForm from "@/features/auth/components/SignupForm"
 import AuthHeader from "@/features/auth/common/AuthHeader"
 import AuthFooter from "@/features/auth/common/AuthFooter"
 
-export const formSchema = z
-    .object({
-        username: z.string().min(3, "Username must be at least 3 characters"),
-        password: z.string().min(6, "Password must be at least 6 characters"),
-        confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords don't match",
-        path: ["confirmPassword"],
-    })
-
 export default function SignUpPage() {
+    const formSchema = z
+        .object({
+            username: z.string().min(3, "Username must be at least 3 characters"),
+            password: z.string().min(6, "Password must be at least 6 characters"),
+            confirmPassword: z.string(),
+        })
+        .refine((data) => data.password === data.confirmPassword, {
+            message: "Passwords don't match",
+            path: ["confirmPassword"],
+        })
     const {register} = useAuth()
     const [errorMessage, setErrorMessage] = useState("")
     const router = useRouter()
@@ -63,6 +62,7 @@ export default function SignUpPage() {
                 onSubmit={onSubmit}
                 isLoading={isLoading}
                 errorMessage={errorMessage}
+                formSchema={formSchema}
             />
 
             <AuthFooter text="Already have an account?" link="/login" btnText="Sign in" />

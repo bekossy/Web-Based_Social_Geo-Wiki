@@ -13,7 +13,7 @@ import Sidebar from "@/components/layout/Sidebar"
 import {useMediaQuery} from "@/hooks/use-media-query"
 import {getAllMappinPosts} from "@/services/posts"
 import {MappinPosts} from "@/services/posts/types"
-import {fetchAllCategoryList} from "@/services/mapbox"
+import {fetchAllCategoryList, fetchRetrieveSearchResult} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {getAllMappins} from "@/services/mappins"
 import {Mappins} from "@/services/mappins/types"
@@ -31,13 +31,15 @@ import LocationList from "@/features/locations/components/LocationList"
 import UserAvatar from "@/components/UserAvatar"
 import {useAuth} from "@/contexts/AuthContext"
 import LocationDetails from "@/features/locations/components/LocationDetails"
+import {getUserBookmarks} from "@/services/bookmark"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
     const isDesktop = useMediaQuery("(min-width: 550px)")
     const {user} = useAuth()
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+    const [isLocationDrawerOpen, setIsLocationDrawerOpen] = useState(false)
     const [isNavSidebarOpen, setIsNavSidebarOpen] = useState(false)
+    const [isBookmarkDrawerOpen, setIsBookmarkDrawerOpen] = useState(false)
     const [isLoadingLocationInfo, setIsLoadingLocationInfo] = useState(false)
     const [sessionToken, setSessionToken] = useState(() => uuidv4())
 
@@ -99,6 +101,24 @@ export default function Home() {
         fetchMappinPosts()
     }, [fetchMappinPosts])
 
+    const handleFetchBookmarkOnClick = async () => {
+        try {
+            const data = await getUserBookmarks()
+            const resp = await Promise.all(
+                data.map(async (bookmark) => {
+                    const data = await fetchRetrieveSearchResult({
+                        mapboxId: bookmark.mapboxId,
+                        session_token: "123",
+                    })
+                    return data.features[0]
+                })
+            )
+            console.log("Bookmarks: ", resp)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     return (
         <ProtectedRoute>
             <Navbar setIsNavSidebarOpen={setIsNavSidebarOpen} />
@@ -108,7 +128,7 @@ export default function Home() {
                         mapRef={mapRef}
                         setIsLoadingLocationInfo={setIsLoadingLocationInfo}
                         setLocationFeatureInfo={setLocationFeatureInfo}
-                        setIsDrawerOpen={setIsDrawerOpen}
+                        setIsLocationDrawerOpen={setIsLocationDrawerOpen}
                         sessionToken={sessionToken}
                         setSessionToken={setSessionToken}
                     />
@@ -119,7 +139,7 @@ export default function Home() {
                 <MapView
                     mapRef={mapRef}
                     setLocationFeatureInfo={setLocationFeatureInfo}
-                    setIsDrawerOpen={setIsDrawerOpen}
+                    setIsLocationDrawerOpen={setIsLocationDrawerOpen}
                     setIsLoadingLocationInfo={setIsLoadingLocationInfo}
                     sessionToken={sessionToken}
                     mappins={mappins}
@@ -127,8 +147,8 @@ export default function Home() {
 
                 {isDesktop ? (
                     <Sidebar
-                        open={isDrawerOpen}
-                        handleOnOpenChange={setIsDrawerOpen}
+                        open={isLocationDrawerOpen}
+                        handleOnOpenChange={setIsLocationDrawerOpen}
                         title="Title"
                         sidebarContent={
                             locationFeatureInfo.length === 0 ? (
@@ -154,7 +174,7 @@ export default function Home() {
                         isLoading={isLoadingLocationInfo}
                     />
                 ) : (
-                    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+                    <Drawer open={isLocationDrawerOpen} onOpenChange={setIsLocationDrawerOpen}>
                         <DrawerContent className="p-4 max-h-[75vh] h-[75vh]">
                             <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
                                 <DrawerHeader className="hidden">
@@ -187,6 +207,30 @@ export default function Home() {
                     </Drawer>
                 )}
 
+                {isDesktop ? (
+                    <Sidebar
+                        open={isBookmarkDrawerOpen}
+                        handleOnOpenChange={setIsBookmarkDrawerOpen}
+                        title="Title"
+                        sidebarContent={<div>Your Bookmarks</div>}
+                        isLoading={isLoadingLocationInfo}
+                    />
+                ) : (
+                    <Drawer open={isLocationDrawerOpen} onOpenChange={setIsLocationDrawerOpen}>
+                        <DrawerContent className="p-4 max-h-[75vh] h-[75vh]">
+                            <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
+                                <DrawerHeader className="hidden">
+                                    <DrawerTitle>Move Goal</DrawerTitle>
+                                    <DrawerDescription>
+                                        Set your daily activity goal.
+                                    </DrawerDescription>
+                                </DrawerHeader>
+                                <div>Your Bookmarks</div>
+                            </div>
+                        </DrawerContent>
+                    </Drawer>
+                )}
+
                 <Sidebar
                     open={isNavSidebarOpen}
                     side="left"
@@ -196,8 +240,10 @@ export default function Home() {
                         <NavigationSidebar
                             setLocationFeatureInfo={setLocationFeatureInfo}
                             setIsNavSidebarOpen={setIsNavSidebarOpen}
-                            setIsDrawerOpen={setIsDrawerOpen}
+                            setIsLocationDrawerOpen={setIsLocationDrawerOpen}
+                            setIsBookmarkDrawerOpen={setIsBookmarkDrawerOpen}
                             categoryList={categoryList}
+                            handleFetchBookmarkOnClick={handleFetchBookmarkOnClick}
                         />
                     }
                     isLoading={false}

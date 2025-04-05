@@ -6,25 +6,40 @@ import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import React from "react"
 import {UseFormReturn} from "react-hook-form"
 import * as z from "zod"
-import {formSchema} from "@/app/(auth)/login/page"
 
 const LoginForm = ({
     form,
     onSubmit,
     isLoading,
     errorMessage,
+    formSchema,
 }: {
     form: UseFormReturn<
         {
             username: string
             password: string
         },
-        unknown,
         undefined
     >
     onSubmit(values: z.infer<typeof formSchema>): Promise<void>
     isLoading: boolean
     errorMessage: string
+    formSchema: z.ZodObject<
+        {
+            username: z.ZodString
+            password: z.ZodString
+        },
+        "strip",
+        z.ZodTypeAny,
+        {
+            username: string
+            password: string
+        },
+        {
+            username: string
+            password: string
+        }
+    >
 }) => {
     return (
         <Form {...form}>

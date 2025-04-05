@@ -11,7 +11,7 @@ import {
     CommandGroup,
     CommandItem,
 } from "@/components/ui/command"
-import {Search, Settings, LogOut, Clock, ChevronRight, ArrowLeft} from "lucide-react"
+import {Search, Settings, LogOut, Clock, ChevronRight, ArrowLeft, Heart} from "lucide-react"
 import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
@@ -22,18 +22,22 @@ import UserAvatar from "./UserAvatar"
 interface NavigationSidebarProps {
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
     setIsNavSidebarOpen: Dispatch<SetStateAction<boolean>>
-    setIsDrawerOpen: Dispatch<SetStateAction<boolean>>
+    setIsLocationDrawerOpen: Dispatch<SetStateAction<boolean>>
+    setIsBookmarkDrawerOpen: Dispatch<SetStateAction<boolean>>
     categoryList: CategoryListResponse[]
+    handleFetchBookmarkOnClick: () => Promise<void>
 }
 
 const RECENT_SEARCHES_KEY = "recentSearches"
 
-export function NavigationSidebar({
+export const NavigationSidebar = ({
     categoryList,
     setLocationFeatureInfo,
     setIsNavSidebarOpen,
-    setIsDrawerOpen,
-}: NavigationSidebarProps) {
+    setIsLocationDrawerOpen,
+    setIsBookmarkDrawerOpen,
+    handleFetchBookmarkOnClick,
+}: NavigationSidebarProps) => {
     const {user, logout} = useAuth()
     const [searchQuery, setSearchQuery] = useState("")
     const [showSearch, setShowSearch] = useState(false)
@@ -62,7 +66,7 @@ export function NavigationSidebar({
             setShowSearch(false)
             setSearchQuery("")
             setIsNavSidebarOpen(false)
-            setIsDrawerOpen(true)
+            setIsLocationDrawerOpen(true)
             saveRecentSearch({name: categoryName, id: canonicalId})
         } catch (error) {
             console.error(error)
@@ -155,13 +159,21 @@ export function NavigationSidebar({
                                 Search categories...
                             </Button>
 
-                            {/* <div className="space-y-1">
+                            <div className="space-y-1">
                                 <h4 className="text-sm font-medium px-2">Favorites</h4>
-                                <Button variant="ghost" className="w-full justify-start">
+                                <Button
+                                    variant="ghost"
+                                    className="w-full justify-start"
+                                    onClick={() => {
+                                        handleFetchBookmarkOnClick()
+                                        setIsBookmarkDrawerOpen(true)
+                                        setIsNavSidebarOpen(false)
+                                    }}
+                                >
                                     <Heart className="mr-2 size-4" />
                                     Saved Places
                                 </Button>
-                            </div> */}
+                            </div>
 
                             <div className="space-y-1">
                                 <h4 className="text-sm font-medium px-2">Categories</h4>
