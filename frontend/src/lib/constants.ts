@@ -1,4 +1,4 @@
-export const CATEGORIES = [
+const CATEGORIES = [
     {
         canonical_id: "restaurant",
         icon: "restaurant",
@@ -30,3 +30,7 @@ export const CATEGORIES = [
         name: "Tourist Attraction",
     },
 ]
+
+const dayMap = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+export {CATEGORIES, dayMap}
