@@ -49,7 +49,7 @@ const createPost = async (req: Request, res: Response) => {
             req.files.map(async (file) => {
                 const imageUrl = await uploadToCloudinary(file.path)
                 imagePaths.push({url: imageUrl.secure_url, public_id: imageUrl.public_id})
-            })
+            }),
         )
     }
 

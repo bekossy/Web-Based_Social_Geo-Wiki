@@ -38,7 +38,7 @@ const PostSchema = new Schema(
             default: [],
         },
     },
-    {timestamps: true}
+    {timestamps: true},
 )
 
 export default model<IPostSchema>("Post", PostSchema)

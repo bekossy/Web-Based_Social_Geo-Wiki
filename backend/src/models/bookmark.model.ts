@@ -19,7 +19,7 @@ const BookmarkSchema = new Schema(
     },
     {
         timestamps: true,
-    }
+    },
 )
 
 export default model<IBookmarkSchema>("Bookmark", BookmarkSchema)

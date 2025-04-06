@@ -28,7 +28,7 @@ const MapPinSchema = new Schema(
             required: true,
         },
     },
-    {timestamps: true}
+    {timestamps: true},
 )
 
 MapPinSchema.pre("deleteOne", async function (next) {

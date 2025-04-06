@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema(
             unique: true,
         },
     },
-    {timestamps: true}
+    {timestamps: true},
 )
 
 UserSchema.pre("save", async function (next) {
