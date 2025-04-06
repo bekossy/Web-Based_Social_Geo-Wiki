@@ -216,7 +216,7 @@ export default function Home() {
                         isLoading={isLoadingLocationInfo}
                     />
                 ) : (
-                    <Drawer open={isLocationDrawerOpen} onOpenChange={setIsLocationDrawerOpen}>
+                    <Drawer open={isBookmarkDrawerOpen} onOpenChange={setIsBookmarkDrawerOpen}>
                         <DrawerContent className="p-4 max-h-[75vh] h-[75vh]">
                             <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
                                 <DrawerHeader className="hidden">
