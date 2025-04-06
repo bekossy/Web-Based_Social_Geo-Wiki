@@ -56,7 +56,92 @@
                 "poi_category_ids": ["college", "education"],
                 "external_ids": {},
                 "metadata": {
-                    "wheelchair_accessible": true
+                    "phone": "+35621247773",
+                    "website": "http://www.themeatbox.mt/",
+                    "wheelchair_accessible": true,
+                    "open_hours": {
+                        "periods": [
+                            {
+                                "open": {
+                                    "day": 1,
+                                    "time": "0700"
+                                },
+                                "close": {
+                                    "day": 1,
+                                    "time": "1900"
+                                }
+                            },
+                            {
+                                "open": {
+                                    "day": 2,
+                                    "time": "0700"
+                                },
+                                "close": {
+                                    "day": 2,
+                                    "time": "1900"
+                                }
+                            },
+                            {
+                                "open": {
+                                    "day": 3,
+                                    "time": "0700"
+                                },
+                                "close": {
+                                    "day": 3,
+                                    "time": "1900"
+                                }
+                            },
+                            {
+                                "open": {
+                                    "day": 4,
+                                    "time": "0700"
+                                },
+                                "close": {
+                                    "day": 4,
+                                    "time": "1900"
+                                }
+                            },
+                            {
+                                "open": {
+                                    "day": 5,
+                                    "time": "0700"
+                                },
+                                "close": {
+                                    "day": 5,
+                                    "time": "1900"
+                                }
+                            },
+                            {
+                                "open": {
+                                    "day": 6,
+                                    "time": "0700"
+                                },
+                                "close": {
+                                    "day": 6,
+                                    "time": "1400"
+                                }
+                            }
+                        ]
+                    },
+                    "open_hours2": {
+                        "periods": [
+                            {
+                                "open": {
+                                    "day": 0,
+                                    "time": "0000"
+                                }
+                            }
+                        ],
+                        "weekday_text": [
+                            "Monday: Open 24 hours",
+                            "Tuesday: Open 24 hours",
+                            "Wednesday: Open 24 hours",
+                            "Thursday: Open 24 hours",
+                            "Friday: Open 24 hours",
+                            "Saturday: Open 24 hours",
+                            "Sunday: Open 24 hours"
+                        ]
+                    }
                 },
                 "operational_status": "active"
             }
