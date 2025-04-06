@@ -84,10 +84,10 @@ export default function Home() {
     useEffect(() => {
         if (locationFeatureInfo.length === 1) {
             const activeMappin = mappins.find(
-                (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id
+                (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id,
             )
             const activeBookmark = bookmarks.find(
-                (bookmark) => bookmark.mapboxId === locationFeatureInfo[0].properties.mapbox_id
+                (bookmark) => bookmark.mapboxId === locationFeatureInfo[0].properties.mapbox_id,
             )
             setSelectedMappinLocation(activeMappin)
             setSelectedMappinBookmark(activeBookmark)
@@ -118,7 +118,7 @@ export default function Home() {
                         session_token: sessionToken,
                     })
                     return data.features[0]
-                })
+                }),
             )
             console.log("Bookmarks: ", resp)
         } catch (error) {

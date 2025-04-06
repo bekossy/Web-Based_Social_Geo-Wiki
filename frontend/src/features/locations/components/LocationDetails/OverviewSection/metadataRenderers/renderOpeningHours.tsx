@@ -24,7 +24,7 @@ export const renderOpeningHours = ({open_hours}: RenderOpeningHoursProps) => {
                 open: {day: number; time: string}
                 close?: {day: number; time: string}
             },
-            idx: number
+            idx: number,
         ) => {
             const openDay = dayMap[period.open.day]
             const openTime = formatTime(period.open.time)
@@ -35,6 +35,6 @@ export const renderOpeningHours = ({open_hours}: RenderOpeningHoursProps) => {
                     {openDay}: {openTime} - {closeTime}
                 </li>
             )
-        }
+        },
     )
 }

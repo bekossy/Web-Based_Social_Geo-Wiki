@@ -202,7 +202,7 @@ const OverviewSection = ({
                         onClick={() =>
                             window.open(
                                 `https://www.google.com/maps/search/?api=1&query=${locationData.coordinates.latitude},${locationData.coordinates.longitude}`,
-                                "_blank"
+                                "_blank",
                             )
                         }
                     >

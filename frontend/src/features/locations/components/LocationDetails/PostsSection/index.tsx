@@ -46,7 +46,7 @@ const PostsSection = ({
                                 <button
                                     onClick={() =>
                                         setSelectedImages((prev) =>
-                                            prev.filter((_, i) => i !== index)
+                                            prev.filter((_, i) => i !== index),
                                         )
                                     }
                                     className="absolute top-1 right-1 p-1 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"

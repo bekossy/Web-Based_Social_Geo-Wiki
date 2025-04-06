@@ -26,7 +26,7 @@ const MapSearchbox = ({
 
     const [isOpen, setOpen] = useState(false)
     const [selected, setSelected] = useState<SearchBoxSuggestion>(
-        searchBoxValue as SearchBoxSuggestion
+        searchBoxValue as SearchBoxSuggestion,
     )
     const [searchBoxInput, setSearchBoxInput] = useState<string>(searchBoxValue?.name || "")
 
@@ -75,7 +75,7 @@ const MapSearchbox = ({
                 input.blur()
             }
         },
-        [isOpen, searchBoxInput, suggestions]
+        [isOpen, searchBoxInput, suggestions],
     )
 
     const handleBlur = useCallback(() => {
@@ -124,7 +124,7 @@ const MapSearchbox = ({
             setIsLoadingLocationInfo,
             setLocationFeatureInfo,
             sessionToken,
-        ]
+        ],
     )
 
     return (
@@ -145,7 +145,7 @@ const MapSearchbox = ({
                 <div
                     className={cn(
                         "animate-in fade-in-0 zoom-in-95 absolute top-0 z-10 w-full rounded-xl bg-white outline-none",
-                        isOpen ? "block" : "hidden"
+                        isOpen ? "block" : "hidden",
                     )}
                 >
                     <CommandList className="rounded-lg ring-1 ring-slate-200">
@@ -169,7 +169,7 @@ const MapSearchbox = ({
                                             }}
                                             onSelect={() => handleSelectOption(option)}
                                             className={cn(
-                                                "flex flex-col w-full items-start gap-2 cursor-pointer"
+                                                "flex flex-col w-full items-start gap-2 cursor-pointer",
                                             )}
                                         >
                                             <div className="flex flex-col">

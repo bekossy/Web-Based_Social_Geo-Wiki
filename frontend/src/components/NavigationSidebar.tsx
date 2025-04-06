@@ -109,7 +109,7 @@ export const NavigationSidebar = ({
                             <CommandGroup heading="Categories" className="flex-1 overflow-auto">
                                 {categoryList
                                     .filter((cat) =>
-                                        cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+                                        cat.name.toLowerCase().includes(searchQuery.toLowerCase()),
                                     )
                                     .map((category) => {
                                         return (
@@ -118,7 +118,7 @@ export const NavigationSidebar = ({
                                                 onSelect={() => {
                                                     handleSelectedCategory(
                                                         category.canonical_id,
-                                                        category.name
+                                                        category.name,
                                                     )
                                                 }}
                                                 className="gap-4 cursor-pointer"
@@ -186,7 +186,7 @@ export const NavigationSidebar = ({
                                             onClick={() =>
                                                 handleSelectedCategory(
                                                     category.canonical_id,
-                                                    category.name
+                                                    category.name,
                                                 )
                                             }
                                         >

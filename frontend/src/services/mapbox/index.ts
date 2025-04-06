@@ -65,7 +65,7 @@ export const fetchSearchCategory = async ({
             params: {
                 access_token: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
             },
-        }
+        },
     )
     return data
 }
