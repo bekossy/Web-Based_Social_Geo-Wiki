@@ -3,8 +3,6 @@
 import {useMemo, useRef, useState} from "react"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {Loader2, Minus, Plus} from "lucide-react"
-import {Button} from "@/components/ui/button"
 
 import {createMappin, deleteMappin} from "@/services/mappins"
 import {useAuth} from "@/contexts/AuthContext"
@@ -13,6 +11,7 @@ import {createMappinPosts} from "@/services/posts"
 import {LocationDetailsProps} from "./types"
 import PostsSection from "./PostsSection"
 import OverviewSection from "./OverviewSection"
+import {createBookmark, deleteBookmark, getUserBookmarks} from "@/services/bookmark"
 
 const LocationDetails = ({
     locationFeatureInfo,
@@ -20,6 +19,7 @@ const LocationDetails = ({
     fetchAllMappins,
     selectedMappinPosts,
     fetchSelectedMappinPosts,
+    selectedMappinBookmark,
 }: LocationDetailsProps) => {
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
@@ -33,6 +33,8 @@ const LocationDetails = ({
 
     const [isAddingPinLoading, setIsAddingPinLoading] = useState(false)
     const [isRemovingPinLoading, setIsRemovingPinLoading] = useState(false)
+
+    const [isBookmarkLoading, setIsBookmarkLoading] = useState(false)
 
     const [isAddingPostLoading, setIsAddingPostLoading] = useState(false)
 
@@ -48,6 +50,7 @@ const LocationDetails = ({
     }
 
     const isPinned = useMemo(() => !!selectedMappinLocation, [selectedMappinLocation])
+    const isBookmarked = useMemo(() => !!selectedMappinBookmark, [selectedMappinBookmark])
 
     const canRemovePin = useMemo(() => {
         return isPinned && selectedMappinLocation?.userId._id === user?.userId
@@ -114,66 +117,77 @@ const LocationDetails = ({
         }
     }
 
+    const handleBookmarkLocation = async () => {
+        if (!selectedMappinLocation?.mapboxId || isBookmarkLoading) return
+        try {
+            setIsBookmarkLoading(true)
+            await createBookmark({
+                mapboxId: selectedMappinLocation.mapboxId,
+            })
+            await getUserBookmarks()
+            await fetchAllMappins()
+        } catch (error) {
+            console.error("Failed to bookmark location:", error)
+        } finally {
+            setIsBookmarkLoading(false)
+        }
+    }
+
+    const handleUnbookmarkLocation = async () => {
+        if (!isBookmarked || isBookmarkLoading) return
+        try {
+            setIsBookmarkLoading(true)
+            await deleteBookmark({
+                bookmarkId: selectedMappinBookmark._id,
+            })
+            await getUserBookmarks()
+            await fetchAllMappins()
+        } catch (error) {
+            console.error("Failed to unbookmark location:", error)
+        } finally {
+            setIsBookmarkLoading(false)
+        }
+    }
+
     return (
-        <>
-            <div className="mt-2 mb-4">
-                {!isPinned && (
-                    <Button
-                        className="w-full gap-2"
-                        onClick={handleAddLocationPin}
-                        disabled={isAddingPinLoading}
-                    >
-                        {isAddingPinLoading ? (
-                            <Loader2 className="animate-spin" />
-                        ) : (
-                            <Plus className="h-4 w-4" />
-                        )}
-                        Pin Location
-                    </Button>
-                )}
-                {canRemovePin && (
-                    <Button
-                        variant={"destructive"}
-                        className="w-full gap-2"
-                        onClick={handleRemoveLocationPin}
-                        disabled={isRemovingPinLoading}
-                    >
-                        {isRemovingPinLoading ? (
-                            <Loader2 className="animate-spin" />
-                        ) : (
-                            <Minus className="h-4 w-4" />
-                        )}
-                        Remove Pin
-                    </Button>
-                )}
-            </div>
-            <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger disabled={!isPinned} value="posts">
-                        Posts
-                    </TabsTrigger>
-                </TabsList>
-                <ScrollArea>
-                    <TabsContent value="overview">
-                        <OverviewSection isPinned={isPinned} locationData={locationData} />
-                    </TabsContent>
-                    <TabsContent value="posts">
-                        <PostsSection
-                            isAddingPostLoading={isAddingPostLoading}
-                            handleImageSelect={handleImageSelect}
-                            handleSubmitPost={handleSubmitPost}
-                            selectedMappinPosts={selectedMappinPosts}
-                            setNewPost={setNewPost}
-                            setSelectedImages={setSelectedImages}
-                            imagePreviews={imagePreviews}
-                            newPost={newPost}
-                            fileInputRef={fileInputRef}
-                        />
-                    </TabsContent>
-                </ScrollArea>
-            </Tabs>
-        </>
+        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger disabled={!isPinned} value="posts">
+                    Posts
+                </TabsTrigger>
+            </TabsList>
+            <ScrollArea>
+                <TabsContent value="overview">
+                    <OverviewSection
+                        isPinned={isPinned}
+                        isAddingPinLoading={isAddingPinLoading}
+                        isRemovingPinLoading={isRemovingPinLoading}
+                        canRemovePin={canRemovePin}
+                        handleAddLocationPin={handleAddLocationPin}
+                        handleRemoveLocationPin={handleRemoveLocationPin}
+                        handleBookmarkLocation={handleBookmarkLocation}
+                        handleUnbookmarkLocation={handleUnbookmarkLocation}
+                        isBookmarkLoading={isBookmarkLoading}
+                        locationData={locationData}
+                        isBookmarked={isBookmarked}
+                    />
+                </TabsContent>
+                <TabsContent value="posts">
+                    <PostsSection
+                        isAddingPostLoading={isAddingPostLoading}
+                        handleImageSelect={handleImageSelect}
+                        handleSubmitPost={handleSubmitPost}
+                        selectedMappinPosts={selectedMappinPosts}
+                        setNewPost={setNewPost}
+                        setSelectedImages={setSelectedImages}
+                        imagePreviews={imagePreviews}
+                        newPost={newPost}
+                        fileInputRef={fileInputRef}
+                    />
+                </TabsContent>
+            </ScrollArea>
+        </Tabs>
     )
 }
 

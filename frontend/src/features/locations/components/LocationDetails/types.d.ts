@@ -8,4 +8,5 @@ export interface LocationDetailsProps {
     fetchAllMappins: () => Promise<void>
     selectedMappinPosts: MappinPosts[]
     fetchSelectedMappinPosts: () => Promise<void>
+    selectedMappinBookmark: Bookmark | undefined
 }

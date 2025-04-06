@@ -32,6 +32,7 @@ import UserAvatar from "@/components/UserAvatar"
 import {useAuth} from "@/contexts/AuthContext"
 import LocationDetails from "@/features/locations/components/LocationDetails"
 import {getUserBookmarks} from "@/services/bookmark"
+import {Bookmark} from "@/services/bookmark/types"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
@@ -48,15 +49,18 @@ export default function Home() {
     >([])
     const [categoryList, setCategoryList] = useState<CategoryListResponse[]>([])
     const [mappins, setMappins] = useState<Mappins[]>([])
+    const [bookmarks, setBookmarks] = useState<Bookmark[]>([])
     const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>()
+    const [selectedMappinBookmark, setSelectedMappinBookmark] = useState<Bookmark | undefined>()
     const [selectedMappinPosts, setSelectedMappinPosts] = useState<MappinPosts[]>([])
 
     const fetchMappins = useCallback(async () => {
         try {
-            const data = await getAllMappins()
-            setMappins(data)
+            const [mappins, bookmarks] = await Promise.all([getAllMappins(), getUserBookmarks()])
+            setMappins(mappins)
+            setBookmarks(bookmarks)
         } catch (error) {
-            console.error("Failed to fetch mappins:", error)
+            console.error("Failed to fetch mappins and bookmarks:", error)
         }
     }, [])
 
@@ -82,9 +86,13 @@ export default function Home() {
             const activeMappin = mappins.find(
                 (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id
             )
+            const activeBookmark = bookmarks.find(
+                (bookmark) => bookmark.mapboxId === locationFeatureInfo[0].properties.mapbox_id
+            )
             setSelectedMappinLocation(activeMappin)
+            setSelectedMappinBookmark(activeBookmark)
         }
-    }, [locationFeatureInfo, mappins])
+    }, [locationFeatureInfo, mappins, bookmarks])
 
     const fetchMappinPosts = useCallback(async () => {
         if (!selectedMappinLocation) return
@@ -103,9 +111,8 @@ export default function Home() {
 
     const handleFetchBookmarkOnClick = async () => {
         try {
-            const data = await getUserBookmarks()
             const resp = await Promise.all(
-                data.map(async (bookmark) => {
+                bookmarks.map(async (bookmark) => {
                     const data = await fetchRetrieveSearchResult({
                         mapboxId: bookmark.mapboxId,
                         session_token: sessionToken,
@@ -168,6 +175,7 @@ export default function Home() {
                                     fetchAllMappins={fetchMappins}
                                     selectedMappinPosts={selectedMappinPosts}
                                     fetchSelectedMappinPosts={fetchMappinPosts}
+                                    selectedMappinBookmark={selectedMappinBookmark}
                                 />
                             )
                         }
@@ -200,6 +208,7 @@ export default function Home() {
                                         fetchAllMappins={fetchMappins}
                                         selectedMappinPosts={selectedMappinPosts}
                                         fetchSelectedMappinPosts={fetchMappinPosts}
+                                        selectedMappinBookmark={selectedMappinBookmark}
                                     />
                                 )}
                             </div>

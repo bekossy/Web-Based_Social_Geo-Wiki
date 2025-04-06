@@ -2,7 +2,7 @@ import {Button} from "@/components/ui/button"
 import {getMapStaticImages} from "@/services/mapbox"
 import {
     Accessibility,
-    BookmarkX,
+    Bookmark,
     ExternalLink,
     ImageIcon,
     Info,
@@ -11,6 +11,9 @@ import {
     Phone,
     Tag,
     Link as LucideLink,
+    MapPinMinusInside,
+    MapPinPlusInside,
+    BookmarkMinus,
 } from "lucide-react"
 import Image from "next/image"
 import React from "react"
@@ -18,34 +21,26 @@ import {OverviewSectionProps} from "./types"
 import {Card} from "@/components/ui/card"
 import MapPoiCategoryBadges from "@/components/MapPoiCategoryBadges"
 import Link from "next/link"
-import clsx from "clsx"
 import {MetadataItem} from "./metadataRenderers/MetadataItem"
 import {renderOpeningHours} from "./metadataRenderers/renderOpeningHours"
 
-const OverviewSection = ({locationData, isPinned}: OverviewSectionProps) => {
+const OverviewSection = ({
+    locationData,
+    isPinned,
+    canRemovePin,
+    handleAddLocationPin,
+    handleRemoveLocationPin,
+    isAddingPinLoading,
+    isRemovingPinLoading,
+    handleBookmarkLocation,
+    isBookmarkLoading,
+    handleUnbookmarkLocation,
+    isBookmarked,
+}: OverviewSectionProps) => {
     const {metadata = {}} = locationData
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center gap-4">
-                <div className="flex-1">
-                    <h2 className="text-2xl font-semibold">{locationData.name}</h2>
-                    <p className="text-sm text-muted-foreground">{locationData.full_address}</p>
-                </div>
-                <div className="flex gap-2">
-                    <Button
-                        variant={isPinned ? "default" : "outline"}
-                        size="icon"
-                        title={isPinned ? "Remove Pin" : "Add Pin"}
-                    >
-                        <MapPin className={clsx("h-4 w-4", {"fill-current": isPinned})} />
-                    </Button>
-                    <Button size="icon">
-                        <BookmarkX className="h-4 w-4 fill-current" />
-                    </Button>
-                </div>
-            </div>
-
             {!isPinned && (
                 <Card className="bg-muted/50 p-4">
                     <div className="flex gap-3 items-center">
@@ -56,6 +51,46 @@ const OverviewSection = ({locationData, isPinned}: OverviewSectionProps) => {
                     </div>
                 </Card>
             )}
+
+            <div className="flex justify-between items-center gap-4">
+                <div className="flex-1">
+                    <h2 className="text-2xl font-semibold">{locationData.name}</h2>
+                    <p className="text-sm text-muted-foreground">{locationData.full_address}</p>
+                </div>
+                <div className="flex gap-2">
+                    {!isPinned && (
+                        <Button
+                            variant={"default"}
+                            size="icon"
+                            title={"Pin Location"}
+                            onClick={handleAddLocationPin}
+                            disabled={isAddingPinLoading}
+                        >
+                            <MapPinPlusInside />
+                        </Button>
+                    )}
+                    {canRemovePin && (
+                        <Button
+                            variant={"destructive"}
+                            size="icon"
+                            title={"Unpin Location"}
+                            onClick={handleRemoveLocationPin}
+                            disabled={isRemovingPinLoading}
+                        >
+                            <MapPinMinusInside />
+                        </Button>
+                    )}
+                    <Button
+                        size="icon"
+                        variant={"outline"}
+                        title={isBookmarked ? "Unbookmark Location" : "Bookmark Location"}
+                        onClick={isBookmarked ? handleUnbookmarkLocation : handleBookmarkLocation}
+                        disabled={isBookmarkLoading}
+                    >
+                        {isBookmarked ? <BookmarkMinus /> : <Bookmark />}
+                    </Button>
+                </div>
+            </div>
 
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted">
                 <div className="absolute inset-0 flex items-center justify-center">
