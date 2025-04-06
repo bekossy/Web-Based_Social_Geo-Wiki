@@ -108,7 +108,7 @@ export default function Home() {
                 data.map(async (bookmark) => {
                     const data = await fetchRetrieveSearchResult({
                         mapboxId: bookmark.mapboxId,
-                        session_token: "123",
+                        session_token: sessionToken,
                     })
                     return data.features[0]
                 })
