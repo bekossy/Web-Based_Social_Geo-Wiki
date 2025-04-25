@@ -27,7 +27,8 @@ export const attachCookiesToResponse = ({
         secure: process.env.NODE_ENV === "production",
         signed: true,
         expires: new Date(Date.now() + oneDay),
-        sameSite: "strict",
+        sameSite: "none",
+        domain: ".railway.app",
     })
 
     res.cookie("refreshToken", refreshTokenJWT, {
@@ -35,6 +36,7 @@ export const attachCookiesToResponse = ({
         secure: process.env.NODE_ENV === "production",
         signed: true,
         expires: new Date(Date.now() + thirtyDays),
-        sameSite: "strict",
+        sameSite: "none",
+        domain: ".railway.app",
     })
 }
