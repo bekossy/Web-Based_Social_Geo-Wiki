@@ -28,7 +28,6 @@ export const attachCookiesToResponse = ({
         signed: true,
         expires: new Date(Date.now() + oneDay),
         sameSite: "none",
-        domain: ".railway.app",
     })
 
     res.cookie("refreshToken", refreshTokenJWT, {
@@ -37,6 +36,5 @@ export const attachCookiesToResponse = ({
         signed: true,
         expires: new Date(Date.now() + thirtyDays),
         sameSite: "none",
-        domain: ".railway.app",
     })
 }
