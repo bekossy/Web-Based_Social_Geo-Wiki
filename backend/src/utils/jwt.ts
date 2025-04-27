@@ -22,19 +22,23 @@ export const attachCookiesToResponse = ({
     const oneDay = 1000 * 60 * 60 * 24
     const thirtyDays = 1000 * 60 * 60 * 24 * 30
 
+    const isProduction = process.env.NODE_ENV === "production"
+
     res.cookie("accessToken", accessTokenJWT, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isProduction,
         signed: true,
         expires: new Date(Date.now() + oneDay),
-        sameSite: "none",
+        sameSite: isProduction ? "none" : "lax",
     })
 
     res.cookie("refreshToken", refreshTokenJWT, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isProduction,
         signed: true,
         expires: new Date(Date.now() + thirtyDays),
-        sameSite: "none",
+        sameSite: isProduction ? "none" : "lax",
     })
+
+    return {refreshToken: refreshTokenJWT}
 }

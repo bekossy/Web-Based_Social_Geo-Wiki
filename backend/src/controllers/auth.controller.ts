@@ -29,9 +29,17 @@ const register = async (req: Request, res: Response) => {
 
     await Token.create(userToken)
 
-    attachCookiesToResponse({res, user: tokenUser, refreshToken})
+    const {refreshToken: refreshTokenCookie} = attachCookiesToResponse({
+        res,
+        user: tokenUser,
+        refreshToken,
+    })
 
-    res.status(StatusCodes.OK).json({user: tokenUser})
+    res.status(StatusCodes.OK).json({
+        user: tokenUser,
+
+        refreshToken: refreshTokenCookie,
+    })
 }
 
 const login = async (req: Request, res: Response): Promise<any> => {
@@ -68,8 +76,13 @@ const login = async (req: Request, res: Response): Promise<any> => {
 
         refreshToken = existingToken.refreshToken
 
-        attachCookiesToResponse({res, user: tokenUser, refreshToken})
-        return res.status(StatusCodes.OK).json({user: tokenUser})
+        const {refreshToken: refreshTokenCookie} = attachCookiesToResponse({
+            res,
+            user: tokenUser,
+            refreshToken,
+        })
+
+        return res.status(StatusCodes.OK).json({user: tokenUser, refreshToken: refreshTokenCookie})
     }
 
     refreshToken = crypto.randomBytes(40).toString("hex")
@@ -78,9 +91,13 @@ const login = async (req: Request, res: Response): Promise<any> => {
 
     await Token.create(userToken)
 
-    attachCookiesToResponse({res, user: tokenUser, refreshToken})
+    const {refreshToken: refreshTokenCookie} = attachCookiesToResponse({
+        res,
+        user: tokenUser,
+        refreshToken,
+    })
 
-    return res.status(StatusCodes.OK).json({user: tokenUser})
+    return res.status(StatusCodes.OK).json({user: tokenUser, refreshToken: refreshTokenCookie})
 }
 
 const logout = async (req: Request, res: Response) => {

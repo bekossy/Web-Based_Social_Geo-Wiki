@@ -2,6 +2,7 @@
 
 import {createContext, useCallback, useContext, useEffect, useState} from "react"
 import axios from "@/lib/axiosConfig"
+import {removeLocalStorageToken, setLocalStorageToken} from "@/lib/authUtils"
 
 interface User {
     userId: string
@@ -28,6 +29,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             setLoading(true)
             const {data} = await axios.get("/user/showCurrentUser")
             setUser(data.user)
+            localStorage.setItem("user", JSON.stringify(data.user))
         } catch {
             setUser(null)
         } finally {
@@ -40,17 +42,21 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }, [fetchUser])
 
     const login = async (username: string, password: string) => {
-        await axios.post("/auth/signin", {username, password})
+        const response = await axios.post("/auth/signin", {username, password})
+        setLocalStorageToken(response.data.refreshToken)
         await fetchUser()
     }
 
     const register = async (username: string, password: string) => {
-        await axios.post("/auth/signup", {username, password})
+        const response = await axios.post("/auth/signup", {username, password})
+        setLocalStorageToken(response.data.refreshToken)
         await fetchUser()
     }
 
     const logout = async () => {
         await axios.get("/auth/signout")
+        removeLocalStorageToken()
+        localStorage.removeItem("user")
         setUser(null)
     }
 
