@@ -6,6 +6,7 @@ import Image from "next/image"
 import React from "react"
 import NoPostsView from "./NoPostsView"
 import {PostsSectionProps} from "./types"
+import {formatSmartDate} from "@/lib/utils"
 
 const PostsSection = ({
     newPost,
@@ -102,7 +103,9 @@ const PostsSection = ({
                                             @{post.userId.username}
                                         </p>
                                     </div>
-                                    <p className="text-sm text-muted-foreground">2 hours ago</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {formatSmartDate(post.updatedAt)}
+                                    </p>
                                 </div>
                                 <p className="mt-2 text-sm">{post.content}</p>
                                 {post.images && post.images.length > 0 && (
