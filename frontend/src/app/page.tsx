@@ -195,7 +195,7 @@ export default function Home() {
                     />
                 ) : (
                     <Drawer open={isLocationDrawerOpen} onOpenChange={setIsLocationDrawerOpen}>
-                        <DrawerContent className="p-4 max-h-[75vh] h-[75vh]">
+                        <DrawerContent className="max-h-[75vh] h-[75vh]">
                             <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
                                 <DrawerHeader className="hidden">
                                     <DrawerTitle>Move Goal</DrawerTitle>
@@ -272,7 +272,7 @@ export default function Home() {
                     />
                 ) : (
                     <Drawer open={isBookmarkDrawerOpen} onOpenChange={setIsBookmarkDrawerOpen}>
-                        <DrawerContent className="p-4 max-h-[75vh] h-[75vh]">
+                        <DrawerContent className="max-h-[75vh] h-[75vh]">
                             <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
                                 <DrawerHeader className="hidden">
                                     <DrawerTitle>Move Goal</DrawerTitle>
