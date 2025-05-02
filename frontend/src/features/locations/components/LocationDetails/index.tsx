@@ -124,11 +124,11 @@ const LocationDetails = ({
     }
 
     const handleBookmarkLocation = async () => {
-        if (!selectedMappinLocation?.mapboxId || isBookmarkLoading) return
+        if (isBookmarkLoading) return
         try {
             setIsBookmarkLoading(true)
             await createBookmark({
-                mapboxId: selectedMappinLocation.mapboxId,
+                mapboxId: locationFeatureInfo.properties.mapbox_id,
             })
             await getUserBookmarks()
             await fetchAllMappins()
