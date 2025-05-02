@@ -280,7 +280,32 @@ export default function Home() {
                                         Set your daily activity goal.
                                     </DrawerDescription>
                                 </DrawerHeader>
-                                <div>Your Bookmarks</div>
+                                {bookmarkList.length === 0 ? (
+                                    <EmptyState
+                                        icon={
+                                            <BookmarkIcon className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                        }
+                                        title="No Bookmarks found"
+                                        description="Save locations to find them quickly later. Your bookmarked places will appear here."
+                                    />
+                                ) : bookmarkList.length > 1 ? (
+                                    <LocationList
+                                        locationFeatureInfo={bookmarkList}
+                                        setIsLoadingLocationInfo={setBookmarkListLoading}
+                                        setLocationFeatureInfo={setBookmarkList}
+                                        mapRef={mapRef}
+                                        sessionToken={sessionToken}
+                                    />
+                                ) : (
+                                    <LocationDetails
+                                        locationFeatureInfo={bookmarkList[0]}
+                                        selectedMappinLocation={selectedMappinLocation}
+                                        fetchAllMappins={fetchMappins}
+                                        selectedMappinPosts={selectedMappinPosts}
+                                        fetchSelectedMappinPosts={fetchMappinPosts}
+                                        bookmarks={bookmarks}
+                                    />
+                                )}
                             </div>
                         </DrawerContent>
                     </Drawer>
