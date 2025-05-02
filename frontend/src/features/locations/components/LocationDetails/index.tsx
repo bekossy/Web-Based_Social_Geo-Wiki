@@ -19,7 +19,7 @@ const LocationDetails = ({
     fetchAllMappins,
     selectedMappinPosts,
     fetchSelectedMappinPosts,
-    selectedMappinBookmark,
+    bookmarks,
 }: LocationDetailsProps) => {
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
@@ -50,7 +50,13 @@ const LocationDetails = ({
     }
 
     const isPinned = useMemo(() => !!selectedMappinLocation, [selectedMappinLocation])
-    const isBookmarked = useMemo(() => !!selectedMappinBookmark, [selectedMappinBookmark])
+    const selectedMappinBookmark = useMemo(
+        () =>
+            bookmarks.find(
+                (bookmark) => bookmark.mapboxId === locationFeatureInfo.properties.mapbox_id,
+            ),
+        [bookmarks, locationFeatureInfo],
+    )
 
     const canRemovePin = useMemo(() => {
         return isPinned && selectedMappinLocation?.userId._id === user?.userId
@@ -134,7 +140,7 @@ const LocationDetails = ({
     }
 
     const handleUnbookmarkLocation = async () => {
-        if (!isBookmarked || isBookmarkLoading) return
+        if (!selectedMappinBookmark || isBookmarkLoading) return
         try {
             setIsBookmarkLoading(true)
             await deleteBookmark({
@@ -170,7 +176,7 @@ const LocationDetails = ({
                         handleUnbookmarkLocation={handleUnbookmarkLocation}
                         isBookmarkLoading={isBookmarkLoading}
                         locationData={locationData}
-                        isBookmarked={isBookmarked}
+                        isBookmarked={!!selectedMappinBookmark}
                     />
                 </TabsContent>
                 <TabsContent value="posts">

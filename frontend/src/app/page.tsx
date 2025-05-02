@@ -2,7 +2,10 @@
 
 import {useCallback, useEffect, useRef, useState} from "react"
 import {type MapRef} from "react-map-gl"
-import {type SearchBoxRetrieveResponse} from "@mapbox/search-js-core"
+import {
+    type SearchBoxFeatureSuggestion,
+    type SearchBoxRetrieveResponse,
+} from "@mapbox/search-js-core"
 
 import MapControlPanel from "@/features/map/components/MapControlPanel"
 
@@ -25,7 +28,6 @@ import {
     DrawerTitle,
 } from "@/components/ui/drawer"
 import {v4 as uuidv4} from "uuid"
-import LocationNotFound from "@/features/locations/components/LocationNotFound"
 import MapView from "@/features/map/components/MapView"
 import LocationList from "@/features/locations/components/LocationList"
 import UserAvatar from "@/components/UserAvatar"
@@ -33,6 +35,8 @@ import {useAuth} from "@/contexts/AuthContext"
 import LocationDetails from "@/features/locations/components/LocationDetails"
 import {getUserBookmarks} from "@/services/bookmark"
 import {Bookmark} from "@/services/bookmark/types"
+import EmptyState from "@/components/EmptyState"
+import {Bookmark as BookmarkIcon, MapPin} from "lucide-react"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
@@ -51,8 +55,10 @@ export default function Home() {
     const [mappins, setMappins] = useState<Mappins[]>([])
     const [bookmarks, setBookmarks] = useState<Bookmark[]>([])
     const [selectedMappinLocation, setSelectedMappinLocation] = useState<Mappins | undefined>()
-    const [selectedMappinBookmark, setSelectedMappinBookmark] = useState<Bookmark | undefined>()
     const [selectedMappinPosts, setSelectedMappinPosts] = useState<MappinPosts[]>([])
+
+    const [bookmarkList, setBookmarkList] = useState<SearchBoxFeatureSuggestion[]>([])
+    const [bookmarkListLoading, setBookmarkListLoading] = useState(false)
 
     const fetchMappins = useCallback(async () => {
         try {
@@ -86,13 +92,9 @@ export default function Home() {
             const activeMappin = mappins.find(
                 (pin) => pin.mapboxId === locationFeatureInfo[0].properties.mapbox_id,
             )
-            const activeBookmark = bookmarks.find(
-                (bookmark) => bookmark.mapboxId === locationFeatureInfo[0].properties.mapbox_id,
-            )
             setSelectedMappinLocation(activeMappin)
-            setSelectedMappinBookmark(activeBookmark)
         }
-    }, [locationFeatureInfo, mappins, bookmarks])
+    }, [locationFeatureInfo, mappins])
 
     const fetchMappinPosts = useCallback(async () => {
         if (!selectedMappinLocation) return
@@ -111,6 +113,7 @@ export default function Home() {
 
     const handleFetchBookmarkOnClick = async () => {
         try {
+            setBookmarkListLoading(true)
             const resp = await Promise.all(
                 bookmarks.map(async (bookmark) => {
                     const data = await fetchRetrieveSearchResult({
@@ -120,9 +123,11 @@ export default function Home() {
                     return data.features[0]
                 }),
             )
-            console.log("Bookmarks: ", resp)
+            setBookmarkList(resp)
         } catch (error) {
-            console.error(error)
+            console.error("Failed to fetch bookmarks:", error)
+        } finally {
+            setBookmarkListLoading(false)
         }
     }
 
@@ -152,6 +157,7 @@ export default function Home() {
                     mappins={mappins}
                 />
 
+                {/* Location Sidebar */}
                 {isDesktop ? (
                     <Sidebar
                         open={isLocationDrawerOpen}
@@ -159,7 +165,13 @@ export default function Home() {
                         title="Title"
                         sidebarContent={
                             locationFeatureInfo.length === 0 ? (
-                                <LocationNotFound />
+                                <EmptyState
+                                    icon={
+                                        <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                    }
+                                    title="No locations found"
+                                    description="Try searching for a different location or adjusting your search terms."
+                                />
                             ) : locationFeatureInfo.length > 1 ? (
                                 <LocationList
                                     locationFeatureInfo={locationFeatureInfo}
@@ -175,7 +187,7 @@ export default function Home() {
                                     fetchAllMappins={fetchMappins}
                                     selectedMappinPosts={selectedMappinPosts}
                                     fetchSelectedMappinPosts={fetchMappinPosts}
-                                    selectedMappinBookmark={selectedMappinBookmark}
+                                    bookmarks={bookmarks}
                                 />
                             )
                         }
@@ -192,7 +204,13 @@ export default function Home() {
                                     </DrawerDescription>
                                 </DrawerHeader>
                                 {locationFeatureInfo.length === 0 ? (
-                                    <LocationNotFound />
+                                    <EmptyState
+                                        icon={
+                                            <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                        }
+                                        title="No locations found"
+                                        description="Try searching for a different location or adjusting your search terms."
+                                    />
                                 ) : locationFeatureInfo.length > 1 ? (
                                     <LocationList
                                         locationFeatureInfo={locationFeatureInfo}
@@ -208,7 +226,7 @@ export default function Home() {
                                         fetchAllMappins={fetchMappins}
                                         selectedMappinPosts={selectedMappinPosts}
                                         fetchSelectedMappinPosts={fetchMappinPosts}
-                                        selectedMappinBookmark={selectedMappinBookmark}
+                                        bookmarks={bookmarks}
                                     />
                                 )}
                             </div>
@@ -216,13 +234,41 @@ export default function Home() {
                     </Drawer>
                 )}
 
+                {/* Bookmark Sidebar */}
                 {isDesktop ? (
                     <Sidebar
                         open={isBookmarkDrawerOpen}
                         handleOnOpenChange={setIsBookmarkDrawerOpen}
                         title="Title"
-                        sidebarContent={<div>Your Bookmarks</div>}
-                        isLoading={isLoadingLocationInfo}
+                        sidebarContent={
+                            bookmarkList.length === 0 ? (
+                                <EmptyState
+                                    icon={
+                                        <BookmarkIcon className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                                    }
+                                    title="No Bookmarks found"
+                                    description="Save locations to find them quickly later. Your bookmarked places will appear here."
+                                />
+                            ) : bookmarkList.length > 1 ? (
+                                <LocationList
+                                    locationFeatureInfo={bookmarkList}
+                                    setIsLoadingLocationInfo={setBookmarkListLoading}
+                                    setLocationFeatureInfo={setBookmarkList}
+                                    mapRef={mapRef}
+                                    sessionToken={sessionToken}
+                                />
+                            ) : (
+                                <LocationDetails
+                                    locationFeatureInfo={bookmarkList[0]}
+                                    selectedMappinLocation={selectedMappinLocation}
+                                    fetchAllMappins={fetchMappins}
+                                    selectedMappinPosts={selectedMappinPosts}
+                                    fetchSelectedMappinPosts={fetchMappinPosts}
+                                    bookmarks={bookmarks}
+                                />
+                            )
+                        }
+                        isLoading={bookmarkListLoading}
                     />
                 ) : (
                     <Drawer open={isBookmarkDrawerOpen} onOpenChange={setIsBookmarkDrawerOpen}>
