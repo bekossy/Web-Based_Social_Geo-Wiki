@@ -46,7 +46,7 @@ const LocationList = ({
 
     return (
         <ScrollArea className="h-[calc(100vh-4rem)]">
-            <div className="flex flex-col gap-4 p-4">
+            <div className="flex flex-col gap-4">
                 {locationFeatureInfo.map((location) => {
                     return (
                         <div

@@ -156,7 +156,7 @@ const LocationDetails = ({
     }
 
     return (
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="p-4">
+        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
             <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger disabled={!isPinned} value="posts">
