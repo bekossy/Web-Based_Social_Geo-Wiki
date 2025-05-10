@@ -112,21 +112,32 @@ const PostsSection = ({
                                                         disabled={
                                                             isReportPostLoading ||
                                                             !user ||
-                                                            post.reports.includes(user.userId)
+                                                            (Array.isArray(post.reports) &&
+                                                                post.reports.includes(user.userId))
                                                         }
                                                         onClick={() => hanldeReportPost(post._id)}
-                                                        className="cursor-pointer"
+                                                        className={`
+                                                        cursor-pointer
+                                                        ${
+                                                            Array.isArray(post.reports) &&
+                                                            user &&
+                                                            post.reports.includes(user.userId)
+                                                                ? "text-green-600 cursor-not-allowed"
+                                                                : ""
+                                                        }
+                                                    `}
                                                     >
                                                         {user &&
-                                                        !post.reports.includes(user.userId) ? (
+                                                        Array.isArray(post.reports) &&
+                                                        post.reports.includes(user.userId) ? (
                                                             <>
-                                                                <Flag className="mr-2 h-4 w-4 text-muted-foreground" />
-                                                                Report
+                                                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-600" />
+                                                                Reported
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
-                                                                Reported
+                                                                <Flag className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                                Report
                                                             </>
                                                         )}
                                                     </DropdownMenuItem>
