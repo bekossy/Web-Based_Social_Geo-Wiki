@@ -1,4 +1,3 @@
-import {url} from "inspector"
 import {Document, Schema, model} from "mongoose"
 
 interface IPostSchema extends Document {
@@ -9,6 +8,7 @@ interface IPostSchema extends Document {
         url: String
         public_id: String
     }[]
+    reports: string[]
 }
 
 const PostSchema = new Schema(
@@ -35,6 +35,11 @@ const PostSchema = new Schema(
                 },
             ],
             validate: [(val: string[]) => val.length <= 4, "Cannot upload more than 4 images"],
+            default: [],
+        },
+        reports: {
+            type: [Schema.Types.ObjectId],
+            ref: "User",
             default: [],
         },
     },

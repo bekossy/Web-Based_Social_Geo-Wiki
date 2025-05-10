@@ -75,4 +75,33 @@ const deletePost = async (req: Request, res: Response) => {
     res.status(StatusCodes.OK).json({message: "Post deleted successfully"})
 }
 
-export {getPosts, createPost, deletePost}
+const reportPost = async (req: Request, res: Response) => {
+    const {id: postId} = req.params
+    const userId = req.user?.userId
+
+    if (!userId) {
+        throw new BadRequestError("User not authenticated")
+    }
+
+    const post = await Post.findById(postId)
+
+    if (!post) {
+        throw new NotFoundError(`Post with id ${postId} not found`)
+    }
+
+    if (post.reports.includes(userId)) {
+        throw new BadRequestError("You have already reported this post")
+    }
+
+    post.reports.push(userId)
+
+    if (post.reports.length >= 5) {
+        await Post.findByIdAndDelete(postId)
+        res.status(StatusCodes.OK).json({message: "Post deleted due to multiple reports"})
+    } else {
+        await post.save()
+        res.status(StatusCodes.OK).json({message: "Post reported successfully"})
+    }
+}
+
+export {getPosts, createPost, deletePost, reportPost}
