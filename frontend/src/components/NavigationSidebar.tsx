@@ -163,7 +163,9 @@ export const NavigationSidebar = ({
                             </Button>
 
                             <div className="space-y-1">
-                                <h4 className="text-sm font-medium px-2">Favorites</h4>
+                                <h4 className="text-sm font-medium px-2 text-muted-foreground">
+                                    Favorites
+                                </h4>
                                 <Button
                                     variant="ghost"
                                     className="w-full justify-start"
@@ -179,7 +181,9 @@ export const NavigationSidebar = ({
                             </div>
 
                             <div className="space-y-1">
-                                <h4 className="text-sm font-medium px-2">Categories</h4>
+                                <h4 className="text-sm font-medium px-2 text-muted-foreground">
+                                    Categories
+                                </h4>
                                 {categoryList.slice(0, 12).map((category) => {
                                     return (
                                         <Button
