@@ -14,4 +14,5 @@ export interface MappinPosts {
         _id: string
     }
     _id: string
+    reports: string[]
 }

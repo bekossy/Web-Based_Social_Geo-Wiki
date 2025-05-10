@@ -15,7 +15,12 @@ export const createMappinPosts = async (postData: FormData): Promise<MappinPosts
     return data.post
 }
 
-export const deleteMappinPosts = async ({mappinId}: {mappinId: string}) => {
-    const {data} = await axiosConfig.delete(`/posts/${mappinId}/pin`)
+export const deleteMappinPosts = async ({postId}: {postId: string}) => {
+    const {data} = await axiosConfig.delete(`/posts/${postId}/pin`)
+    return data
+}
+
+export const reportMappinPost = async ({postId}: {postId: string}) => {
+    const {data} = await axiosConfig.post(`/posts/${postId}/report`)
     return data
 }
