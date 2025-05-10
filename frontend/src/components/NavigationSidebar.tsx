@@ -18,6 +18,8 @@ import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {useAuth} from "@/contexts/AuthContext"
 import UserAvatar from "./UserAvatar"
+import {useMediaQuery} from "@/hooks/use-media-query"
+import {cn} from "@/lib/utils"
 
 interface NavigationSidebarProps {
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
@@ -38,6 +40,7 @@ export const NavigationSidebar = ({
     setIsBookmarkDrawerOpen,
     handleFetchBookmarkOnClick,
 }: NavigationSidebarProps) => {
+    const isDesktop = useMediaQuery("(min-width: 550px)")
     const {user, logout} = useAuth()
     const [searchQuery, setSearchQuery] = useState("")
     const [showSearch, setShowSearch] = useState(false)
@@ -75,7 +78,7 @@ export const NavigationSidebar = ({
 
     return (
         <div className="h-full flex flex-col">
-            <div className="p-4 border-b">
+            <div className={cn("p-4 border-b", isDesktop ? "p-4" : "p-2")}>
                 <div className="flex items-center gap-3">
                     <UserAvatar color={user?.color || ""} username={user?.username || ""} />
                     <div>
@@ -149,7 +152,7 @@ export const NavigationSidebar = ({
                     </Command>
                 ) : (
                     <ScrollArea className="h-full">
-                        <div className="p-4 space-y-4">
+                        <div className={cn("space-y-4", isDesktop ? "p-4" : "p-2")}>
                             <Button
                                 variant="outline"
                                 className="w-full justify-start"
@@ -204,7 +207,7 @@ export const NavigationSidebar = ({
                 )}
             </div>
 
-            <div className="border-t p-4 space-y-2">
+            <div className={cn("border-t space-y-2", isDesktop ? "p-4" : "p-2")}>
                 <Button variant="ghost" className="w-full justify-start">
                     <Settings className="mr-2 size-4" />
                     Settings
