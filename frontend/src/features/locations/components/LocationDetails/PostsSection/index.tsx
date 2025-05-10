@@ -47,8 +47,7 @@ const PostsSection = ({
     const hanldeReportPost = async (postId: string) => {
         try {
             setIsReportPostLoading(true)
-            const resp = await reportMappinPost({postId})
-            console.log(resp)
+            await reportMappinPost({postId})
             await fetchSelectedMappinPosts()
         } catch (error) {
             console.error("Failed to report post:", error)
