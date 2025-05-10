@@ -11,4 +11,5 @@ export interface PostsSectionProps {
     handleImageSelect: (event: React.ChangeEvent<HTMLInputElement>) => void
     isAddingPostLoading: boolean
     selectedMappinPosts: MappinPosts[]
+    fetchSelectedMappinPosts: () => Promise<void>
 }

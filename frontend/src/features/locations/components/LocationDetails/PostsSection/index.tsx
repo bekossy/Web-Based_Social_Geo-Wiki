@@ -1,12 +1,20 @@
 import {Button} from "@/components/ui/button"
-import {Textarea} from "@/components/ui/textarea"
 import UserAvatar from "@/components/UserAvatar"
-import {Camera, Loader2, Send, X} from "lucide-react"
-import Image from "next/image"
+import {CheckCircle2, EllipsisVertical, Flag, Trash2} from "lucide-react"
 import React from "react"
 import NoPostsView from "./NoPostsView"
 import {PostsSectionProps} from "./types"
 import {formatSmartDate} from "@/lib/utils"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {useAuth} from "@/contexts/AuthContext"
+import {deleteMappinPosts, reportMappinPost} from "@/services/posts"
+import PostsContent from "./PostsContent"
+import AddPostsSection from "./AddPostsSection"
 
 const PostsSection = ({
     newPost,
@@ -18,84 +26,56 @@ const PostsSection = ({
     imagePreviews,
     isAddingPostLoading,
     selectedMappinPosts,
+    fetchSelectedMappinPosts,
 }: PostsSectionProps) => {
+    const {user} = useAuth()
+    const [isDeletePostLoading, setIsDeletePostLoading] = React.useState(false)
+    const [isReportPostLoading, setIsReportPostLoading] = React.useState(false)
+
+    const handleDeletePost = async (postId: string) => {
+        try {
+            setIsDeletePostLoading(true)
+            await deleteMappinPosts({postId})
+            await fetchSelectedMappinPosts()
+        } catch (error) {
+            console.error("Failed to delete post:", error)
+        } finally {
+            setIsDeletePostLoading(false)
+        }
+    }
+
+    const hanldeReportPost = async (postId: string) => {
+        try {
+            setIsReportPostLoading(true)
+            const resp = await reportMappinPost({postId})
+            console.log(resp)
+            await fetchSelectedMappinPosts()
+        } catch (error) {
+            console.error("Failed to report post:", error)
+        } finally {
+            setIsReportPostLoading(false)
+        }
+    }
+
     return (
         <div className="space-y-4">
-            <div className="rounded-lg border bg-card p-4">
-                <Textarea
-                    placeholder="Share your experience about this place..."
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                    className="mb-3"
-                />
-                {imagePreviews.length > 0 && (
-                    <div className="grid grid-cols-2 gap-2 mb-3">
-                        {imagePreviews.map((image, index) => (
-                            <div
-                                key={index}
-                                className="relative aspect-square rounded-md overflow-hidden group"
-                            >
-                                <div className="relative w-full h-full">
-                                    <Image
-                                        src={image}
-                                        alt="Selected"
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 768px) 50vw, 33vw"
-                                    />
-                                </div>
-                                <button
-                                    onClick={() =>
-                                        setSelectedImages((prev) =>
-                                            prev.filter((_, i) => i !== index),
-                                        )
-                                    }
-                                    className="absolute top-1 right-1 p-1 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                >
-                                    <X className="h-4 w-4 text-white" />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
-                <div className="flex justify-between items-center">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fileInputRef.current?.click()}
-                    >
-                        <Camera className="h-4 w-4 mr-2" />
-                        Add Photos
-                    </Button>
-                    <Button
-                        disabled={!newPost || isAddingPostLoading}
-                        size="sm"
-                        className="gap-2"
-                        onClick={handleSubmitPost}
-                    >
-                        {isAddingPostLoading ? (
-                            <Loader2 className="animate-spin" />
-                        ) : (
-                            <Send className="h-4 w-4" />
-                        )}
-                        Post
-                    </Button>
-                </div>
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageSelect}
-                />
-            </div>
+            <AddPostsSection
+                handleImageSelect={handleImageSelect}
+                handleSubmitPost={handleSubmitPost}
+                isAddingPostLoading={isAddingPostLoading}
+                imagePreviews={imagePreviews}
+                setNewPost={setNewPost}
+                setSelectedImages={setSelectedImages}
+                fileInputRef={fileInputRef}
+                newPost={newPost}
+            />
+
             {selectedMappinPosts.length > 0 ? (
                 selectedMappinPosts.map((post) => (
                     <div key={post._id} className="rounded-lg border bg-card p-4 space-y-3">
                         <div className="flex items-start gap-3">
                             <UserAvatar color={post.userId.color} username={post.userId.username} />
-                            <div className="flex-1">
+                            <div className="flex-1 flex flex-col gap-2">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="font-medium">{post.userId.username}</p>
@@ -103,35 +83,60 @@ const PostsSection = ({
                                             @{post.userId.username}
                                         </p>
                                     </div>
-                                    <p className="text-sm text-muted-foreground">
-                                        {formatSmartDate(post.updatedAt)}
-                                    </p>
-                                </div>
-                                <p className="mt-2 text-sm">{post.content}</p>
-                                {post.images && post.images.length > 0 && (
-                                    <div
-                                        className={`mt-3 grid gap-2 ${
-                                            post.images.length > 1 ? "grid-cols-2" : "grid-cols-1"
-                                        }`}
-                                    >
-                                        {post.images.map((image, index) => (
-                                            <div
-                                                key={index}
-                                                className="relative aspect-square rounded-md overflow-hidden"
-                                            >
-                                                <div className="relative w-full h-full">
-                                                    <Image
-                                                        src={image.url}
-                                                        alt={`${[post.userId.username]} post`}
-                                                        fill
-                                                        className="object-cover"
-                                                        sizes="(max-width: 768px) 50vw, 33vw"
-                                                    />
-                                                </div>
-                                            </div>
-                                        ))}
+
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-sm text-muted-foreground">
+                                            {formatSmartDate(post.createdAt)}
+                                        </p>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="link"
+                                                    className="p-0 h-auto w-auto"
+                                                >
+                                                    <EllipsisVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="min-w-[150px]">
+                                                {post.userId._id === user?.userId ? (
+                                                    <DropdownMenuItem
+                                                        disabled={isDeletePostLoading}
+                                                        onClick={() => handleDeletePost(post._id)}
+                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50 focus:text-red-700 focus:bg-red-50 cursor-pointer"
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4" />
+                                                        Delete
+                                                    </DropdownMenuItem>
+                                                ) : (
+                                                    <DropdownMenuItem
+                                                        disabled={
+                                                            isReportPostLoading ||
+                                                            !user ||
+                                                            post.reports.includes(user.userId)
+                                                        }
+                                                        onClick={() => hanldeReportPost(post._id)}
+                                                        className="cursor-pointer"
+                                                    >
+                                                        {user &&
+                                                        !post.reports.includes(user.userId) ? (
+                                                            <>
+                                                                <Flag className="mr-2 h-4 w-4 text-muted-foreground" />
+                                                                Report
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <CheckCircle2 className="mr-2 h-4 w-4 text-green-500" />
+                                                                Reported
+                                                            </>
+                                                        )}
+                                                    </DropdownMenuItem>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
-                                )}
+                                </div>
+
+                                <PostsContent post={post} />
                             </div>
                         </div>
                     </div>

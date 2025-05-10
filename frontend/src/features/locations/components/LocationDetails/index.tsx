@@ -190,6 +190,7 @@ const LocationDetails = ({
                         imagePreviews={imagePreviews}
                         newPost={newPost}
                         fileInputRef={fileInputRef}
+                        fetchSelectedMappinPosts={fetchSelectedMappinPosts}
                     />
                 </TabsContent>
             </ScrollArea>
