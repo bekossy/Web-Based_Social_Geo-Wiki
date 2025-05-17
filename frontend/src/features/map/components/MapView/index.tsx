@@ -42,7 +42,7 @@ const MapView = ({
 
             fetchUserCoordinates()
         }
-    }, [])
+    }, [coordinates.lat, coordinates.long, mapRef])
 
     const handleMarkClick = async (mapboxId: string, pinId: string) => {
         try {
