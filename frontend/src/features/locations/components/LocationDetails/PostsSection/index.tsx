@@ -1,8 +1,7 @@
 import {Button} from "@/components/ui/button"
 import UserAvatar from "@/components/UserAvatar"
-import {CheckCircle2, EllipsisVertical, Flag, Trash2} from "lucide-react"
+import {CheckCircle2, EllipsisVertical, Flag, MessageSquarePlus, Trash2} from "lucide-react"
 import React from "react"
-import NoPostsView from "./NoPostsView"
 import {PostsSectionProps} from "./types"
 import {formatSmartDate} from "@/lib/utils"
 import {
@@ -15,6 +14,7 @@ import {useAuth} from "@/contexts/AuthContext"
 import {deleteMappinPosts, reportMappinPost} from "@/services/posts"
 import PostsContent from "./PostsContent"
 import AddPostsSection from "./AddPostsSection"
+import EmptyState from "@/components/EmptyState"
 
 const PostsSection = ({
     newPost,
@@ -152,7 +152,12 @@ const PostsSection = ({
                     </div>
                 ))
             ) : (
-                <NoPostsView />
+                <EmptyState
+                    icon={<MessageSquarePlus className="h-12 w-12 text-muted-foreground/30 mb-4" />}
+                    title="Be the first to share insights"
+                    description="Share your knowledge about this location by creating the first post. Your contribution helps others learn about this place."
+                    className="!mt-6"
+                />
             )}
         </div>
     )
