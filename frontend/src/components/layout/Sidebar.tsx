@@ -2,6 +2,7 @@
 
 import {cn} from "@/lib/utils"
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle} from "@/components/ui/sheet"
+import LoadingSpinner from "../ui/loading-spinner"
 
 type SidebarProps = {
     title: string
@@ -36,7 +37,9 @@ const Sidebar = ({
                 </SheetHeader>
 
                 {isLoading ? (
-                    <div>Loading...</div>
+                    <div className="flex items-center justify-center h-full">
+                        <LoadingSpinner size={32} className="text-muted-foreground" />
+                    </div>
                 ) : (
                     <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
                         {children}
