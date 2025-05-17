@@ -124,17 +124,24 @@ export default function Home() {
         <ProtectedRoute>
             <Navbar setIsNavSidebarOpen={setIsNavSidebarOpen} />
             <main className="h-screen w-full relative">
-                <div className="max-w-[800px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-2">
-                    <MapControlPanel
-                        mapRef={mapRef}
-                        setIsLoadingLocationInfo={setIsLoadingLocationInfo}
-                        setLocationFeatureInfo={setLocationFeatureInfo}
-                        setIsLocationDrawerOpen={setIsLocationDrawerOpen}
-                        sessionToken={sessionToken}
-                        setSessionToken={setSessionToken}
-                    />
+                <div className="relative">
+                    <div className="max-w-[750px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-2">
+                        <MapControlPanel
+                            mapRef={mapRef}
+                            setIsLoadingLocationInfo={setIsLoadingLocationInfo}
+                            setLocationFeatureInfo={setLocationFeatureInfo}
+                            setIsLocationDrawerOpen={setIsLocationDrawerOpen}
+                            sessionToken={sessionToken}
+                            setSessionToken={setSessionToken}
+                        />
 
-                    <UserAvatar color={user?.color || ""} username={user?.username || ""} />
+                        <UserAvatar
+                            color={user?.color || ""}
+                            username={user?.username || ""}
+                            className="absolute right-6 top-1"
+                            size="sm"
+                        />
+                    </div>
                 </div>
 
                 <MapView

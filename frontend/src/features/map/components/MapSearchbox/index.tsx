@@ -148,12 +148,12 @@ const MapSearchbox = ({
                     onFocus={() => searchBoxInput && setOpen(true)}
                     placeholder={placeholder}
                     disabled={disabled}
-                    className="text-base bg-white pr-10"
+                    className="text-base bg-white pr-14"
                 />
                 {searchBoxInput && !disabled && (
                     <button
                         onClick={handleClear}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                        className="absolute right-12 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
                     >
                         <X className="h-4 w-4" />
                     </button>
