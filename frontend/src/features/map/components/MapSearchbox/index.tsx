@@ -7,6 +7,7 @@ import {Skeleton} from "@/components//ui/skeleton"
 import {fetchRetrieveSearchResult, fetchSearchSuggestion} from "@/services/mapbox"
 import {v4 as uuidv4} from "uuid"
 import {MapSearchboxProps} from "./types"
+import {X} from "lucide-react"
 
 const MapSearchbox = ({
     mapRef,
@@ -127,9 +128,18 @@ const MapSearchbox = ({
         ],
     )
 
+    const handleClear = () => {
+        setSearchBoxInput("")
+        setSearchBoxValue(null)
+        setSuggestions([])
+        setSelected({} as SearchBoxSuggestion)
+        setSessionToken(uuidv4())
+        inputRef.current?.focus()
+    }
+
     return (
         <CommandPrimitive onKeyDown={handleKeyDown}>
-            <div className="bg-white rounded-lg border border-input">
+            <div className="bg-white relative rounded-lg border border-input">
                 <CommandInput
                     ref={inputRef}
                     value={searchBoxInput}
@@ -138,9 +148,18 @@ const MapSearchbox = ({
                     onFocus={() => searchBoxInput && setOpen(true)}
                     placeholder={placeholder}
                     disabled={disabled}
-                    className="text-base bg-white"
+                    className="text-base bg-white pr-10"
                 />
+                {searchBoxInput && !disabled && (
+                    <button
+                        onClick={handleClear}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                    >
+                        <X className="h-4 w-4" />
+                    </button>
+                )}
             </div>
+
             <div className="relative mt-1">
                 <div
                     className={cn(
