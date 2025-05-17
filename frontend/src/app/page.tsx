@@ -13,34 +13,23 @@ import Navbar from "@/components/layout/Navbar"
 import {NavigationSidebar} from "@/components/NavigationSidebar"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import Sidebar from "@/components/layout/Sidebar"
-import {useMediaQuery} from "@/hooks/use-media-query"
 import {getAllMappinPosts} from "@/services/posts"
 import {MappinPosts} from "@/services/posts/types"
 import {fetchAllCategoryList, fetchRetrieveSearchResult} from "@/services/mapbox"
 import {type CategoryListResponse} from "@/services/mapbox/types"
 import {getAllMappins} from "@/services/mappins"
 import {Mappins} from "@/services/mappins/types"
-import {
-    Drawer,
-    DrawerContent,
-    DrawerDescription,
-    DrawerHeader,
-    DrawerTitle,
-} from "@/components/ui/drawer"
 import {v4 as uuidv4} from "uuid"
 import MapView from "@/features/map/components/MapView"
-import LocationList from "@/features/locations/components/LocationList"
 import UserAvatar from "@/components/UserAvatar"
 import {useAuth} from "@/contexts/AuthContext"
-import LocationDetails from "@/features/locations/components/LocationDetails"
 import {getUserBookmarks} from "@/services/bookmark"
 import {Bookmark} from "@/services/bookmark/types"
-import EmptyState from "@/components/EmptyState"
-import {Bookmark as BookmarkIcon, MapPin} from "lucide-react"
+import ResponsivePanel from "@/components/ResponsivePanel"
+import LocationPanel from "@/components/LocationPanel"
 
 export default function Home() {
     const mapRef = useRef<MapRef>(null)
-    const isDesktop = useMediaQuery("(min-width: 550px)")
     const {user} = useAuth()
     const [isLocationDrawerOpen, setIsLocationDrawerOpen] = useState(false)
     const [isNavSidebarOpen, setIsNavSidebarOpen] = useState(false)
@@ -157,159 +146,49 @@ export default function Home() {
                     mappins={mappins}
                 />
 
-                {/* Location Sidebar */}
-                {isDesktop ? (
-                    <Sidebar
-                        open={isLocationDrawerOpen}
-                        handleOnOpenChange={setIsLocationDrawerOpen}
-                        title="Title"
-                        sidebarContent={
-                            locationFeatureInfo.length === 0 ? (
-                                <EmptyState
-                                    icon={
-                                        <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                                    }
-                                    title="No locations found"
-                                    description="Try searching for a different location or adjusting your search terms."
-                                />
-                            ) : locationFeatureInfo.length > 1 ? (
-                                <LocationList
-                                    locationFeatureInfo={locationFeatureInfo}
-                                    setIsLoadingLocationInfo={setIsLoadingLocationInfo}
-                                    setLocationFeatureInfo={setLocationFeatureInfo}
-                                    mapRef={mapRef}
-                                    sessionToken={sessionToken}
-                                />
-                            ) : (
-                                <LocationDetails
-                                    locationFeatureInfo={locationFeatureInfo[0]}
-                                    selectedMappinLocation={selectedMappinLocation}
-                                    fetchAllMappins={fetchMappins}
-                                    selectedMappinPosts={selectedMappinPosts}
-                                    fetchSelectedMappinPosts={fetchMappinPosts}
-                                    bookmarks={bookmarks}
-                                />
-                            )
-                        }
-                        isLoading={isLoadingLocationInfo}
-                    />
-                ) : (
-                    <Drawer open={isLocationDrawerOpen} onOpenChange={setIsLocationDrawerOpen}>
-                        <DrawerContent className="max-h-[75vh] h-[75vh] p-4">
-                            <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
-                                <DrawerHeader className="hidden">
-                                    <DrawerTitle>Move Goal</DrawerTitle>
-                                    <DrawerDescription>
-                                        Set your daily activity goal.
-                                    </DrawerDescription>
-                                </DrawerHeader>
-                                {locationFeatureInfo.length === 0 ? (
-                                    <EmptyState
-                                        icon={
-                                            <MapPin className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                                        }
-                                        title="No locations found"
-                                        description="Try searching for a different location or adjusting your search terms."
-                                    />
-                                ) : locationFeatureInfo.length > 1 ? (
-                                    <LocationList
-                                        locationFeatureInfo={locationFeatureInfo}
-                                        setIsLoadingLocationInfo={setIsLoadingLocationInfo}
-                                        setLocationFeatureInfo={setLocationFeatureInfo}
-                                        mapRef={mapRef}
-                                        sessionToken={sessionToken}
-                                    />
-                                ) : (
-                                    <LocationDetails
-                                        locationFeatureInfo={locationFeatureInfo[0]}
-                                        selectedMappinLocation={selectedMappinLocation}
-                                        fetchAllMappins={fetchMappins}
-                                        selectedMappinPosts={selectedMappinPosts}
-                                        fetchSelectedMappinPosts={fetchMappinPosts}
-                                        bookmarks={bookmarks}
-                                    />
-                                )}
-                            </div>
-                        </DrawerContent>
-                    </Drawer>
-                )}
+                <ResponsivePanel
+                    open={isLocationDrawerOpen}
+                    onOpenChange={setIsLocationDrawerOpen}
+                    title="Title"
+                    content={
+                        <LocationPanel
+                            type="location"
+                            data={locationFeatureInfo}
+                            mapRef={mapRef}
+                            sessionToken={sessionToken}
+                            selectedMappinLocation={selectedMappinLocation}
+                            fetchAllMappins={fetchMappins}
+                            selectedMappinPosts={selectedMappinPosts}
+                            fetchSelectedMappinPosts={fetchMappinPosts}
+                            bookmarks={bookmarks}
+                            setData={setLocationFeatureInfo}
+                            setIsLoading={setIsLoadingLocationInfo}
+                        />
+                    }
+                    isLoading={isLoadingLocationInfo}
+                />
 
-                {/* Bookmark Sidebar */}
-                {isDesktop ? (
-                    <Sidebar
-                        open={isBookmarkDrawerOpen}
-                        handleOnOpenChange={setIsBookmarkDrawerOpen}
-                        title="Title"
-                        sidebarContent={
-                            bookmarkList.length === 0 ? (
-                                <EmptyState
-                                    icon={
-                                        <BookmarkIcon className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                                    }
-                                    title="No Bookmarks found"
-                                    description="Save locations to find them quickly later. Your bookmarked places will appear here."
-                                />
-                            ) : bookmarkList.length > 1 ? (
-                                <LocationList
-                                    locationFeatureInfo={bookmarkList}
-                                    setIsLoadingLocationInfo={setBookmarkListLoading}
-                                    setLocationFeatureInfo={setBookmarkList}
-                                    mapRef={mapRef}
-                                    sessionToken={sessionToken}
-                                />
-                            ) : (
-                                <LocationDetails
-                                    locationFeatureInfo={bookmarkList[0]}
-                                    selectedMappinLocation={selectedMappinLocation}
-                                    fetchAllMappins={fetchMappins}
-                                    selectedMappinPosts={selectedMappinPosts}
-                                    fetchSelectedMappinPosts={fetchMappinPosts}
-                                    bookmarks={bookmarks}
-                                />
-                            )
-                        }
-                        isLoading={bookmarkListLoading}
-                    />
-                ) : (
-                    <Drawer open={isBookmarkDrawerOpen} onOpenChange={setIsBookmarkDrawerOpen}>
-                        <DrawerContent className="max-h-[75vh] h-[75vh] p-4">
-                            <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">
-                                <DrawerHeader className="hidden">
-                                    <DrawerTitle>Move Goal</DrawerTitle>
-                                    <DrawerDescription>
-                                        Set your daily activity goal.
-                                    </DrawerDescription>
-                                </DrawerHeader>
-                                {bookmarkList.length === 0 ? (
-                                    <EmptyState
-                                        icon={
-                                            <BookmarkIcon className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                                        }
-                                        title="No Bookmarks found"
-                                        description="Save locations to find them quickly later. Your bookmarked places will appear here."
-                                    />
-                                ) : bookmarkList.length > 1 ? (
-                                    <LocationList
-                                        locationFeatureInfo={bookmarkList}
-                                        setIsLoadingLocationInfo={setBookmarkListLoading}
-                                        setLocationFeatureInfo={setBookmarkList}
-                                        mapRef={mapRef}
-                                        sessionToken={sessionToken}
-                                    />
-                                ) : (
-                                    <LocationDetails
-                                        locationFeatureInfo={bookmarkList[0]}
-                                        selectedMappinLocation={selectedMappinLocation}
-                                        fetchAllMappins={fetchMappins}
-                                        selectedMappinPosts={selectedMappinPosts}
-                                        fetchSelectedMappinPosts={fetchMappinPosts}
-                                        bookmarks={bookmarks}
-                                    />
-                                )}
-                            </div>
-                        </DrawerContent>
-                    </Drawer>
-                )}
+                <ResponsivePanel
+                    open={isBookmarkDrawerOpen}
+                    onOpenChange={setIsBookmarkDrawerOpen}
+                    title="Title"
+                    content={
+                        <LocationPanel
+                            type="bookmark"
+                            data={bookmarkList}
+                            mapRef={mapRef}
+                            sessionToken={sessionToken}
+                            selectedMappinLocation={selectedMappinLocation}
+                            fetchAllMappins={fetchMappins}
+                            selectedMappinPosts={selectedMappinPosts}
+                            fetchSelectedMappinPosts={fetchMappinPosts}
+                            bookmarks={bookmarks}
+                            setData={setBookmarkList}
+                            setIsLoading={setBookmarkListLoading}
+                        />
+                    }
+                    isLoading={bookmarkListLoading}
+                />
 
                 <Sidebar
                     open={isNavSidebarOpen}
