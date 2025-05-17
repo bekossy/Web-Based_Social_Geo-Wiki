@@ -5,7 +5,6 @@ import {Fragment, useEffect, useState} from "react"
 import Map, {
     FullscreenControl,
     GeolocateControl,
-    Marker,
     NavigationControl,
     Popup,
     ScaleControl,
@@ -14,8 +13,8 @@ import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
 import MapPopup from "../MapPopup"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
 
-import UserAvatar from "@/components/UserAvatar"
 import {MapViewProps} from "./types"
+import CustomMarker from "./CustomMarker"
 
 const MapView = ({
     mapRef,
@@ -75,14 +74,13 @@ const MapView = ({
             {mappins.map((pin) => {
                 return (
                     <Fragment key={pin._id}>
-                        <Marker
+                        <CustomMarker
                             latitude={pin.latitude}
                             longitude={pin.longitude}
                             onClick={() => handleMarkClick(pin.mapboxId, pin._id)}
-                            color="red"
-                        >
-                            <UserAvatar color={pin.userId.color} username={pin.userId.username} />
-                        </Marker>
+                            username={pin.userId.username}
+                            color={pin.userId.color}
+                        />
                         {!!locationData && pin._id === currentLocation && (
                             <Popup
                                 latitude={pin.latitude}
