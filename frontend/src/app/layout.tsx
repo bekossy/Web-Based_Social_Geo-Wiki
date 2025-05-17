@@ -26,21 +26,6 @@ export const metadata: Metadata = {
     authors: [{name: "Kaosisochukwu Bruno Ezealigo", url: "https://kaosiso-ezealigo.netlify.app/"}],
     creator: "Kaosisochukwu Bruno Ezealigo",
     robots: "index, follow",
-    openGraph: {
-        title: "Social Geo-Wiki | Collaborative Mapping Platform",
-        description:
-            "An open, community-driven platform for annotating geographic locations. Built with Next.js, Mapbox, and MongoDB.",
-        url: "https://web-based-social-geo-wiki.vercel.app/",
-        siteName: "Social Geo-Wiki",
-        images: [
-            {
-                url: "/assets/Social_Geo-Wiki.png",
-                width: 1200,
-                height: 630,
-                alt: "Social Geo-Wiki",
-            },
-        ],
-    },
 }
 
 export default function RootLayout({

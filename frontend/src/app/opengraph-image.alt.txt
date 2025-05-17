@@ -1,0 +1,1 @@
+An open, community-driven platform for annotating geographic locations. Built with Next.js, Mapbox, and MongoDB.
