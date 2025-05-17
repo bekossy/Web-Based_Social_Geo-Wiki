@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         siteName: "Social Geo-Wiki",
         images: [
             {
-                url: "/social_geo-wiki.png",
+                url: "https://web-based-social-geo-wiki.vercel.app/social_geo-wiki.png",
                 width: 1200,
                 height: 630,
                 alt: "Social Geo-Wiki",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         images: [
             {
-                url: "/social_geo-wiki.png",
+                url: "https://web-based-social-geo-wiki.vercel.app/social_geo-wiki.png",
                 width: 1200,
                 height: 630,
                 alt: "Social Geo-Wiki",
