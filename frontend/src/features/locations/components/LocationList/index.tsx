@@ -1,7 +1,6 @@
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {MapPin, ChevronRight} from "lucide-react"
 import {fetchRetrieveSearchResult} from "@/services/mapbox"
-import Skeleton from "./Skeleton"
 import {Button} from "@/components/ui/button"
 import {LocationListProps} from "./types"
 import LocationStaticImageCard from "@/components/LocationStaticImageCard"
@@ -37,11 +36,6 @@ const LocationList = ({
         } finally {
             setIsLoadingLocationInfo(false)
         }
-    }
-
-    // TODO: Pass loading prop and replace here
-    if (!locationFeatureInfo.length) {
-        return <Skeleton />
     }
 
     return (
