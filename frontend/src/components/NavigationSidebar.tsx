@@ -11,7 +11,7 @@ import {
     CommandGroup,
     CommandItem,
 } from "@/components/ui/command"
-import {Search, Settings, LogOut, Clock, ChevronRight, ArrowLeft, Heart} from "lucide-react"
+import {Search, LogOut, Clock, ChevronRight, ArrowLeft, Heart} from "lucide-react"
 import MakiIcon from "./MakiIcon"
 import {fetchSearchCategory} from "@/services/mapbox"
 import {type SearchBoxFeatureSuggestion} from "@mapbox/search-js-core"
@@ -223,11 +223,6 @@ export const NavigationSidebar = ({
             </div>
 
             <div className={cn("border-t space-y-2", isDesktop ? "p-4" : "p-2")}>
-                <Button variant="ghost" className="w-full justify-start">
-                    <Settings className="mr-2 size-4" />
-                    Settings
-                </Button>
-
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button

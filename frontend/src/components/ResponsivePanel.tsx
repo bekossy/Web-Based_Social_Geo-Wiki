@@ -40,7 +40,7 @@ const ResponsivePanel = ({
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
             <DrawerContent className="max-h-[75vh] h-[75vh] p-4">
-                <DrawerHeader className="hidden">
+                <DrawerHeader className="invisible p-0">
                     <DrawerTitle>{title}</DrawerTitle>
                 </DrawerHeader>
                 <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">{content}</div>

@@ -181,7 +181,7 @@ export default function Home() {
                 <ResponsivePanel
                     open={isBookmarkDrawerOpen}
                     onOpenChange={setIsBookmarkDrawerOpen}
-                    title="Title"
+                    title=""
                     content={
                         <LocationPanel
                             type="bookmark"
