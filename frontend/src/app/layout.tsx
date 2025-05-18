@@ -3,6 +3,7 @@ import {Inter} from "next/font/google"
 import "./globals.css"
 import "mapbox-gl/dist/mapbox-gl.css"
 import {AuthProvider} from "@/contexts/AuthContext"
+import {Toaster} from "@/components/ui/toaster"
 
 const inter = Inter({
     variable: "--font-inter",
@@ -67,6 +68,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${inter.variable} antialiased`}>
                 <AuthProvider>{children}</AuthProvider>
+                <Toaster />
             </body>
         </html>
     )
