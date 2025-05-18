@@ -12,6 +12,7 @@ const MapControlPanel = ({
     setIsLocationDrawerOpen,
     sessionToken,
     setSessionToken,
+    isDesktop,
 }: MapControlPanelProps) => {
     const handleSelectedCategory = async (canonicalId: string) => {
         try {
@@ -34,18 +35,20 @@ const MapControlPanel = ({
             />
 
             <div className="flex flex-wrap items-center justify-center gap-2">
-                {CATEGORIES.map((category) => (
-                    <Button
-                        key={category.canonical_id}
-                        size={"sm"}
-                        variant={"outline"}
-                        className="flex items-center gap-2"
-                        onClick={() => handleSelectedCategory(category.canonical_id)}
-                    >
-                        <MakiIcon iconName={category.icon} />
-                        {category.name}
-                    </Button>
-                ))}
+                {isDesktop
+                    ? CATEGORIES.map((category) => (
+                          <Button
+                              key={category.canonical_id}
+                              size={"sm"}
+                              variant={"outline"}
+                              className="flex items-center gap-2"
+                              onClick={() => handleSelectedCategory(category.canonical_id)}
+                          >
+                              <MakiIcon iconName={category.icon} />
+                              {category.name}
+                          </Button>
+                      ))
+                    : null}
             </div>
         </div>
     )

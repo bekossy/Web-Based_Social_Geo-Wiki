@@ -27,8 +27,10 @@ import {getUserBookmarks} from "@/services/bookmark"
 import {Bookmark} from "@/services/bookmark/types"
 import ResponsivePanel from "@/components/ResponsivePanel"
 import LocationPanel from "@/components/LocationPanel"
+import {useMediaQuery} from "@/hooks/use-media-query"
 
 export default function Home() {
+    const isDesktop = useMediaQuery("(min-width: 550px)")
     const mapRef = useRef<MapRef>(null)
     const {user} = useAuth()
     const [isLocationDrawerOpen, setIsLocationDrawerOpen] = useState(false)
@@ -122,7 +124,7 @@ export default function Home() {
 
     return (
         <ProtectedRoute>
-            <Navbar setIsNavSidebarOpen={setIsNavSidebarOpen} />
+            <Navbar setIsNavSidebarOpen={setIsNavSidebarOpen} isDesktop={isDesktop} />
             <main className="h-screen w-full relative">
                 <div className="relative">
                     <div className="max-w-[750px] my-0 mx-auto w-full absolute z-10 top-[80px] right-0 left-0 px-4 flex gap-2">
@@ -133,6 +135,7 @@ export default function Home() {
                             setIsLocationDrawerOpen={setIsLocationDrawerOpen}
                             sessionToken={sessionToken}
                             setSessionToken={setSessionToken}
+                            isDesktop={isDesktop}
                         />
 
                         <UserAvatar

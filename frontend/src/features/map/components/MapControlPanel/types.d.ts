@@ -9,4 +9,5 @@ export interface MapControlPanelProps {
     setIsLocationDrawerOpen: Dispatch<SetStateAction<boolean>>
     sessionToken: string
     setSessionToken: Dispatch<SetStateAction<string>>
+    isDesktop: boolean
 }
