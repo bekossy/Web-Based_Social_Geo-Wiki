@@ -1,4 +1,4 @@
-import {Drawer, DrawerContent} from "@/components/ui/drawer"
+import {Drawer, DrawerContent, DrawerHeader, DrawerTitle} from "@/components/ui/drawer"
 import Sidebar from "@/components/layout/Sidebar"
 import {useMediaQuery} from "@/hooks/use-media-query"
 
@@ -40,6 +40,9 @@ const ResponsivePanel = ({
     return (
         <Drawer open={open} onOpenChange={onOpenChange}>
             <DrawerContent className="max-h-[75vh] h-[75vh] p-4">
+                <DrawerHeader className="hidden">
+                    <DrawerTitle>{title}</DrawerTitle>
+                </DrawerHeader>
                 <div className="[&::-webkit-scrollbar]:w-0 overflow-auto h-full">{content}</div>
             </DrawerContent>
         </Drawer>
