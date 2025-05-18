@@ -240,10 +240,10 @@ export const NavigationSidebar = ({
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Confirm Sign Out</AlertDialogTitle>
+                            <AlertDialogTitle>Logout</AlertDialogTitle>
                             <AlertDialogDescription>
-                                You are about to sign out of your account. Any unsaved progress will
-                                be lost, and you will need to log in again to access your account.
+                                Are you sure you want to sign out,{" "}
+                                <span className="font-semibold capitalize">{user?.username}</span>?
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
