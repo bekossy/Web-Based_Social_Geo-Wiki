@@ -12,6 +12,7 @@ import {LocationDetailsProps} from "./types"
 import PostsSection from "./PostsSection"
 import OverviewSection from "./OverviewSection"
 import {createBookmark, deleteBookmark, getUserBookmarks} from "@/services/bookmark"
+import {useToast} from "@/hooks/use-toast"
 
 const LocationDetails = ({
     locationFeatureInfo,
@@ -21,6 +22,7 @@ const LocationDetails = ({
     fetchSelectedMappinPosts,
     bookmarks,
 }: LocationDetailsProps) => {
+    const {toast} = useToast()
     const {user} = useAuth()
     const [selectedTab, setSelectedTab] = useState("overview")
     const [newPost, setNewPost] = useState("")
@@ -73,8 +75,16 @@ const LocationDetails = ({
                 longitude: locationData.coordinates.longitude,
             })
             await fetchAllMappins()
+            toast({
+                title: "Location pin added successfully",
+                variant: "success",
+            })
         } catch (error) {
             console.error("Failed to add location pin:", error)
+            toast({
+                title: "Failed to add location pin",
+                variant: "destructive",
+            })
         } finally {
             setIsAddingPinLoading(false)
         }
@@ -89,8 +99,16 @@ const LocationDetails = ({
                 mappinId: selectedMappinLocation?._id,
             })
             await fetchAllMappins()
+            toast({
+                title: "Location pin removed successfully",
+                variant: "success",
+            })
         } catch (error) {
-            console.error("Failed to add location pin:", error)
+            console.error("Failed to remove location pin:", error)
+            toast({
+                title: "Failed to remove location pin",
+                variant: "destructive",
+            })
         } finally {
             setIsRemovingPinLoading(false)
         }
@@ -113,8 +131,16 @@ const LocationDetails = ({
             await createMappinPosts(formData)
 
             await fetchSelectedMappinPosts()
+            toast({
+                title: "Post added successfully",
+                variant: "success",
+            })
         } catch (error) {
-            console.error(error)
+            console.error("Failed to add post:", error)
+            toast({
+                title: "Failed to add post",
+                variant: "destructive",
+            })
         } finally {
             setIsAddingPostLoading(false)
             setNewPost("")
@@ -132,8 +158,16 @@ const LocationDetails = ({
             })
             await getUserBookmarks()
             await fetchAllMappins()
+            toast({
+                title: "Location bookmarked successfully",
+                variant: "success",
+            })
         } catch (error) {
             console.error("Failed to bookmark location:", error)
+            toast({
+                title: "Failed to bookmark location",
+                variant: "destructive",
+            })
         } finally {
             setIsBookmarkLoading(false)
         }
@@ -148,8 +182,16 @@ const LocationDetails = ({
             })
             await getUserBookmarks()
             await fetchAllMappins()
+            toast({
+                title: "Location unbookmarked successfully",
+                variant: "success",
+            })
         } catch (error) {
             console.error("Failed to unbookmark location:", error)
+            toast({
+                title: "Failed to unbookmark location",
+                variant: "destructive",
+            })
         } finally {
             setIsBookmarkLoading(false)
         }

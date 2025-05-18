@@ -15,6 +15,7 @@ import {deleteMappinPosts, reportMappinPost} from "@/services/posts"
 import PostsContent from "./PostsContent"
 import AddPostsSection from "./AddPostsSection"
 import EmptyState from "@/components/EmptyState"
+import {useToast} from "@/hooks/use-toast"
 
 const PostsSection = ({
     newPost,
@@ -29,6 +30,7 @@ const PostsSection = ({
     fetchSelectedMappinPosts,
 }: PostsSectionProps) => {
     const {user} = useAuth()
+    const {toast} = useToast()
     const [isDeletePostLoading, setIsDeletePostLoading] = React.useState(false)
     const [isReportPostLoading, setIsReportPostLoading] = React.useState(false)
 
@@ -37,8 +39,16 @@ const PostsSection = ({
             setIsDeletePostLoading(true)
             await deleteMappinPosts({postId})
             await fetchSelectedMappinPosts()
+            toast({
+                title: "Post deleted successfully",
+                variant: "success",
+            })
         } catch (error) {
             console.error("Failed to delete post:", error)
+            toast({
+                title: "Failed to delete post",
+                variant: "destructive",
+            })
         } finally {
             setIsDeletePostLoading(false)
         }
@@ -49,8 +59,16 @@ const PostsSection = ({
             setIsReportPostLoading(true)
             await reportMappinPost({postId})
             await fetchSelectedMappinPosts()
+            toast({
+                title: "Post reported successfully",
+                variant: "success",
+            })
         } catch (error) {
             console.error("Failed to report post:", error)
+            toast({
+                title: "Failed to report post",
+                variant: "destructive",
+            })
         } finally {
             setIsReportPostLoading(false)
         }

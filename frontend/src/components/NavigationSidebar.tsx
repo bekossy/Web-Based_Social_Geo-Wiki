@@ -20,6 +20,17 @@ import {useAuth} from "@/contexts/AuthContext"
 import UserAvatar from "./UserAvatar"
 import {useMediaQuery} from "@/hooks/use-media-query"
 import {cn} from "@/lib/utils"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "./ui/alert-dialog"
 
 interface NavigationSidebarProps {
     setLocationFeatureInfo: Dispatch<SetStateAction<SearchBoxFeatureSuggestion[]>>
@@ -216,14 +227,36 @@ export const NavigationSidebar = ({
                     <Settings className="mr-2 size-4" />
                     Settings
                 </Button>
-                <Button
-                    onClick={logout}
-                    variant="ghost"
-                    className="w-full justify-start text-muted-foreground"
-                >
-                    <LogOut className="mr-2 size-4" />
-                    Sign Out
-                </Button>
+
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start text-muted-foreground"
+                        >
+                            <LogOut className="mr-2 size-4" />
+                            Sign Out
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Confirm Sign Out</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                You are about to sign out of your account. Any unsaved progress will
+                                be lost, and you will need to log in again to access your account.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                                className="bg-red-600 text-white hover:bg-red-700 active:bg-red-800"
+                                onClick={logout}
+                            >
+                                Sign Out
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </div>
     )
