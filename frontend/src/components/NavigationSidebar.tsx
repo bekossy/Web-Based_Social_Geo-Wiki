@@ -83,7 +83,7 @@ export const NavigationSidebar = ({
                     <UserAvatar color={user?.color || ""} username={user?.username || ""} />
                     <div>
                         <p className="font-medium">{user?.username}</p>
-                        <p className="text-sm text-muted-foreground">Sign in to save places</p>
+                        <p className="text-sm text-muted-foreground">Explore and share places</p>
                     </div>
                 </div>
             </div>
