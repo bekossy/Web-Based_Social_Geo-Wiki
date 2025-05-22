@@ -16,7 +16,7 @@ const Navbar = ({setIsNavSidebarOpen, isDesktop}: NavbarProps) => {
                 <Link
                     href={"/"}
                     className={cn(
-                        "text-xl md:text-3xl font-semibold w-full",
+                        "text-xl md:text-3xl font-semibold w-fit",
                         isDesktop ? "" : "text-center",
                     )}
                 >
